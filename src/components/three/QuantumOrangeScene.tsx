@@ -134,14 +134,14 @@ const orangeFragment = /* glsl */ `
 type ShieldRef = { value: number };
 
 function QuantumOrange({
-  scrollProgress, shieldRef, turretRefs, compact,
+  scrollProgress, shieldRef, turretRefs, compact, orangeRef,
 }: {
   scrollProgress: { current: number };
   shieldRef: ShieldRef;
   turretRefs: React.MutableRefObject<THREE.Group[]>;
   compact?: boolean;
+  orangeRef: React.MutableRefObject<THREE.Group | null>;
 }) {
-  const groupRef = useRef<THREE.Group>(null!);
   const matRef = useRef<THREE.ShaderMaterial>(null!);
 
   const uniforms = useMemo(() => ({
@@ -173,18 +173,18 @@ function QuantumOrange({
     uniforms.uTime.value += dt;
     shieldRef.value = Math.max(0, shieldRef.value - dt * 2.5);
     uniforms.uShield.value = shieldRef.value;
-    if (groupRef.current) {
-      groupRef.current.rotation.y += dt * 0.1;
+    if (orangeRef.current) {
+      orangeRef.current.rotation.y += dt * 0.1;
       const baseScale = compact ? 0.42 : 0.65;
       const s = baseScale + scrollProgress.current * 0.08;
-      groupRef.current.scale.setScalar(s);
-      groupRef.current.position.x = compact ? 0 : 1.4;
-      groupRef.current.position.y = compact ? 0.05 : 0;
+      orangeRef.current.scale.setScalar(s);
+      orangeRef.current.position.x = compact ? 0 : 1.4;
+      orangeRef.current.position.y = compact ? 0.05 : 0;
     }
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={orangeRef}>
       {/* Main orange — high poly sphere for smooth silhouette */}
       <mesh>
         <sphereGeometry args={[1, 256, 256]} />
@@ -309,29 +309,32 @@ interface Burst {
   ref: THREE.Group | null;
 }
 
-function spawnAttacker(id: number): Attacker {
+function spawnAttacker(id: number, center: THREE.Vector3, orangeRadius: number): Attacker {
   // True 360° spherical distribution (uniform on sphere)
   const u = Math.random();
   const v = Math.random();
   const theta = 2 * Math.PI * u;
   const phi = Math.acos(2 * v - 1);
-  const dist = 4.2 + Math.random() * 1.8;
-  const pos = new THREE.Vector3(
+  const dist = orangeRadius * (6.6 + Math.random() * 3.2);
+  const direction = new THREE.Vector3(
     Math.sin(phi) * Math.cos(theta),
     Math.cos(phi),
     Math.sin(phi) * Math.sin(theta),
-  ).multiplyScalar(dist);
-  const toCenter = pos.clone().negate().normalize();
-  const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.22);
-  const vel = toCenter.multiplyScalar(0.34 + Math.random() * 0.26).add(tangent);
+  );
+  const pos = direction.clone().multiplyScalar(dist).add(center);
+  const toCenter = center.clone().sub(pos).normalize();
+  const tangentSeed = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+  const tangent = new THREE.Vector3().crossVectors(toCenter, tangentSeed);
+  if (tangent.lengthSq() > 0) tangent.normalize().multiplyScalar((Math.random() - 0.5) * 0.1);
+  const vel = toCenter.multiplyScalar(0.28 + Math.random() * 0.12).add(tangent);
 
-  const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
+  const kinds: AttackerKind[] = ["asteroid", "asteroid", "asteroid", "asteroid", "ship", "shard", "drone"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
   const baseScale =
-    kind === "ship" ? 0.08 + Math.random() * 0.07 :
-    kind === "asteroid" ? 0.05 + Math.random() * 0.1 :
-    kind === "shard" ? 0.06 + Math.random() * 0.08 :
-    0.05 + Math.random() * 0.08;
+    kind === "ship" ? 0.15 + Math.random() * 0.09 :
+    kind === "asteroid" ? 0.16 + Math.random() * 0.2 :
+    kind === "shard" ? 0.14 + Math.random() * 0.08 :
+    0.12 + Math.random() * 0.08;
   return {
     id,
     kind,
@@ -388,28 +391,24 @@ function AttackerMesh({ kind }: { kind: AttackerKind }) {
   }
 
   if (kind === "asteroid") {
-    // Chunky rocky asteroid with molten cracks + dust halo
+    // Rocky asteroid silhouette — cratered, dusty, no neon glow
     return (
       <group>
-        {/* core rock */}
-        <mesh>
-          <icosahedronGeometry args={[0.22, 1]} />
-          <meshStandardMaterial color="#2e1b10" roughness={0.95} metalness={0.08} flatShading emissive="#ff3a00" emissiveIntensity={0.18} />
+        <mesh rotation={[0.4, 0.8, 0.2]} scale={[1, 0.9, 0.82]}>
+          <icosahedronGeometry args={[0.26, 1]} />
+          <meshStandardMaterial color="#4b4038" roughness={1} metalness={0.02} flatShading />
         </mesh>
-        {/* glowing fissure layer */}
-        <mesh scale={1.012}>
-          <icosahedronGeometry args={[0.22, 1]} />
-          <meshBasicMaterial color="#ff5a1f" wireframe transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <mesh position={[0.1, -0.03, 0.05]} scale={[0.45, 0.34, 0.4]} rotation={[0.2, 0.6, 1]}>
+          <icosahedronGeometry args={[0.22, 0]} />
+          <meshStandardMaterial color="#65554b" roughness={1} metalness={0.01} flatShading />
         </mesh>
-        {/* outer dust halo */}
-        <mesh scale={1.9}>
+        <mesh position={[-0.09, 0.05, -0.08]} scale={[0.24, 0.22, 0.22]}>
+          <sphereGeometry args={[0.22, 10, 10]} />
+          <meshStandardMaterial color="#3d332c" roughness={1} metalness={0} />
+        </mesh>
+        <mesh scale={1.12}>
           <sphereGeometry args={[0.18, 16, 16]} />
-          <meshBasicMaterial color="#ff8a4a" transparent opacity={0.10} blending={THREE.AdditiveBlending} depthWrite={false} />
-        </mesh>
-        {/* tight inner glow */}
-        <mesh scale={1.25}>
-          <sphereGeometry args={[0.18, 16, 16]} />
-          <meshBasicMaterial color="#ffb070" transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <meshBasicMaterial color="#8d7768" transparent opacity={0.08} depthWrite={false} />
         </mesh>
       </group>
     );
@@ -447,10 +446,11 @@ function AttackerMesh({ kind }: { kind: AttackerKind }) {
 }
 
 function DefenseSystem({
-  shieldRef, turretRefs,
+  shieldRef, turretRefs, orangeRef,
 }: {
   shieldRef: ShieldRef;
   turretRefs: React.MutableRefObject<THREE.Group[]>;
+  orangeRef: React.MutableRefObject<THREE.Group | null>;
 }) {
   const attackers = useRef<Attacker[]>([]);
   const lasers = useRef<Laser[]>([]);
@@ -461,21 +461,31 @@ function DefenseSystem({
   const groupRef = useRef<THREE.Group>(null!);
   const [, setRenderVersion] = useState(0);
 
+  const getOrangeState = () => {
+    const center = new THREE.Vector3();
+    const scale = new THREE.Vector3(1, 1, 1);
+    orangeRef.current?.getWorldPosition(center);
+    orangeRef.current?.getWorldScale(scale);
+    return { center, radius: scale.x || 1 };
+  };
+
   useEffect(() => {
-    for (let i = 0; i < 20; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    const { center, radius } = getOrangeState();
+    for (let i = 0; i < 20; i++) attackers.current.push(spawnAttacker(idCounter.current++, center, radius));
     setRenderVersion((v) => v + 1);
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
     let didMutate = false;
+    const { center: orangeCenter, radius: orangeRadius } = getOrangeState();
 
     spawnTimer.current -= dtClamped;
     const aliveCount = attackers.current.filter((a) => a.alive).length;
     const target = 20;
     if (spawnTimer.current <= 0) {
       const toSpawn = aliveCount < target - 3 ? 2 : 1;
-      for (let i = 0; i < toSpawn; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+      for (let i = 0; i < toSpawn; i++) attackers.current.push(spawnAttacker(idCounter.current++, orangeCenter, orangeRadius));
       spawnTimer.current = 0.24 + Math.random() * 0.12 + (aliveCount > target ? 0.15 : 0);
       didMutate = true;
     }
@@ -489,12 +499,12 @@ function DefenseSystem({
         a.ref.rotation.y += a.rotSpeed.y * dtClamped;
         a.ref.rotation.z += a.rotSpeed.z * dtClamped;
       }
-      if (a.pos.length() < 1.05) {
+      if (a.pos.distanceTo(orangeCenter) < orangeRadius * 1.05) {
         a.alive = false;
         shieldRef.value = 1;
         bursts.current.push({
           id: idCounter.current++,
-          pos: a.pos.clone().normalize().multiplyScalar(1.05),
+          pos: a.pos.clone().sub(orangeCenter).normalize().multiplyScalar(orangeRadius * 1.05).add(orangeCenter),
           life: 0.6, maxLife: 0.6,
           ref: null,
         });
@@ -511,10 +521,11 @@ function DefenseSystem({
 
       let closest: Attacker | null = null;
       let closestDist = Infinity;
+      const fireRange = orangeRadius * 4.8;
       for (const a of attackers.current) {
         if (!a.alive) continue;
         const d = turretWorld.distanceTo(a.pos);
-        if (d < closestDist && d < 3.25) { closestDist = d; closest = a; }
+        if (d < closestDist && d < fireRange) { closestDist = d; closest = a; }
       }
 
       if (closest && fireCooldowns.current[t] <= 0) {
@@ -558,18 +569,19 @@ function DefenseSystem({
         const t = Math.max(0, l.life / l.maxLife);
         const lifeProgress = 1 - t;
         const pulse = 0.7 + Math.sin(lifeProgress * Math.PI * 3 + l.phase) * 0.3;
-        const wave = Math.sin(lifeProgress * Math.PI * 2 + l.phase) * 0.016;
-        const waveTwist = Math.cos(lifeProgress * Math.PI * 2.5 + l.phase) * 0.01;
         const baseMid = l.from.clone().add(l.to).multiplyScalar(0.5);
-        l.ref.position.copy(baseMid).add(new THREE.Vector3(wave, 0, waveTwist));
-        l.ref.rotation.y = wave * 3.8;
-        l.ref.rotation.z = waveTwist * 6;
+        l.ref.position.copy(baseMid);
         l.ref.children.forEach((child, index) => {
           const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
           if (m && "opacity" in m) {
             const childPulse = index < 3 ? pulse : 0.9 + pulse * 0.1;
             m.opacity = (m.userData?.baseOpacity ?? 1) * t * childPulse;
           }
+
+          if (index === 0) child.scale.setScalar(0.92 + pulse * 0.08);
+          if (index === 1) child.scale.setScalar(0.9 + pulse * 0.16);
+          if (index === 2) child.scale.setScalar(0.95 + pulse * 0.28);
+          if (index >= 3) child.scale.setScalar(0.9 + pulse * 0.2);
         });
       }
     }
@@ -608,34 +620,36 @@ function DefenseSystem({
     <group ref={groupRef}>
       {attackers.current.map((a) => {
         const haloColor =
-          a.kind === "asteroid" ? "#ff8a4a" :
+          a.kind === "asteroid" ? "#8d7768" :
           a.kind === "ship" ? "#9a30ff" :
           a.kind === "shard" ? "#ff2d7a" : "#00e5ff";
         const trailColor =
-          a.kind === "asteroid" ? "#ff5a1f" :
+          a.kind === "asteroid" ? "#6f6054" :
           a.kind === "ship" ? "#00f0ff" :
           a.kind === "shard" ? "#ff5da0" : "#5deaff";
+        const haloOpacity = a.kind === "asteroid" ? 0.04 : 0.22;
+        const haloOuterOpacity = a.kind === "asteroid" ? 0.015 : 0.08;
+        const trailCoreOpacity = a.kind === "asteroid" ? 0.18 : 0.55;
+        const trailOuterOpacity = a.kind === "asteroid" ? 0.06 : 0.18;
         return (
           <group key={a.id}>
             <group ref={(el) => { if (el) a.ref = el; }} position={a.pos} scale={a.scale}>
               <AttackerMesh kind={a.kind} />
-              {/* outer atmospheric halo — much more prominent */}
               <mesh scale={2.4}>
                 <sphereGeometry args={[0.16, 16, 16]} />
                 <meshBasicMaterial
                   color={haloColor}
-                  transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false}
+                  transparent opacity={haloOpacity} blending={THREE.AdditiveBlending} depthWrite={false}
                 />
               </mesh>
               <mesh scale={3.6}>
                 <sphereGeometry args={[0.16, 12, 12]} />
                 <meshBasicMaterial
                   color={haloColor}
-                  transparent opacity={0.08} blending={THREE.AdditiveBlending} depthWrite={false}
+                  transparent opacity={haloOuterOpacity} blending={THREE.AdditiveBlending} depthWrite={false}
                 />
               </mesh>
             </group>
-            {/* motion trail — soft elongated streak behind the attacker */}
             {(() => {
               const speed = a.vel.length();
               const trailLen = Math.min(0.9, 0.35 + speed * 0.6) * a.scale;
@@ -646,11 +660,11 @@ function DefenseSystem({
                 <group position={mid} quaternion={quat}>
                   <mesh>
                     <coneGeometry args={[0.05 * a.scale, trailLen, 12, 1, true]} />
-                    <meshBasicMaterial color={trailColor} transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+                    <meshBasicMaterial color={trailColor} transparent opacity={trailCoreOpacity} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
                   </mesh>
                   <mesh>
                     <coneGeometry args={[0.10 * a.scale, trailLen, 12, 1, true]} />
-                    <meshBasicMaterial color={trailColor} transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+                    <meshBasicMaterial color={trailColor} transparent opacity={trailOuterOpacity} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
                   </mesh>
                 </group>
               );
@@ -841,6 +855,7 @@ export default function QuantumOrangeScene({
 
   const shieldRef = useRef<{ value: number }>({ value: 0 }).current;
   const turretRefs = useRef<THREE.Group[]>([]);
+  const orangeRef = useRef<THREE.Group | null>(null);
 
   return (
     <div className={className}>
@@ -866,8 +881,8 @@ export default function QuantumOrangeScene({
         <pointLight position={[1.4, 0, 1.5]} intensity={0.6} color="#ffd86b" />
 
         <Suspense fallback={null}>
-          <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} compact={compact} />
-          <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} />
+          <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} compact={compact} orangeRef={orangeRef} />
+          <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} orangeRef={orangeRef} />
           <StarField count={compact ? 600 : 1200} />
         </Suspense>
 
