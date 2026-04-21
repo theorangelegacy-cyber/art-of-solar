@@ -735,11 +735,12 @@ export default function QuantumOrangeScene({
         <color attach="background" args={["#05060f"]} />
 
         {/* Premium three-point lighting — Apple product photography */}
-        <ambientLight intensity={0.28} />
-        <directionalLight position={[4, 6, 4]} intensity={1.6} color="#fff5e6" />
-        <directionalLight position={[-4, -1, 2]} intensity={0.55} color="#7af0c0" />
-        <pointLight position={[0, 0, 3.5]} intensity={0.45} color="#ffb380" />
-        <pointLight position={[2, -3, -2]} intensity={0.3} color="#ff5a0f" />
+        <ambientLight intensity={0.55} />
+        <directionalLight position={[4, 6, 4]} intensity={2.4} color="#fff5e6" />
+        <directionalLight position={[-4, -1, 2]} intensity={0.8} color="#7af0c0" />
+        <pointLight position={[0, 0, 3.5]} intensity={0.7} color="#ffb380" />
+        <pointLight position={[2, -3, -2]} intensity={0.5} color="#ff6a1f" />
+        <pointLight position={[1.4, 0, 1.5]} intensity={0.6} color="#ffd86b" />
 
         <Suspense fallback={null}>
           <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} />
@@ -750,7 +751,7 @@ export default function QuantumOrangeScene({
         {enablePostprocessing && !reduced && (
           <EffectComposer multisampling={0}>
             <SMAA />
-            <Bloom intensity={0.85} luminanceThreshold={0.55} luminanceSmoothing={0.9} mipmapBlur radius={0.85} />
+            <Bloom intensity={1.15} luminanceThreshold={0.5} luminanceSmoothing={0.9} mipmapBlur radius={0.95} />
             <Vignette eskil={false} offset={0.32} darkness={0.85} />
           </EffectComposer>
         )}
