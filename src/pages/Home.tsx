@@ -145,7 +145,7 @@ export default function Home() {
       {/* ============================================================
           CAPABILITY MATRIX
           ============================================================ */}
-      <section className="relative py-28 md:py-36 border-t border-border">
+      <section className="section-light relative py-28 md:py-36 border-t border-border">
         <div className="container">
           <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
             <SectionHead
@@ -217,7 +217,7 @@ export default function Home() {
       {/* ============================================================
           DOCTRINE / WHY ONE SYSTEM
           ============================================================ */}
-      <section className="relative py-28 md:py-36 overflow-hidden">
+      <section className="section-light relative py-28 md:py-36 overflow-hidden border-t border-border">
         <div className="container">
           <div className="grid lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-5 lg:sticky lg:top-28">
@@ -289,7 +289,7 @@ export default function Home() {
       {/* ============================================================
           CTA
           ============================================================ */}
-      <section className="relative py-28 md:py-36">
+      <section className="section-light relative py-28 md:py-36 border-t border-border">
         <div className="container">
           <CornerFrame size={20} thickness={1}>
             <div className="relative overflow-hidden p-10 md:p-20 text-center bg-surface-1/40">
