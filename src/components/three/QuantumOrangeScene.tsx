@@ -532,7 +532,7 @@ function DefenseSystem({
           id: idCounter.current++,
           from: barrelTip,
           to: closest.pos.clone(),
-          life: 0.24, maxLife: 0.24,
+          life: 0.36, maxLife: 0.36,
           ref: null,
         });
         closest.hp -= 1;
