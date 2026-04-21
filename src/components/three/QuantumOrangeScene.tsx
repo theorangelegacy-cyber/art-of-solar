@@ -279,8 +279,8 @@ function QuantumOrange({
           </mesh>
           {/* glowing emitter */}
           <mesh position={[0, 0.085, 0]}>
-            <sphereGeometry args={[0.01, 12, 12]} />
-            <meshBasicMaterial color="#5dffb0" />
+            <sphereGeometry args={[0.012, 12, 12]} />
+            <meshBasicMaterial color="#ffb060" />
           </mesh>
         </group>
       ))}
