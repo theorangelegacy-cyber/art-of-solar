@@ -227,12 +227,11 @@ function QuantumOrange({
         <meshStandardMaterial color="#4a2410" roughness={0.85} metalness={0} />
       </mesh>
 
-      {/* Leaf — flat teardrop shape from custom geometry, double-sided */}
-      <group position={[0.02, 1.05, 0]} rotation={[-0.25, 0.4, -0.55]}>
+      {/* Leaf — larger, more prominent teardrop, double-sided */}
+      <group position={[0.04, 1.04, 0]} rotation={[-0.32, 0.5, -0.6]} scale={1.7}>
         <mesh>
           <shapeGeometry args={[(() => {
             const s = new THREE.Shape();
-            // teardrop leaf outline
             s.moveTo(0, 0);
             s.bezierCurveTo(0.06, 0.04, 0.13, 0.18, 0.10, 0.30);
             s.bezierCurveTo(0.07, 0.36, 0.02, 0.38, 0, 0.40);
@@ -241,17 +240,16 @@ function QuantumOrange({
             return s;
           })()]} />
           <meshStandardMaterial
-            color="#2f8a3e"
-            roughness={0.55}
-            metalness={0.05}
+            color="#3aa84a"
+            roughness={0.5}
+            metalness={0.08}
             side={THREE.DoubleSide}
-            emissive="#0a3a18"
-            emissiveIntensity={0.15}
+            emissive="#0e4a20"
+            emissiveIntensity={0.28}
           />
         </mesh>
-        {/* central vein */}
         <mesh position={[0, 0.2, 0.001]}>
-          <boxGeometry args={[0.006, 0.36, 0.001]} />
+          <boxGeometry args={[0.008, 0.36, 0.001]} />
           <meshStandardMaterial color="#1a5a26" roughness={0.7} side={THREE.DoubleSide} />
         </mesh>
       </group>
