@@ -481,7 +481,7 @@ function DefenseSystem({
       for (const a of attackers.current) {
         if (!a.alive) continue;
         const d = turretWorld.distanceTo(a.pos);
-        if (d < closestDist && d < 4.5) { closestDist = d; closest = a; }
+        if (d < closestDist && d < 6.5) { closestDist = d; closest = a; }
       }
 
       if (closest && fireCooldowns.current[t] <= 0) {
