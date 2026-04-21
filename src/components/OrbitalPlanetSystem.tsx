@@ -73,7 +73,7 @@ export default function OrbitalPlanetSystem() {
   const focusedPlanet = focused !== null ? PLANETS[focused] : null;
 
   return (
-    <section className="relative py-28 md:py-36 border-t border-border overflow-hidden">
+    <section className="relative py-20 md:py-24 border-t border-border overflow-hidden">
       {/* starfield */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid-fine opacity-[0.04]" />
@@ -81,19 +81,18 @@ export default function OrbitalPlanetSystem() {
       </div>
 
       <div className="container">
-        <div className="flex items-end justify-between flex-wrap gap-6 mb-10">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3 font-mono text-2xs tracking-mono uppercase text-accent mb-5">
+        <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 font-mono text-2xs tracking-mono uppercase text-accent mb-3">
               <span className="text-muted-foreground">§ 02</span>
               <span className="h-px w-8 bg-accent/50" />
               <span>Orbital System · Live</span>
             </div>
-            <h2 className="font-display text-3xl md:text-5xl text-foreground leading-[1.02]">
-              Five disciplines.<br />
-              <span className="font-serif-italic text-foreground-dim">One gravitational field.</span>
+            <h2 className="font-display text-2xl md:text-4xl text-foreground leading-[1.05]">
+              Five disciplines. <span className="font-serif-italic">One gravitational field.</span>
             </h2>
-            <p className="mt-4 text-foreground-dim text-base md:text-lg max-w-2xl">
-              Click any planet to enter its orbit. Drag to rotate. Each capability is a world unto itself — bound together by a single sun.
+            <p className="mt-3 text-foreground-dim text-sm md:text-base max-w-xl">
+              Click any planet to enter its orbit. Drag to rotate.
             </p>
           </div>
           <div className="flex items-center gap-4 font-mono text-2xs tracking-mono uppercase text-muted-foreground">
