@@ -27,16 +27,16 @@ export default function SiteNav() {
       {/* hairline always visible */}
       <div className={`transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-xl border-b border-border" : "bg-transparent"}`}>
         <div className="container">
-          <nav className="flex h-14 md:h-16 items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group" aria-label="Quantum Orange Dynamics — Home">
-              <span className="relative inline-flex h-7 w-7 items-center justify-center">
+          <nav className="flex h-14 md:h-16 items-center justify-between gap-3">
+            <Link to="/" className="group flex min-w-0 items-center gap-2 md:gap-3" aria-label="Quantum Orange Dynamics — Home">
+              <span className="relative inline-flex h-7 w-7 shrink-0 items-center justify-center">
                 <span className="absolute inset-0 rounded-full bg-gradient-orange shadow-glow-orange-soft animate-pulse-soft" />
                 <span className="absolute -inset-1 rounded-full border border-accent/30 animate-spin-slow" style={{ borderStyle: "dashed" }} />
                 <span className="relative h-1 w-1 rounded-full bg-background" />
               </span>
-              <div className="leading-none">
-                <div className="font-display text-[13px] tracking-tight text-foreground">Quantum Orange<span className="text-primary"> ▸</span></div>
-                <div className="font-mono text-2xs tracking-mono uppercase text-muted-foreground mt-1">Dynamics · QOD-IV</div>
+              <div className="min-w-0 leading-none">
+                <div className="truncate font-display text-[11px] tracking-tight text-foreground sm:text-[13px]">Quantum Orange<span className="text-primary"> ▸</span></div>
+                <div className="mt-1 truncate font-mono text-[9px] uppercase text-muted-foreground tracking-[0.16em] sm:text-2xs sm:tracking-mono">Dynamics · QOD-IV</div>
               </div>
             </Link>
 
@@ -76,7 +76,7 @@ export default function SiteNav() {
             <button
               aria-label="Toggle menu"
               onClick={() => setOpen((v) => !v)}
-              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-sm border border-border text-foreground"
+              className="md:hidden inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-border text-foreground"
             >
               <div className="space-y-1">
                 <span className={`block h-px w-4 bg-foreground transition-transform ${open ? "translate-y-[5px] rotate-45" : ""}`} />
