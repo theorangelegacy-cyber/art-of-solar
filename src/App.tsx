@@ -10,6 +10,7 @@ import SiteFooter from "@/components/SiteFooter";
 import QuantumCursor from "@/components/QuantumCursor";
 import BootSequence from "@/components/BootSequence";
 import PageTransition from "@/components/PageTransition";
+import AlienOverlay from "@/components/aliens/AlienOverlay";
 
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -35,6 +36,7 @@ const App = () => (
         <BootSequence />
         <QuantumCursor />
         <SiteNav />
+        <AlienOverlay />
         <main className="relative">
           <PageTransition>
             <Routes>
