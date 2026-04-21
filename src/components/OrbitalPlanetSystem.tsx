@@ -117,7 +117,7 @@ export default function OrbitalPlanetSystem() {
 
                     <button
                       onClick={() => setActive(i)}
-                      className="w-full text-left px-5 py-5 pr-28 transition-all"
+                      className="w-full text-left px-5 py-5 pr-12 transition-all group"
                       aria-current={isActive}
                     >
                       <div className="flex items-center gap-3">
@@ -134,20 +134,17 @@ export default function OrbitalPlanetSystem() {
                           <div className={`font-mono text-2xs tracking-mono uppercase ${isActive ? "text-accent" : "text-muted-foreground"}`}>
                             {p.code}
                           </div>
-                          <div className={`font-display text-base md:text-lg transition-colors underline underline-offset-4 ${isActive ? "text-foreground" : "text-foreground-dim group-hover:text-foreground"}`}>
+                          <div className={`font-display text-base md:text-lg transition-colors ${isActive ? "text-foreground" : "text-foreground-dim group-hover:text-foreground"}`}>
                             {p.name}
                           </div>
                         </div>
                       </div>
-                    </button>
-
-                    <button
-                      onClick={goNext}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center gap-2 rounded-sm border border-border bg-background/70 px-2.5 py-2 text-2xs font-mono uppercase tracking-mono text-muted-foreground transition-all hover:bg-surface-1 hover:text-foreground"
-                      aria-label={`Go to ${next.name}`}
-                    >
-                      <span className="underline underline-offset-4">Click here</span>
-                      <span className="grid h-6 w-6 place-items-center rounded-sm border border-border text-foreground">↗</span>
+                      <span
+                        className={`absolute right-4 top-1/2 -translate-y-1/2 grid h-7 w-7 place-items-center rounded-sm border transition-all ${isActive ? "border-foreground/40 text-foreground" : "border-border text-muted-foreground group-hover:text-foreground group-hover:border-foreground/40"}`}
+                        aria-hidden
+                      >
+                        →
+                      </span>
                     </button>
                   </div>
                 );
