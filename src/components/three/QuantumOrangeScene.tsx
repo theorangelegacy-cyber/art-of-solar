@@ -134,14 +134,14 @@ const orangeFragment = /* glsl */ `
 type ShieldRef = { value: number };
 
 function QuantumOrange({
-  scrollProgress, shieldRef, turretRefs, compact,
+  scrollProgress, shieldRef, turretRefs, compact, orangeRef,
 }: {
   scrollProgress: { current: number };
   shieldRef: ShieldRef;
   turretRefs: React.MutableRefObject<THREE.Group[]>;
   compact?: boolean;
+  orangeRef: React.MutableRefObject<THREE.Group | null>;
 }) {
-  const groupRef = useRef<THREE.Group>(null!);
   const matRef = useRef<THREE.ShaderMaterial>(null!);
 
   const uniforms = useMemo(() => ({
@@ -173,18 +173,18 @@ function QuantumOrange({
     uniforms.uTime.value += dt;
     shieldRef.value = Math.max(0, shieldRef.value - dt * 2.5);
     uniforms.uShield.value = shieldRef.value;
-    if (groupRef.current) {
-      groupRef.current.rotation.y += dt * 0.1;
+    if (orangeRef.current) {
+      orangeRef.current.rotation.y += dt * 0.1;
       const baseScale = compact ? 0.42 : 0.65;
       const s = baseScale + scrollProgress.current * 0.08;
-      groupRef.current.scale.setScalar(s);
-      groupRef.current.position.x = compact ? 0 : 1.4;
-      groupRef.current.position.y = compact ? 0.05 : 0;
+      orangeRef.current.scale.setScalar(s);
+      orangeRef.current.position.x = compact ? 0 : 1.4;
+      orangeRef.current.position.y = compact ? 0.05 : 0;
     }
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={orangeRef}>
       {/* Main orange — high poly sphere for smooth silhouette */}
       <mesh>
         <sphereGeometry args={[1, 256, 256]} />
@@ -309,29 +309,32 @@ interface Burst {
   ref: THREE.Group | null;
 }
 
-function spawnAttacker(id: number): Attacker {
+function spawnAttacker(id: number, center: THREE.Vector3, orangeRadius: number): Attacker {
   // True 360° spherical distribution (uniform on sphere)
   const u = Math.random();
   const v = Math.random();
   const theta = 2 * Math.PI * u;
   const phi = Math.acos(2 * v - 1);
-  const dist = 4.2 + Math.random() * 1.8;
-  const pos = new THREE.Vector3(
+  const dist = orangeRadius * (6.6 + Math.random() * 3.2);
+  const direction = new THREE.Vector3(
     Math.sin(phi) * Math.cos(theta),
     Math.cos(phi),
     Math.sin(phi) * Math.sin(theta),
-  ).multiplyScalar(dist);
-  const toCenter = pos.clone().negate().normalize();
-  const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.22);
-  const vel = toCenter.multiplyScalar(0.34 + Math.random() * 0.26).add(tangent);
+  );
+  const pos = direction.clone().multiplyScalar(dist).add(center);
+  const toCenter = center.clone().sub(pos).normalize();
+  const tangentSeed = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+  const tangent = new THREE.Vector3().crossVectors(toCenter, tangentSeed);
+  if (tangent.lengthSq() > 0) tangent.normalize().multiplyScalar((Math.random() - 0.5) * 0.1);
+  const vel = toCenter.multiplyScalar(0.28 + Math.random() * 0.12).add(tangent);
 
-  const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
+  const kinds: AttackerKind[] = ["asteroid", "asteroid", "asteroid", "asteroid", "ship", "shard", "drone"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
   const baseScale =
-    kind === "ship" ? 0.08 + Math.random() * 0.07 :
-    kind === "asteroid" ? 0.05 + Math.random() * 0.1 :
-    kind === "shard" ? 0.06 + Math.random() * 0.08 :
-    0.05 + Math.random() * 0.08;
+    kind === "ship" ? 0.15 + Math.random() * 0.09 :
+    kind === "asteroid" ? 0.16 + Math.random() * 0.2 :
+    kind === "shard" ? 0.14 + Math.random() * 0.08 :
+    0.12 + Math.random() * 0.08;
   return {
     id,
     kind,
@@ -388,28 +391,24 @@ function AttackerMesh({ kind }: { kind: AttackerKind }) {
   }
 
   if (kind === "asteroid") {
-    // Chunky rocky asteroid with molten cracks + dust halo
+    // Rocky asteroid silhouette — cratered, dusty, no neon glow
     return (
       <group>
-        {/* core rock */}
-        <mesh>
-          <icosahedronGeometry args={[0.22, 1]} />
-          <meshStandardMaterial color="#2e1b10" roughness={0.95} metalness={0.08} flatShading emissive="#ff3a00" emissiveIntensity={0.18} />
+        <mesh rotation={[0.4, 0.8, 0.2]} scale={[1, 0.9, 0.82]}>
+          <icosahedronGeometry args={[0.26, 1]} />
+          <meshStandardMaterial color="#4b4038" roughness={1} metalness={0.02} flatShading />
         </mesh>
-        {/* glowing fissure layer */}
-        <mesh scale={1.012}>
-          <icosahedronGeometry args={[0.22, 1]} />
-          <meshBasicMaterial color="#ff5a1f" wireframe transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <mesh position={[0.1, -0.03, 0.05]} scale={[0.45, 0.34, 0.4]} rotation={[0.2, 0.6, 1]}>
+          <icosahedronGeometry args={[0.22, 0]} />
+          <meshStandardMaterial color="#65554b" roughness={1} metalness={0.01} flatShading />
         </mesh>
-        {/* outer dust halo */}
-        <mesh scale={1.9}>
+        <mesh position={[-0.09, 0.05, -0.08]} scale={[0.24, 0.22, 0.22]}>
+          <sphereGeometry args={[0.22, 10, 10]} />
+          <meshStandardMaterial color="#3d332c" roughness={1} metalness={0} />
+        </mesh>
+        <mesh scale={1.12}>
           <sphereGeometry args={[0.18, 16, 16]} />
-          <meshBasicMaterial color="#ff8a4a" transparent opacity={0.10} blending={THREE.AdditiveBlending} depthWrite={false} />
-        </mesh>
-        {/* tight inner glow */}
-        <mesh scale={1.25}>
-          <sphereGeometry args={[0.18, 16, 16]} />
-          <meshBasicMaterial color="#ffb070" transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <meshBasicMaterial color="#8d7768" transparent opacity={0.08} depthWrite={false} />
         </mesh>
       </group>
     );
