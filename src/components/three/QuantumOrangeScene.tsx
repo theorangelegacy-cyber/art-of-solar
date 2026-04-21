@@ -145,11 +145,11 @@ function QuantumOrange({
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uDeep: { value: new THREE.Color("#c93600") },   // hyper-saturated deep
-    uMid:  { value: new THREE.Color("#ff8a14") },   // pure vibrant orange
-    uHi:   { value: new THREE.Color("#ffd86b") },   // sunlit highlight
-    uHotSpec: { value: new THREE.Color("#ffffff") },
-    uRim:  { value: new THREE.Color("#ffb347") },
+    uDeep: { value: new THREE.Color("#b22500") },   // deep orange-red
+    uMid:  { value: new THREE.Color("#ff6a0a") },   // true vivid orange (less yellow)
+    uHi:   { value: new THREE.Color("#ff9430") },   // warm orange highlight (not yellow)
+    uHotSpec: { value: new THREE.Color("#fff0d8") },
+    uRim:  { value: new THREE.Color("#ff7a1f") },
     uShield: { value: 0 },
   }), []);
 
@@ -227,12 +227,11 @@ function QuantumOrange({
         <meshStandardMaterial color="#4a2410" roughness={0.85} metalness={0} />
       </mesh>
 
-      {/* Leaf — flat teardrop shape from custom geometry, double-sided */}
-      <group position={[0.02, 1.05, 0]} rotation={[-0.25, 0.4, -0.55]}>
+      {/* Leaf — larger, more prominent teardrop, double-sided */}
+      <group position={[0.04, 1.04, 0]} rotation={[-0.32, 0.5, -0.6]} scale={1.7}>
         <mesh>
           <shapeGeometry args={[(() => {
             const s = new THREE.Shape();
-            // teardrop leaf outline
             s.moveTo(0, 0);
             s.bezierCurveTo(0.06, 0.04, 0.13, 0.18, 0.10, 0.30);
             s.bezierCurveTo(0.07, 0.36, 0.02, 0.38, 0, 0.40);
@@ -241,17 +240,16 @@ function QuantumOrange({
             return s;
           })()]} />
           <meshStandardMaterial
-            color="#2f8a3e"
-            roughness={0.55}
-            metalness={0.05}
+            color="#3aa84a"
+            roughness={0.5}
+            metalness={0.08}
             side={THREE.DoubleSide}
-            emissive="#0a3a18"
-            emissiveIntensity={0.15}
+            emissive="#0e4a20"
+            emissiveIntensity={0.28}
           />
         </mesh>
-        {/* central vein */}
         <mesh position={[0, 0.2, 0.001]}>
-          <boxGeometry args={[0.006, 0.36, 0.001]} />
+          <boxGeometry args={[0.008, 0.36, 0.001]} />
           <meshStandardMaterial color="#1a5a26" roughness={0.7} side={THREE.DoubleSide} />
         </mesh>
       </group>
@@ -281,8 +279,8 @@ function QuantumOrange({
           </mesh>
           {/* glowing emitter */}
           <mesh position={[0, 0.085, 0]}>
-            <sphereGeometry args={[0.01, 12, 12]} />
-            <meshBasicMaterial color="#5dffb0" />
+            <sphereGeometry args={[0.012, 12, 12]} />
+            <meshBasicMaterial color="#ffb060" />
           </mesh>
         </group>
       ))}
@@ -353,7 +351,7 @@ function spawnAttacker(id: number): Attacker {
     hp: kind === "ship" ? 2 : 1,
     ref: null,
     alive: true,
-    scale: 0.85 + Math.random() * 0.5,
+    scale: 0.42 + Math.random() * 0.22,
   };
 }
 
@@ -574,9 +572,9 @@ function DefenseSystem({
             position={mid}
             quaternion={quat}
           >
-            {/* HOT INNER CORE — razor thin */}
+            {/* HOT INNER CORE — pure white razor */}
             <mesh>
-              <cylinderGeometry args={[0.0025, 0.0025, len, 6, 1, true]} />
+              <cylinderGeometry args={[0.0015, 0.0015, len, 6, 1, true]} />
               <meshBasicMaterial
                 color="#ffffff"
                 transparent
@@ -587,42 +585,42 @@ function DefenseSystem({
                 userData={{ baseOpacity: 1 }}
               />
             </mesh>
-            {/* MID GLOW */}
+            {/* THIN ORANGE BEAM */}
             <mesh>
-              <cylinderGeometry args={[0.008, 0.008, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.004, 0.004, len, 8, 1, true]} />
               <meshBasicMaterial
-                color="#5dffb0"
+                color="#ff8a1f"
                 transparent
-                opacity={0.85}
+                opacity={0.95}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
                 side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.85 }}
+                userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
-            {/* OUTER AURA — wide soft */}
+            {/* SOFT OUTER GLOW — narrow */}
             <mesh>
-              <cylinderGeometry args={[0.022, 0.022, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.010, 0.010, len, 8, 1, true]} />
               <meshBasicMaterial
-                color="#3df3a0"
+                color="#ff5a0f"
                 transparent
-                opacity={0.25}
+                opacity={0.32}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
                 side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.25 }}
+                userData={{ baseOpacity: 0.32 }}
               />
             </mesh>
-            {/* MUZZLE FLASH at start */}
+            {/* MUZZLE FLASH */}
             <mesh position={[0, -len / 2, 0]}>
-              <sphereGeometry args={[0.05, 12, 12]} />
+              <sphereGeometry args={[0.035, 12, 12]} />
               <meshBasicMaterial
-                color="#ffffff"
+                color="#fff0c8"
                 transparent
-                opacity={0.9}
+                opacity={0.95}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
-                userData={{ baseOpacity: 0.9 }}
+                userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
           </group>
@@ -636,8 +634,8 @@ function DefenseSystem({
             <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 1 }} />
           </mesh>
           <mesh>
-            <sphereGeometry args={[0.28, 24, 24]} />
-            <meshBasicMaterial color="#5dffb0" transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.8 }} />
+            <sphereGeometry args={[0.22, 24, 24]} />
+            <meshBasicMaterial color="#ffb060" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.85 }} />
           </mesh>
           <mesh>
             <sphereGeometry args={[0.42, 24, 24]} />
