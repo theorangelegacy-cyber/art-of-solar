@@ -111,16 +111,16 @@ export default function Home() {
               <span className="h-px w-10 bg-accent/50" />
               <span>Quantum Legal Infrastructure</span>
             </div>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-tight text-foreground">
-              The firm,<br />
-              <span className="font-serif-italic text-foreground/95">re-rendered</span> <span className="text-gradient-orange">in real time.</span>
+            <h1 className="font-display md:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-tight text-foreground text-5xl">
+              The modern law firm,<br />
+              <span className="font-serif-italic text-foreground/95">re-rendered</span> <span className="text-gradient-orange text-4xl">in real time.</span>
             </h1>
             <p className="mt-6 max-w-xl text-foreground-dim text-base md:text-lg leading-relaxed">
               We collapse five disconnected systems — site, intake, automation, CRM, case OS — into one entangled substrate. Engineered for family-law firms operating beyond linear time.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Link to="/contact" className="group inline-flex items-center gap-3 rounded-sm bg-primary px-5 py-3 font-mono text-2xs tracking-mono uppercase text-primary-foreground hover:shadow-glow-orange transition-all">
+              <Link to="/contact" className="group inline-flex items-center gap-3 rounded-sm px-5 py-3 font-mono tracking-mono uppercase text-primary-foreground hover:shadow-glow-orange transition-all bg-accent text-2xl">
                 Initiate Contact
                 <span className="transition-transform group-hover:translate-x-0.5">→</span>
               </Link>
