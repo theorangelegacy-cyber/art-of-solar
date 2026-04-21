@@ -1,4 +1,4 @@
-import { useRef, useMemo, Suspense, useEffect } from "react";
+import { useRef, useMemo, Suspense, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette, SMAA } from "@react-three/postprocessing";
 import * as THREE from "three";
@@ -430,29 +430,25 @@ function DefenseSystem({
   const spawnTimer = useRef(0);
   const fireCooldowns = useRef<number[]>([0, 0, 0, 0, 0, 0]);
   const groupRef = useRef<THREE.Group>(null!);
+  const [, setRenderVersion] = useState(0);
 
   useEffect(() => {
-    // pre-populate so it's never empty on mount
-    for (let i = 0; i < 18; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    for (let i = 0; i < 20; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    setRenderVersion((v) => v + 1);
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
+    let didMutate = false;
 
-    // CONTINUOUS FLOW — steady single spawns at a regular cadence.
-    // Target population ~18 alive at all times. Never empty.
     spawnTimer.current -= dtClamped;
-    const aliveCount = attackers.current.filter(a => a.alive).length;
-    const target = 18;
+    const aliveCount = attackers.current.filter((a) => a.alive).length;
+    const target = 20;
     if (spawnTimer.current <= 0) {
-      // spawn 1 normally; spawn 2 if we're below target to refill smoothly
-      const toSpawn = aliveCount < target - 4 ? 2 : 1;
+      const toSpawn = aliveCount < target - 3 ? 2 : 1;
       for (let i = 0; i < toSpawn; i++) attackers.current.push(spawnAttacker(idCounter.current++));
-      // Cadence scales gently with population so flow stays even, not bursty
-      const base = 0.32;
-      const variance = 0.18;
-      const pressure = aliveCount > target ? 0.25 : 0; // slow down when above target
-      spawnTimer.current = base + pressure + Math.random() * variance;
+      spawnTimer.current = 0.24 + Math.random() * 0.12 + (aliveCount > target ? 0.15 : 0);
+      didMutate = true;
     }
 
     for (const a of attackers.current) {
@@ -470,9 +466,10 @@ function DefenseSystem({
         bursts.current.push({
           id: idCounter.current++,
           pos: a.pos.clone().normalize().multiplyScalar(1.05),
-          life: 0.55, maxLife: 0.55,
+          life: 0.6, maxLife: 0.6,
           ref: null,
         });
+        didMutate = true;
       }
     }
 
@@ -501,23 +498,24 @@ function DefenseSystem({
           turret.quaternion.copy(parentQuat.invert().multiply(targetQuat));
         }
 
-        fireCooldowns.current[t] = 0.22 + Math.random() * 0.18;
-        // emit laser from barrel tip in world space
+        fireCooldowns.current[t] = 0.16 + Math.random() * 0.08;
         const barrelTip = turretWorld.clone().add(dir.clone().multiplyScalar(0.09));
         lasers.current.push({
           id: idCounter.current++,
           from: barrelTip,
           to: closest.pos.clone(),
-          life: 0.18, maxLife: 0.18,
+          life: 0.24, maxLife: 0.24,
           ref: null,
         });
         closest.hp -= 1;
+        didMutate = true;
+
         if (closest.hp <= 0) {
           closest.alive = false;
           bursts.current.push({
             id: idCounter.current++,
             pos: closest.pos.clone(),
-            life: 0.5, maxLife: 0.5,
+            life: 0.52, maxLife: 0.52,
             ref: null,
           });
         }
@@ -547,9 +545,22 @@ function DefenseSystem({
       }
     }
 
-    attackers.current = attackers.current.filter(a => a.alive);
-    lasers.current = lasers.current.filter(l => l.life > 0);
-    bursts.current = bursts.current.filter(b => b.life > 0);
+    const prevAttackers = attackers.current.length;
+    const prevLasers = lasers.current.length;
+    const prevBursts = bursts.current.length;
+
+    attackers.current = attackers.current.filter((a) => a.alive);
+    lasers.current = lasers.current.filter((l) => l.life > 0);
+    bursts.current = bursts.current.filter((b) => b.life > 0);
+
+    if (
+      didMutate ||
+      prevAttackers !== attackers.current.length ||
+      prevLasers !== lasers.current.length ||
+      prevBursts !== bursts.current.length
+    ) {
+      setRenderVersion((v) => (v + 1) % 1000000);
+    }
   });
 
   return (
@@ -557,7 +568,6 @@ function DefenseSystem({
       {attackers.current.map((a) => (
         <group key={a.id} ref={(el) => { if (el) a.ref = el; }} position={a.pos} scale={a.scale}>
           <AttackerMesh kind={a.kind} />
-          {/* soft glow halo — color varies by kind */}
           <mesh scale={1.8}>
             <sphereGeometry args={[0.12, 16, 16]} />
             <meshBasicMaterial
@@ -581,7 +591,6 @@ function DefenseSystem({
             position={mid}
             quaternion={quat}
           >
-            {/* HOT INNER CORE — pure white razor */}
             <mesh>
               <cylinderGeometry args={[0.0015, 0.0015, len, 6, 1, true]} />
               <meshBasicMaterial
@@ -594,7 +603,6 @@ function DefenseSystem({
                 userData={{ baseOpacity: 1 }}
               />
             </mesh>
-            {/* THIN ORANGE BEAM */}
             <mesh>
               <cylinderGeometry args={[0.004, 0.004, len, 8, 1, true]} />
               <meshBasicMaterial
@@ -607,7 +615,6 @@ function DefenseSystem({
                 userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
-            {/* SOFT OUTER GLOW — narrow */}
             <mesh>
               <cylinderGeometry args={[0.010, 0.010, len, 8, 1, true]} />
               <meshBasicMaterial
@@ -620,7 +627,6 @@ function DefenseSystem({
                 userData={{ baseOpacity: 0.32 }}
               />
             </mesh>
-            {/* MUZZLE FLASH */}
             <mesh position={[0, -len / 2, 0]}>
               <sphereGeometry args={[0.035, 12, 12]} />
               <meshBasicMaterial
