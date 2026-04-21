@@ -1,51 +1,59 @@
 import { Link } from "react-router-dom";
+import { Readout } from "./HUD";
 
 export default function SiteFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="relative mt-24 border-t border-border/60">
-      <div className="container py-10">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="h-3 w-3 rounded-full bg-gradient-orange shadow-glow-orange" />
-              <span className="font-display tracking-[0.2em] text-sm">QUANTUM ORANGE</span>
-            </div>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Quantum-grade infrastructure for modern family law firms.
+    <footer className="relative mt-32 border-t border-border">
+      <div className="container py-12">
+        {/* top strip */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+          <div className="flex items-center gap-3">
+            <span className="relative inline-flex h-5 w-5">
+              <span className="absolute inset-0 rounded-full bg-gradient-orange shadow-glow-orange-soft" />
+              <span className="absolute -inset-1 rounded-full border border-accent/30 animate-spin-slow" style={{ borderStyle: "dashed" }} />
+            </span>
+            <span className="font-display text-sm">Quantum Orange Dynamics</span>
+            <span className="font-mono text-2xs tracking-mono uppercase text-muted-foreground">// QOD-IV · Build 4.0.7</span>
+          </div>
+          <div className="flex items-center gap-5">
+            <Readout k="Coherence" v="98.6%" status="active" />
+            <Readout k="Uplink" v="Stable" status="ok" />
+          </div>
+        </div>
+
+        <div className="grid gap-10 md:grid-cols-12 mt-10">
+          <div className="md:col-span-5">
+            <div className="font-mono text-2xs tracking-mono uppercase text-accent">Mission</div>
+            <p className="mt-3 text-foreground/90 max-w-md text-[15px] leading-relaxed">
+              We engineer single-system legal infrastructure for family-law firms operating at the limit of human throughput.
             </p>
           </div>
-          <div>
-            <div className="font-mono-tel text-[10px] tracking-[0.3em] text-accent mb-3">NAVIGATE</div>
+          <div className="md:col-span-3">
+            <div className="font-mono text-2xs tracking-mono uppercase text-accent mb-3">Map</div>
             <ul className="space-y-2 text-sm">
-              <li><Link className="hover:text-accent" to="/">Home</Link></li>
-              <li><Link className="hover:text-accent" to="/services">Services</Link></li>
-              <li><Link className="hover:text-accent" to="/about">About</Link></li>
-              <li><Link className="hover:text-accent" to="/contact">Contact</Link></li>
+              <li><Link className="text-foreground-dim hover:text-foreground" to="/">00 · Index</Link></li>
+              <li><Link className="text-foreground-dim hover:text-foreground" to="/services">01 · Capability</Link></li>
+              <li><Link className="text-foreground-dim hover:text-foreground" to="/about">02 · Doctrine</Link></li>
+              <li><Link className="text-foreground-dim hover:text-foreground" to="/contact">03 · Channel</Link></li>
             </ul>
           </div>
-          <div>
-            <div className="font-mono-tel text-[10px] tracking-[0.3em] text-accent mb-3">TELEMETRY</div>
-            <ul className="space-y-1 font-mono-tel text-[11px] text-muted-foreground">
-              <li>COORDS · 38.8951° N, 77.0364° W</li>
-              <li>UPLINK · STABLE</li>
-              <li>COHERENCE · 98.6%</li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-mono-tel text-[10px] tracking-[0.3em] text-accent mb-3">CONTACT</div>
-            <ul className="space-y-2 text-sm">
-              <li><a className="hover:text-accent" href="mailto:hello@quantumorange.dynamics">hello@quantumorange.dynamics</a></li>
-              <li><Link className="hover:text-accent" to="/contact">Open Channel ▸</Link></li>
+          <div className="md:col-span-4">
+            <div className="font-mono text-2xs tracking-mono uppercase text-accent mb-3">Telemetry</div>
+            <ul className="space-y-1 font-mono text-2xs tracking-mono-tight text-muted-foreground">
+              <li>COORD · 38.8951°N / 77.0364°W</li>
+              <li>SECTOR · LEGAL/FAMILY · TIER-1</li>
+              <li>RESPONSE WINDOW · ≤24H</li>
+              <li>CONTACT · hello@quantumorange.dynamics</li>
             </ul>
           </div>
         </div>
-        <div className="mt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-t border-border/40 pt-6">
-          <div className="font-mono-tel text-[10px] tracking-[0.3em] text-muted-foreground">
-            © {year} QUANTUM ORANGE DYNAMICS · ALL ENTANGLEMENTS RESERVED
-          </div>
-          <div className="font-mono-tel text-[10px] tracking-[0.3em] text-muted-foreground">
-            BUILT IN SUPERPOSITION
+
+        <div className="mt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-t border-border pt-6 font-mono text-2xs tracking-mono uppercase text-muted-foreground">
+          <div>© {year} Quantum Orange Dynamics · All entanglements reserved</div>
+          <div className="flex items-center gap-4">
+            <span>Built in superposition</span>
+            <span className="h-1 w-1 rounded-full bg-accent animate-ticker" />
           </div>
         </div>
       </div>

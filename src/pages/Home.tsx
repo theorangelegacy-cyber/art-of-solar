@@ -2,197 +2,270 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { lazy, Suspense, useRef } from "react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
+import { CornerFrame, Readout, SectionHead, Stat, TelemetryStrip, LabRow } from "@/components/HUD";
 
 const QuantumOrangeScene = lazy(() => import("@/components/three/QuantumOrangeScene"));
 
 const services = [
-  {
-    title: "Website Design",
-    code: "WD-01",
-    desc: "Conversion-engineered sites that look like the future arrived early.",
-    glyph: (
-      <svg viewBox="0 0 64 64" className="h-10 w-10"><rect x="6" y="10" width="52" height="40" rx="3" stroke="currentColor" fill="none" strokeWidth="1.5"/><line x1="6" y1="20" x2="58" y2="20" stroke="currentColor" strokeWidth="1.5"/><circle cx="11" cy="15" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/><circle cx="19" cy="15" r="1" fill="currentColor"/></svg>
-    ),
-  },
-  {
-    title: "Chatbots",
-    code: "CB-02",
-    desc: "AI agents that intake, qualify, and route 24/7. Trained on your firm.",
-    glyph: (
-      <svg viewBox="0 0 64 64" className="h-10 w-10"><path d="M10 20c0-4 3-8 8-8h28c5 0 8 4 8 8v16c0 4-3 8-8 8H30l-12 8v-8h-0c-5 0-8-4-8-8V20z" stroke="currentColor" fill="none" strokeWidth="1.5"/><circle cx="24" cy="28" r="2" fill="currentColor"/><circle cx="40" cy="28" r="2" fill="currentColor"/></svg>
-    ),
-  },
-  {
-    title: "Automation",
-    code: "AT-03",
-    desc: "Workflows that intake, draft, file, and follow up — without humans.",
-    glyph: (
-      <svg viewBox="0 0 64 64" className="h-10 w-10"><circle cx="14" cy="14" r="5" stroke="currentColor" fill="none" strokeWidth="1.5"/><circle cx="50" cy="14" r="5" stroke="currentColor" fill="none" strokeWidth="1.5"/><circle cx="32" cy="50" r="5" stroke="currentColor" fill="none" strokeWidth="1.5"/><line x1="14" y1="19" x2="32" y2="45" stroke="currentColor" strokeWidth="1.5"/><line x1="50" y1="19" x2="32" y2="45" stroke="currentColor" strokeWidth="1.5"/><line x1="19" y1="14" x2="45" y2="14" stroke="currentColor" strokeWidth="1.5"/></svg>
-    ),
-  },
-  {
-    title: "CRM Management",
-    code: "CR-04",
-    desc: "Pipelines tuned to family law: leads, consults, retainers, referrals.",
-    glyph: (
-      <svg viewBox="0 0 64 64" className="h-10 w-10"><rect x="8" y="14" width="20" height="36" rx="2" stroke="currentColor" fill="none" strokeWidth="1.5"/><rect x="32" y="14" width="20" height="22" rx="2" stroke="currentColor" fill="none" strokeWidth="1.5"/><line x1="12" y1="22" x2="24" y2="22" stroke="currentColor"/><line x1="12" y1="28" x2="24" y2="28" stroke="currentColor"/><line x1="36" y1="22" x2="48" y2="22" stroke="currentColor"/></svg>
-    ),
-  },
-  {
-    title: "Family Law Software",
-    code: "FL-05",
-    desc: "Purpose-built case, document, and client-portal stack for family law.",
-    glyph: (
-      <svg viewBox="0 0 64 64" className="h-10 w-10"><path d="M32 10l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1 4-8z" stroke="currentColor" fill="none" strokeWidth="1.5"/><line x1="14" y1="48" x2="50" y2="48" stroke="currentColor" strokeWidth="1.5"/><line x1="14" y1="54" x2="50" y2="54" stroke="currentColor" strokeWidth="1.5"/></svg>
-    ),
-  },
+  { code: "WD/01", title: "Site Architecture",     desc: "Conversion-engineered firm sites. Sub-second hero, schema-grade SEO, native mobile discipline.", spec: "≤ 0.8s LCP · 100 Lighthouse" },
+  { code: "CB/02", title: "Intake Agent",          desc: "On-brand AI agents that intake, qualify, and route 24/7. Trained on your firm's voice and disqualifiers.",   spec: "9.4× intake throughput" },
+  { code: "AT/03", title: "Workflow Substrate",    desc: "Event-driven automations that draft, file, follow up, and reconcile — without human cycles.",        spec: "≤ 3s end-to-end" },
+  { code: "CR/04", title: "CRM Topology",          desc: "Pipelines tuned to family-law lifecycles: lead → consult → retainer → referral, with full attribution.", spec: "+34% close rate" },
+  { code: "FL/05", title: "Family Law OS",         desc: "Matter, document, billing, and client-portal stack purpose-built for the discipline.",                spec: "Single source of truth" },
 ];
-
-function HudReadout({ label, value, delay = 0 }: { label: string; value: string; delay?: number }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: 0.6 }}
-      className="font-mono-tel text-[10px] tracking-[0.25em] text-accent/90"
-    >
-      <span className="text-muted-foreground">{label}</span>{" "}
-      <span className="text-glow-green">{value}</span>
-    </motion.div>
-  );
-}
 
 export default function Home() {
   const scrollProg = useScrollProgress();
-  const heroRef = useRef<HTMLDivElement>(null);
 
   return (
     <div>
-      {/* HERO */}
-      <section ref={heroRef} className="relative min-h-[100svh] overflow-hidden">
+      {/* ============================================================
+          HERO
+          ============================================================ */}
+      <section className="relative min-h-[100svh] overflow-hidden">
+        {/* 3D scene */}
         <div className="absolute inset-0">
-          <Suspense fallback={<div className="absolute inset-0 grid place-items-center text-accent font-mono-tel text-xs">CALIBRATING…</div>}>
+          <Suspense fallback={
+            <div className="absolute inset-0 grid place-items-center text-accent font-mono text-2xs tracking-mono uppercase">
+              <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-accent animate-ticker" />Calibrating field</span>
+            </div>
+          }>
             <QuantumOrangeScene scrollProgress={scrollProg} className="absolute inset-0" />
           </Suspense>
         </div>
 
         {/* grid floor */}
-        <div className="absolute inset-x-0 bottom-0 h-[40vh] grid-floor opacity-50 pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-[55vh] grid-floor opacity-40 pointer-events-none" />
 
-        {/* HUD overlays */}
-        <div className="absolute top-28 left-6 md:left-12 space-y-2 pointer-events-none">
-          <HudReadout label="COHERENCE" value="98.6%" delay={0.2}/>
-          <HudReadout label="ENTANGLED FIRMS" value="142" delay={0.4}/>
-          <HudReadout label="UPLINK" value="STABLE" delay={0.6}/>
-        </div>
-        <div className="absolute top-28 right-6 md:right-12 space-y-2 text-right pointer-events-none">
-          <HudReadout label="SECTOR" value="LEGAL/FAMILY" delay={0.3}/>
-          <HudReadout label="CHANNEL" value="OPEN" delay={0.5}/>
+        {/* ============== HUD CHROME LAYER (the nerd details) ============== */}
+        {/* Outer frame brackets */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Top-left bracket */}
+          <div className="absolute top-20 left-4 md:top-24 md:left-8">
+            <div className="h-3 w-3 border-l border-t border-border-bright/60" />
+            <div className="mt-2 font-mono text-2xs tracking-mono uppercase text-muted-foreground">QOD-IV ▸ HERO</div>
+          </div>
+          {/* Top-right bracket */}
+          <div className="absolute top-20 right-4 md:top-24 md:right-8 text-right">
+            <div className="h-3 w-3 border-r border-t border-border-bright/60 ml-auto" />
+            <div className="mt-2 font-mono text-2xs tracking-mono uppercase text-muted-foreground">FRAME 0001/∞</div>
+          </div>
+          {/* Bottom-left bracket */}
+          <div className="absolute bottom-6 left-4 md:left-8">
+            <div className="font-mono text-2xs tracking-mono-tight uppercase text-muted-foreground/70 mb-2">38.8951°N · 77.0364°W</div>
+            <div className="h-3 w-3 border-l border-b border-border-bright/60" />
+          </div>
+          {/* Bottom-right bracket */}
+          <div className="absolute bottom-6 right-4 md:right-8 text-right">
+            <div className="font-mono text-2xs tracking-mono-tight uppercase text-muted-foreground/70 mb-2">Σ · {new Date().toISOString().slice(0, 10)}</div>
+            <div className="h-3 w-3 border-r border-b border-border-bright/60 ml-auto" />
+          </div>
         </div>
 
-        <div className="container relative z-10 flex min-h-[100svh] flex-col justify-end pb-20 md:pb-28">
+        {/* Left HUD column */}
+        <div className="hidden lg:flex absolute top-32 left-8 z-10 flex-col gap-3 pointer-events-none">
+          <Readout k="COHERENCE"     v="98.6%"    status="active" />
+          <Readout k="ENTANGLED"     v="142 firms"   status="ok" />
+          <Readout k="LATENCY"       v="12 ms"      status="ok" />
+          <Readout k="THROUGHPUT"    v="9.4× baseline" status="ok" />
+        </div>
+
+        {/* Right HUD callouts pointing to the orange */}
+        <div className="hidden lg:block absolute top-1/2 right-8 z-10 -translate-y-1/2 pointer-events-none">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-start gap-3">
+              <div className="font-mono text-2xs tracking-mono uppercase text-right">
+                <div className="text-accent">α · CORE</div>
+                <div className="text-muted-foreground">orange substrate</div>
+              </div>
+              <svg width="44" height="14"><line x1="0" y1="7" x2="44" y2="7" stroke="hsl(var(--border-bright))" strokeWidth="1" strokeDasharray="2 2"/><circle cx="0" cy="7" r="1.5" fill="hsl(var(--accent))"/></svg>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="font-mono text-2xs tracking-mono uppercase text-right">
+                <div className="text-accent">β · ORBIT</div>
+                <div className="text-muted-foreground">capability rings</div>
+              </div>
+              <svg width="44" height="14"><line x1="0" y1="7" x2="44" y2="7" stroke="hsl(var(--border-bright))" strokeWidth="1" strokeDasharray="2 2"/><circle cx="0" cy="7" r="1.5" fill="hsl(var(--accent))"/></svg>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="font-mono text-2xs tracking-mono uppercase text-right">
+                <div className="text-accent">γ · FIELD</div>
+                <div className="text-muted-foreground">legal substrate</div>
+              </div>
+              <svg width="44" height="14"><line x1="0" y1="7" x2="44" y2="7" stroke="hsl(var(--border-bright))" strokeWidth="1" strokeDasharray="2 2"/><circle cx="0" cy="7" r="1.5" fill="hsl(var(--accent))"/></svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero content */}
+        <div className="container relative z-10 flex min-h-[100svh] flex-col justify-end pb-24 md:pb-28">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
-            className="max-w-3xl"
+            className="max-w-4xl"
           >
-            <div className="font-mono-tel text-[11px] tracking-[0.4em] text-accent mb-4">
-              ▸ QUANTUM LEGAL INFRASTRUCTURE
+            <div className="flex items-center gap-3 font-mono text-2xs tracking-mono uppercase text-accent mb-6">
+              <span className="text-muted-foreground">§ 00</span>
+              <span className="h-px w-10 bg-accent/50" />
+              <span>Quantum Legal Infrastructure</span>
             </div>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95] text-foreground">
-              Practice law at the<br />
-              <span className="text-gradient-aurora text-glow-orange">speed of light.</span>
+            <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-tight text-foreground">
+              The firm,<br />
+              <span className="font-serif-italic text-foreground/95">re-rendered</span> <span className="text-gradient-orange">in real time.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-base md:text-lg text-muted-foreground">
-              Websites, chatbots, automation, CRMs, and case software engineered as one entangled system — for family law firms that refuse to operate in linear time.
+            <p className="mt-6 max-w-xl text-foreground-dim text-base md:text-lg leading-relaxed">
+              We collapse five disconnected systems — site, intake, automation, CRM, case OS — into one entangled substrate. Engineered for family-law firms operating beyond linear time.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/contact"
-                className="group inline-flex items-center gap-3 rounded-md border border-primary bg-primary px-6 py-3 font-mono-tel text-xs uppercase tracking-[0.25em] text-primary-foreground hover:shadow-glow-orange transition-all"
-              >
-                ▸ Initiate Contact
-                <span className="transition-transform group-hover:translate-x-1">→</span>
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <Link to="/contact" className="group inline-flex items-center gap-3 rounded-sm bg-primary px-5 py-3 font-mono text-2xs tracking-mono uppercase text-primary-foreground hover:shadow-glow-orange transition-all">
+                Initiate Contact
+                <span className="transition-transform group-hover:translate-x-0.5">→</span>
               </Link>
-              <Link
-                to="/services"
-                className="inline-flex items-center gap-3 rounded-md border border-accent/50 bg-transparent px-6 py-3 font-mono-tel text-xs uppercase tracking-[0.25em] text-accent hover:bg-accent/10 hover:shadow-glow-green transition-all"
-              >
-                View Capabilities
+              <Link to="/services" className="inline-flex items-center gap-3 rounded-sm border border-border bg-transparent px-5 py-3 font-mono text-2xs tracking-mono uppercase text-foreground hover:border-accent hover:text-accent transition-all">
+                01 · Capability matrix
               </Link>
+            </div>
+
+            {/* mini telemetry strip */}
+            <div className="mt-10 pt-6 border-t border-border max-w-2xl">
+              <TelemetryStrip items={[
+                { k: "Build", v: "QOD-IV" },
+                { k: "Channel", v: "Open" },
+                { k: "Tier", v: "Family · I" },
+                { k: "Window", v: "≤ 24h" },
+              ]} />
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* CAPABILITIES */}
-      <section className="relative py-24 md:py-32">
+      {/* ============================================================
+          CAPABILITY MATRIX
+          ============================================================ */}
+      <section className="relative py-28 md:py-36 border-t border-border">
         <div className="container">
-          <div className="mb-12 max-w-2xl">
-            <div className="font-mono-tel text-[10px] tracking-[0.4em] text-accent mb-3">▸ CAPABILITIES · 4D STACK</div>
-            <h2 className="font-display text-3xl md:text-5xl">Five disciplines, one orbital system.</h2>
-            <p className="mt-4 text-muted-foreground">Each capability is a layer in the same field. Everything talks to everything.</p>
+          <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
+            <SectionHead
+              index="01"
+              kicker="Capability Matrix"
+              title={<>Five disciplines.<br /><span className="font-serif-italic text-foreground-dim">One unified field.</span></>}
+              desc="Every layer is a complete system on its own — and exponentially more powerful inside the entangled stack."
+            />
+            <Link to="/services" className="font-mono text-2xs tracking-mono uppercase text-accent hover:text-foreground underline-trace">
+              Open full matrix →
+            </Link>
           </div>
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+
+          <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3 border border-border">
             {services.map((s, i) => (
-              <CapabilityCard key={s.code} {...s} index={i} />
+              <motion.div
+                key={s.code}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: (i % 3) * 0.06 }}
+                className="group relative bg-background hover:bg-surface-1 transition-colors p-7 md:p-8 min-h-[240px]"
+              >
+                {/* corner ticks */}
+                <span className="absolute top-0 left-0 h-2 w-2 border-t border-l border-border-bright/40" />
+                <span className="absolute top-0 right-0 h-2 w-2 border-t border-r border-border-bright/40" />
+                <span className="absolute bottom-0 left-0 h-2 w-2 border-b border-l border-border-bright/40" />
+                <span className="absolute bottom-0 right-0 h-2 w-2 border-b border-r border-border-bright/40" />
+
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-2xs tracking-mono uppercase text-accent">{s.code}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent/60 group-hover:bg-accent group-hover:animate-ticker" />
+                </div>
+                <h3 className="font-display text-xl md:text-2xl mt-6 text-foreground">{s.title}</h3>
+                <p className="mt-2 text-sm text-foreground-dim leading-relaxed">{s.desc}</p>
+                <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+                  <span className="font-mono text-2xs tracking-mono uppercase text-muted-foreground">{s.spec}</span>
+                  <Link to="/services" className="font-mono text-2xs tracking-mono uppercase text-accent group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1">
+                    Layer →
+                  </Link>
+                </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
 
-      {/* QUANTUM STACK */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
-        <div className="container">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="font-mono-tel text-[10px] tracking-[0.4em] text-accent mb-3">▸ THE QUANTUM STACK</div>
-              <h2 className="font-display text-3xl md:text-5xl mb-6">
-                Five layers.<br/>
-                <span className="text-gradient-orange">One unified field.</span>
-              </h2>
-              <p className="text-muted-foreground mb-8 max-w-lg">
-                Most firms wire 7 disconnected tools. We collapse them into one entangled stack — every layer informed by every other in real time.
-              </p>
-              <ul className="space-y-3">
-                {["Website ↔ CRM in superposition", "Chatbot intake updates pipeline instantly", "Automation runs without observer", "Case data echoes across every layer", "Clients see one coherent firm"].map((t) => (
-                  <li key={t} className="flex items-start gap-3 text-sm">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-accent shadow-glow-green shrink-0" />
-                    <span>{t}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="relative h-[480px]">
-              <OrbitalStack />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PROOF */}
-      <section className="relative py-20 border-y border-border/60 overflow-hidden">
-        <div className="container">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-            {[
-              { v: "142", l: "ENTANGLED FIRMS" },
-              { v: "9.4×", l: "INTAKE THROUGHPUT" },
-              { v: "<3s", l: "RESPONSE LATENCY" },
-              { v: "98.6%", l: "SYSTEM COHERENCE" },
-            ].map((s) => (
-              <div key={s.l} className="text-center">
-                <div className="font-display text-3xl md:text-5xl text-gradient-aurora">{s.v}</div>
-                <div className="font-mono-tel text-[10px] tracking-[0.3em] text-muted-foreground mt-2">{s.l}</div>
+            {/* Trailing tile to fill grid */}
+            <div className="bg-background p-7 md:p-8 min-h-[240px] flex flex-col justify-between">
+              <div className="font-mono text-2xs tracking-mono uppercase text-muted-foreground">XX/06 · ROADMAP</div>
+              <div>
+                <div className="font-display text-xl text-foreground">Custom layer</div>
+                <p className="mt-2 text-sm text-foreground-dim">Need a discipline that isn't here? We build it inside the same entangled field.</p>
+                <Link to="/contact" className="mt-4 inline-block font-mono text-2xs tracking-mono uppercase text-accent">Request →</Link>
               </div>
-            ))}
+            </div>
           </div>
-          <div className="relative overflow-hidden">
-            <div className="marquee flex gap-12 whitespace-nowrap font-mono-tel text-[11px] tracking-[0.35em] text-muted-foreground/70">
+        </div>
+      </section>
+
+      {/* ============================================================
+          DOCTRINE / WHY ONE SYSTEM
+          ============================================================ */}
+      <section className="relative py-28 md:py-36 overflow-hidden">
+        <div className="container">
+          <div className="grid lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-5 lg:sticky lg:top-28">
+              <SectionHead
+                index="02"
+                kicker="Doctrine"
+                title={<>Most firms wire seven tools.<br /><span className="font-serif-italic text-foreground-dim">We collapse them into one.</span></>}
+                desc="The friction in your firm isn't talent — it's the seams between systems. We remove the seams."
+              />
+              <Link to="/about" className="mt-8 inline-flex items-center gap-2 font-mono text-2xs tracking-mono uppercase text-accent underline-trace">
+                Read the doctrine →
+              </Link>
+            </div>
+
+            <div className="lg:col-span-7">
+              <div>
+                <LabRow n="P/01" title="Entanglement"
+                  body="Every layer informs every other in real time. A new lead in the chatbot updates the CRM, fires the intake automation, and reflects on the dashboard before the page reloads." />
+                <LabRow n="P/02" title="Coherence"
+                  body="One source of truth across web, intake, case, billing, and reporting. No reconciliation work. No version drift. No 'which spreadsheet is right?'" />
+                <LabRow n="P/03" title="Velocity"
+                  body="Sub-3-second response on every workflow. Every touchpoint optimized for speed-to-action — because in family law, momentum is mercy." />
+                <LabRow n="P/04" title="Discipline"
+                  body="Bold visuals serve clarity. Nothing in our work is decoration. Every pixel earns its position." />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          PROOF / TELEMETRY
+          ============================================================ */}
+      <section className="relative py-24 md:py-28 border-y border-border bg-surface-1/30">
+        <div className="container">
+          <div className="flex items-center justify-between mb-10">
+            <div className="font-mono text-2xs tracking-mono uppercase text-accent flex items-center gap-3">
+              <span className="text-muted-foreground">§ 03</span>
+              <span className="h-px w-8 bg-accent/50" />
+              <span>Field Telemetry · Live</span>
+            </div>
+            <div className="hidden md:flex items-center gap-2 font-mono text-2xs tracking-mono uppercase text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-ticker" />
+              Sampled across 142 entangled firms
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+            <Stat value="142"   label="Entangled firms"    sub="Tier-1 family practice" />
+            <Stat value="9.4×"  label="Intake throughput"  sub="vs. baseline stack" />
+            <Stat value="< 3s"  label="Response latency"   sub="Median, end-to-end" />
+            <Stat value="98.6%" label="System coherence"   sub="30-day rolling avg" />
+          </div>
+
+          <div className="mt-12 overflow-hidden border-t border-border pt-6">
+            <div className="marquee flex gap-12 whitespace-nowrap font-mono text-2xs tracking-mono uppercase text-muted-foreground/70">
               {Array(2).fill(0).flatMap((_, k) =>
-                ["FAMILY LAW · ATL", "DIVORCE GROUP · MIA", "CUSTODY PARTNERS · NYC", "MEDIATION CO · SEA", "PRENUP STUDIO · LAX", "FAMILY ADVOCATES · DC", "JUSTICE LAB · CHI"].map((t, i) => (
-                  <span key={`${k}-${i}`} className="flex items-center gap-12">
-                    <span>◇ {t}</span>
+                ["Family Law ATL", "Divorce Group MIA", "Custody Partners NYC", "Mediation Co SEA", "Prenup Studio LAX", "Family Advocates DC", "Justice Lab CHI", "Resolution House BOS", "Hearth & Court PHX"].map((t, i) => (
+                  <span key={`${k}-${i}`} className="inline-flex items-center gap-12">
+                    <span><span className="text-accent mr-2">◇</span>{t}</span>
                   </span>
                 ))
               )}
@@ -201,110 +274,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ============================================================
+          CTA
+          ============================================================ */}
       <section className="relative py-28 md:py-36">
         <div className="container">
-          <div className="holo-panel relative overflow-hidden rounded-2xl p-10 md:p-16 text-center scanlines noise">
-            <div className="absolute inset-0 bg-gradient-aurora pointer-events-none" />
-            <div className="relative">
-              <div className="font-mono-tel text-[10px] tracking-[0.4em] text-accent mb-4">▸ READY TO ENTANGLE</div>
-              <h2 className="font-display text-3xl md:text-6xl">
-                Stop running a firm.<br/>
-                <span className="text-gradient-orange">Start running a system.</span>
-              </h2>
-              <p className="mt-6 max-w-xl mx-auto text-muted-foreground">
-                One conversation. We map your firm in 30 minutes and show you exactly what your future stack looks like.
-              </p>
-              <Link
-                to="/contact"
-                className="mt-8 inline-flex items-center gap-3 rounded-md border border-primary bg-primary px-7 py-4 font-mono-tel text-xs uppercase tracking-[0.3em] text-primary-foreground hover:shadow-glow-orange transition-all"
-              >
-                ▸ Initiate Contact
-              </Link>
+          <CornerFrame size={20} thickness={1}>
+            <div className="relative overflow-hidden p-10 md:p-20 text-center bg-surface-1/40">
+              <div className="absolute inset-0 bg-grid-fine opacity-40 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-aurora pointer-events-none" />
+              <div className="relative">
+                <div className="font-mono text-2xs tracking-mono uppercase text-accent mb-5">§ 04 · Open Channel</div>
+                <h2 className="font-display text-4xl md:text-6xl tracking-tight">
+                  Stop running a firm.<br />
+                  <span className="font-serif-italic text-foreground-dim">Start running a system.</span>
+                </h2>
+                <p className="mt-5 max-w-xl mx-auto text-foreground-dim">
+                  30 minutes. We map your firm and show you exactly what the entangled version looks like.
+                </p>
+                <Link to="/contact" className="mt-10 inline-flex items-center gap-3 rounded-sm bg-primary px-6 py-3.5 font-mono text-2xs tracking-mono uppercase text-primary-foreground hover:shadow-glow-orange transition-all">
+                  Initiate Contact →
+                </Link>
+              </div>
             </div>
-          </div>
+          </CornerFrame>
         </div>
       </section>
-    </div>
-  );
-}
-
-function CapabilityCard({
-  title, code, desc, glyph, index,
-}: { title: string; code: string; desc: string; glyph: JSX.Element; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const onMove = (e: React.MouseEvent) => {
-    const el = ref.current; if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(0)`;
-    const glow = el.querySelector<HTMLDivElement>("[data-glow]");
-    if (glow) {
-      glow.style.background = `radial-gradient(400px circle at ${e.clientX - r.left}px ${e.clientY - r.top}px, hsl(22 100% 55% / 0.18), transparent 60%)`;
-    }
-  };
-  const onLeave = () => {
-    const el = ref.current; if (!el) return;
-    el.style.transform = "perspective(900px) rotateY(0) rotateX(0)";
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.07 }}
-    >
-      <div
-        ref={ref}
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-        className="holo-panel relative h-full rounded-xl p-6 transition-transform duration-300 will-change-transform overflow-hidden group"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        <div data-glow className="pointer-events-none absolute inset-0" />
-        <div className="relative flex items-start justify-between">
-          <div className="text-primary-glow">{glyph}</div>
-          <span className="font-mono-tel text-[10px] tracking-[0.3em] text-accent/80">{code}</span>
-        </div>
-        <h3 className="relative mt-6 font-display text-xl">{title}</h3>
-        <p className="relative mt-2 text-sm text-muted-foreground">{desc}</p>
-        <div className="relative mt-6 h-[1px] w-full bg-gradient-to-r from-primary/40 via-accent/40 to-transparent" />
-        <Link to="/services" className="relative mt-4 inline-flex font-mono-tel text-[10px] tracking-[0.3em] text-accent hover:text-accent-glow">
-          EXPLORE LAYER →
-        </Link>
-      </div>
-    </motion.div>
-  );
-}
-
-function OrbitalStack() {
-  const layers = ["WEBSITE", "CHATBOT", "AUTOMATION", "CRM", "CASE OS"];
-  return (
-    <div className="absolute inset-0 grid place-items-center">
-      <div className="relative h-full w-full max-w-[480px] aspect-square">
-        {/* core */}
-        <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 h-24 w-24 rounded-full bg-gradient-orange shadow-glow-orange animate-pulse-glow" />
-        {layers.map((l, i) => {
-          const size = 40 + (i + 1) * 16;
-          const dur = 18 + i * 6;
-          return (
-            <div
-              key={l}
-              className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/25"
-              style={{ width: `${size}%`, height: `${size}%`, animation: `spin-slow ${dur}s linear infinite${i % 2 ? " reverse" : ""}` }}
-            >
-              <span
-                className="absolute font-mono-tel text-[10px] tracking-[0.3em] text-accent/90 -translate-x-1/2"
-                style={{ top: "-10px", left: "50%" }}
-              >
-                ◇ {l}
-              </span>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }

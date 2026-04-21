@@ -96,9 +96,9 @@ function QuantumOrange({ scrollProgress }: { scrollProgress: { current: number }
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uColorCore: { value: new THREE.Color("#c64a0a") },
-    uColorBright: { value: new THREE.Color("#ffb347") },
-    uRim: { value: new THREE.Color("#39ff9c") },
+    uColorCore: { value: new THREE.Color("#a83806") },
+    uColorBright: { value: new THREE.Color("#ff8a3c") },
+    uRim: { value: new THREE.Color("#3df3a0") },
   }), []);
 
   useFrame((state, dt) => {
@@ -270,14 +270,14 @@ export default function QuantumOrangeScene({
 
         {enablePostprocessing && !reduced && !compact && (
           <EffectComposer>
-            <Bloom intensity={1.1} luminanceThreshold={0.2} luminanceSmoothing={0.6} mipmapBlur />
+            <Bloom intensity={0.85} luminanceThreshold={0.35} luminanceSmoothing={0.7} mipmapBlur />
             <ChromaticAberration
-              offset={[0.0008, 0.0012] as any}
+              offset={[0.0004, 0.0006] as any}
               radialModulation={false}
               modulationOffset={0}
               blendFunction={BlendFunction.NORMAL}
             />
-            <Vignette eskil={false} offset={0.2} darkness={0.85} />
+            <Vignette eskil={false} offset={0.25} darkness={0.9} />
           </EffectComposer>
         )}
       </Canvas>
