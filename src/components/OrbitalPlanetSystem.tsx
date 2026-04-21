@@ -125,8 +125,16 @@ export default function OrbitalPlanetSystem() {
             <PlanetStage planet={planet} reduced={reduced} indexKey={active} />
           </div>
 
-          {/* Selector strip — bottom */}
-          <div className="relative border-t border-border bg-background/60 backdrop-blur-sm">
+          {/* Selector strip — bottom — explicit "click to focus" affordance */}
+          <div className="relative border-t border-border bg-background/70 backdrop-blur-md">
+            <div className="px-4 py-2 border-b border-border/60 flex items-center justify-between">
+              <span className="font-mono text-2xs tracking-mono uppercase text-muted-foreground">
+                Select discipline ↓
+              </span>
+              <span className="font-mono text-2xs tracking-mono uppercase text-muted-foreground hidden md:inline">
+                ← → keyboard navigate
+              </span>
+            </div>
             <div className="flex overflow-x-auto">
               {PLANETS.map((p, i) => {
                 const isActive = i === active;
@@ -134,8 +142,8 @@ export default function OrbitalPlanetSystem() {
                   <button
                     key={p.code}
                     onClick={() => setActive(i)}
-                    className={`group relative flex-1 min-w-[140px] px-4 py-4 text-left transition-colors ${
-                      isActive ? "bg-surface-1/80" : "hover:bg-surface-1/40"
+                    className={`group relative flex-1 min-w-[160px] px-4 py-5 text-left transition-all ${
+                      isActive ? "bg-surface-1" : "hover:bg-surface-1/50"
                     } ${i > 0 ? "border-l border-border" : ""}`}
                     aria-current={isActive}
                   >
@@ -143,23 +151,25 @@ export default function OrbitalPlanetSystem() {
                     {isActive && (
                       <motion.span
                         layoutId="planetActiveBar"
-                        className="absolute top-0 left-0 right-0 h-px"
-                        style={{ background: `hsl(${p.hue} 80% 60%)` }}
+                        className="absolute top-0 left-0 right-0 h-0.5"
+                        style={{ background: `hsl(${p.hue} 80% 60%)`, boxShadow: `0 0 12px hsl(${p.hue} 80% 60% / 0.7)` }}
                       />
                     )}
                     <div className="flex items-center gap-3">
                       <span
-                        className="h-2 w-2 rounded-full transition-all"
+                        className="h-2.5 w-2.5 rounded-full transition-all flex-shrink-0"
                         style={{
                           background: `hsl(${p.hue} 80% 60%)`,
-                          boxShadow: isActive ? `0 0 12px hsl(${p.hue} 80% 60% / 0.8)` : "none",
+                          boxShadow: isActive
+                            ? `0 0 16px hsl(${p.hue} 80% 60% / 0.9), 0 0 4px hsl(${p.hue} 80% 60%)`
+                            : `0 0 4px hsl(${p.hue} 80% 60% / 0.4)`,
                         }}
                       />
                       <div className="min-w-0">
                         <div className={`font-mono text-2xs tracking-mono uppercase ${isActive ? "text-accent" : "text-muted-foreground"}`}>
                           {p.code}
                         </div>
-                        <div className={`font-display text-sm truncate ${isActive ? "text-foreground" : "text-foreground-dim"}`}>
+                        <div className={`font-display text-sm truncate transition-colors ${isActive ? "text-foreground" : "text-foreground-dim group-hover:text-foreground"}`}>
                           {p.name}
                         </div>
                       </div>
@@ -236,7 +246,7 @@ function PlanetStage({ planet, reduced, indexKey }: { planet: Planet; reduced: b
     return () => el.removeEventListener("pointermove", onMove);
   }, [reduced]);
 
-  const PLANET_SIZE = 220;
+  const PLANET_SIZE = 200;
 
   return (
     <div ref={stageRef} className="absolute inset-0 grid place-items-center [perspective:1600px]">
@@ -309,12 +319,12 @@ function BulletCards({
   // Fixed positions around planet — top-left, top-right, bottom-left, bottom-right
   // Use translate from the planet center
   const positions = useMemo(() => {
-    const r = planetSize * 0.95;
+    const r = planetSize;
     return [
-      { x: -r * 1.3, y: -r * 0.5, depth: -40 },   // top-left
-      { x:  r * 1.3, y: -r * 0.5, depth: -20 },   // top-right
-      { x: -r * 1.1, y:  r * 0.55, depth:  20 },  // bottom-left
-      { x:  r * 1.1, y:  r * 0.55, depth:  40 },  // bottom-right
+      { x: -r * 1.05, y: -r * 0.55, depth: -30 },  // top-left
+      { x:  r * 1.05, y: -r * 0.55, depth: -15 },  // top-right
+      { x: -r * 0.95, y:  r * 0.6,  depth:  15 },  // bottom-left
+      { x:  r * 0.95, y:  r * 0.6,  depth:  30 },  // bottom-right
     ];
   }, [planetSize]);
 
@@ -336,10 +346,10 @@ function BulletCards({
             }}
           >
             <div
-              className="relative -translate-x-1/2 -translate-y-1/2 px-3.5 py-2 rounded-sm bg-background/90 backdrop-blur-md border whitespace-nowrap"
+              className="relative -translate-x-1/2 -translate-y-1/2 px-4 py-2.5 rounded-sm bg-background/95 backdrop-blur-xl border whitespace-nowrap"
               style={{
-                borderColor: `hsl(${hue} 70% 55% / 0.45)`,
-                boxShadow: `0 0 20px hsl(${hue} 70% 50% / 0.25), inset 0 1px 0 hsl(0 0% 100% / 0.04)`,
+                borderColor: `hsl(${hue} 70% 55% / 0.55)`,
+                boxShadow: `0 0 24px hsl(${hue} 70% 50% / 0.35), 0 8px 32px hsl(230 40% 2% / 0.6), inset 0 1px 0 hsl(0 0% 100% / 0.06)`,
               }}
             >
               {/* connector line back to planet */}
@@ -347,15 +357,15 @@ function BulletCards({
                 aria-hidden
                 className="absolute top-1/2 h-px"
                 style={{
-                  background: `linear-gradient(90deg, transparent, hsl(${hue} 70% 55% / 0.5))`,
-                  width: Math.abs(pos.x) * 0.35,
+                  background: `linear-gradient(90deg, transparent, hsl(${hue} 70% 60% / 0.7))`,
+                  width: Math.abs(pos.x) * 0.3,
                   ...(pos.x < 0
                     ? { right: "100%", transform: "translateY(-50%)" }
                     : { left: "100%", transform: "translateY(-50%) scaleX(-1)" }),
                 }}
               />
-              <span className="font-mono text-[10px] tracking-mono uppercase text-foreground">
-                <span className="mr-2" style={{ color: `hsl(${hue} 80% 65%)` }}>◇</span>
+              <span className="font-mono text-[11px] tracking-mono uppercase text-foreground font-medium">
+                <span className="mr-2" style={{ color: `hsl(${hue} 80% 70%)` }}>◇</span>
                 {b}
               </span>
             </div>
