@@ -42,12 +42,12 @@ export default function Home() {
         {/* Outer frame brackets */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Top-left bracket */}
-          <div className="absolute top-20 left-4 md:top-24 md:left-8">
+          <div className="absolute top-20 left-4 md:top-24 md:left-8 hidden sm:block">
             <div className="h-3 w-3 border-l border-t border-border-bright/60" />
             <div className="mt-2 font-mono text-2xs tracking-mono uppercase text-muted-foreground">QOD-IV ▸ HERO</div>
           </div>
           {/* Top-right bracket */}
-          <div className="absolute top-20 right-4 md:top-24 md:right-8 text-right">
+          <div className="absolute top-20 right-4 md:top-24 md:right-8 text-right hidden sm:block">
             <div className="h-3 w-3 border-r border-t border-border-bright/60 ml-auto" />
             <div className="mt-2 font-mono text-2xs tracking-mono uppercase text-muted-foreground">FRAME 0001/∞</div>
           </div>
@@ -99,38 +99,38 @@ export default function Home() {
         </div>
 
         {/* Hero content */}
-        <div className="container relative z-10 flex min-h-[100svh] flex-col justify-end pb-24 md:pb-28">
+        <div className="container relative z-10 flex min-h-[100svh] flex-col justify-end pb-18 pt-24 md:pb-28 md:pt-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
             className="max-w-4xl"
           >
-            <div className="flex items-center gap-3 font-mono text-2xs tracking-mono uppercase text-accent mb-6">
+            <div className="mb-5 flex max-w-[18rem] items-center gap-2 font-mono text-[10px] tracking-[0.18em] uppercase text-accent sm:mb-6 sm:max-w-none sm:gap-3 sm:text-2xs sm:tracking-mono">
               <span className="text-muted-foreground">§ 00</span>
-              <span className="h-px w-10 bg-accent/50" />
-              <span>Quantum Legal Infrastructure</span>
+              <span className="h-px w-6 bg-accent/50 sm:w-10" />
+              <span className="leading-tight">Quantum Legal Infrastructure</span>
             </div>
-            <h1 className="font-display md:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-tight text-foreground text-6xl">
+            <h1 className="font-display text-[clamp(3.55rem,14vw,5rem)] md:text-7xl lg:text-[5.5rem] leading-[0.9] sm:leading-[0.94] tracking-tight text-foreground">
               The modern law firm,<br />
-              <span className="font-serif-italic text-foreground/95">re-rendered</span> <span className="text-gradient-orange text-4xl">in real time.</span>
+              <span className="font-serif-italic text-foreground/95">re-rendered</span>{" "}<span className="text-gradient-orange block text-[clamp(2.3rem,10vw,3.2rem)] leading-[0.96] sm:inline sm:text-4xl">in real time.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-foreground-dim text-base md:text-lg leading-relaxed">
+            <p className="mt-5 max-w-md text-foreground-dim text-[0.96rem] leading-relaxed md:mt-6 md:max-w-xl md:text-lg">
               We consolidate your disconnected systems — site, intake, automation, CRM, case OS — into one entangled substrate. Engineered for family-law firms operating beyond linear time.
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Link to="/contact" className="group inline-flex items-center gap-3 rounded-sm px-5 py-3 font-mono tracking-mono uppercase text-primary-foreground hover:shadow-glow-orange transition-all bg-accent text-2xl">
+            <div className="mt-8 flex flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
+              <Link to="/contact" className="group inline-flex min-h-16 items-center justify-center gap-3 rounded-sm px-5 py-4 font-mono text-sm tracking-[0.18em] uppercase text-primary-foreground transition-all hover:shadow-glow-orange bg-accent sm:min-h-0 sm:justify-start sm:py-3 sm:text-2xl sm:tracking-mono">
                 Initiate Contact
                 <span className="transition-transform group-hover:translate-x-0.5">→</span>
               </Link>
-              <Link to="/services" className="inline-flex items-center gap-3 rounded-sm border border-border bg-transparent px-5 py-3 font-mono text-2xs tracking-mono uppercase text-foreground hover:border-accent hover:text-accent transition-all">
+              <Link to="/services" className="inline-flex min-h-14 items-center justify-center gap-3 rounded-sm border border-border bg-transparent px-5 py-3 font-mono text-2xs tracking-mono uppercase text-foreground transition-all hover:border-accent hover:text-accent sm:min-h-0 sm:justify-start">
                 01 · Capability matrix
               </Link>
             </div>
 
             {/* mini telemetry strip */}
-            <div className="mt-10 pt-6 border-t border-border max-w-2xl">
+            <div className="mt-8 max-w-2xl border-t border-border pt-5 sm:mt-10 sm:pt-6">
               <TelemetryStrip items={[
                 { k: "Build", v: "QOD-IV" },
                 { k: "Channel", v: "Open" },
