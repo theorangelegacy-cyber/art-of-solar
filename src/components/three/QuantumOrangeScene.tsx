@@ -134,11 +134,12 @@ const orangeFragment = /* glsl */ `
 type ShieldRef = { value: number };
 
 function QuantumOrange({
-  scrollProgress, shieldRef, turretRefs,
+  scrollProgress, shieldRef, turretRefs, compact,
 }: {
   scrollProgress: { current: number };
   shieldRef: ShieldRef;
   turretRefs: React.MutableRefObject<THREE.Group[]>;
+  compact?: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null!);
   const matRef = useRef<THREE.ShaderMaterial>(null!);
@@ -174,9 +175,11 @@ function QuantumOrange({
     uniforms.uShield.value = shieldRef.value;
     if (groupRef.current) {
       groupRef.current.rotation.y += dt * 0.1;
-      const s = 0.65 + scrollProgress.current * 0.08;
+      const baseScale = compact ? 0.42 : 0.65;
+      const s = baseScale + scrollProgress.current * 0.08;
       groupRef.current.scale.setScalar(s);
-      groupRef.current.position.x = 1.4;
+      groupRef.current.position.x = compact ? 0 : 1.4;
+      groupRef.current.position.y = compact ? 0.05 : 0;
     }
   });
 
@@ -715,7 +718,7 @@ export default function QuantumOrangeScene({
     <div className={className}>
       <Canvas
         dpr={[1.25, compact ? 2 : 2.5]}
-        camera={{ position: [0, 0.15, 4.2], fov: 38 }}
+        camera={{ position: [0, 0.15, compact ? 5.2 : 4.2], fov: compact ? 42 : 38 }}
         gl={{
           antialias: true,
           alpha: true,
@@ -735,7 +738,7 @@ export default function QuantumOrangeScene({
         <pointLight position={[1.4, 0, 1.5]} intensity={0.6} color="#ffd86b" />
 
         <Suspense fallback={null}>
-          <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} />
+          <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} compact={compact} />
           {!reduced && <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} />}
           <StarField count={compact ? 600 : 1200} />
         </Suspense>
