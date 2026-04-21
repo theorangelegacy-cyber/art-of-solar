@@ -349,61 +349,97 @@ function spawnAttacker(id: number): Attacker {
 
 function AttackerMesh({ kind }: { kind: AttackerKind }) {
   if (kind === "ship") {
-    // Cinematic black alien ship — flat hull + dome + glowing underside
+    // Cinematic alien ship — sleek dark hull, glowing cyan core, wingtip lights, engine glow
     return (
       <group>
         {/* main hull — flattened ellipsoid */}
-        <mesh scale={[1, 0.32, 0.62]}>
-          <sphereGeometry args={[0.22, 32, 16]} />
-          <meshStandardMaterial color="#06070d" metalness={0.92} roughness={0.22} emissive="#1a0030" emissiveIntensity={0.25} />
+        <mesh scale={[1, 0.34, 0.7]}>
+          <sphereGeometry args={[0.26, 40, 20]} />
+          <meshStandardMaterial color="#080912" metalness={0.95} roughness={0.18} emissive="#1a0040" emissiveIntensity={0.35} />
         </mesh>
-        {/* dorsal ridge */}
-        <mesh position={[0, 0.04, 0]} scale={[0.5, 0.18, 0.3]}>
-          <sphereGeometry args={[0.22, 24, 12]} />
-          <meshStandardMaterial color="#0a0b14" metalness={0.95} roughness={0.18} />
+        {/* dorsal canopy — translucent dome */}
+        <mesh position={[0, 0.05, 0.02]} scale={[0.55, 0.22, 0.36]}>
+          <sphereGeometry args={[0.26, 28, 14]} />
+          <meshStandardMaterial color="#1d2540" metalness={0.6} roughness={0.05} emissive="#00d4ff" emissiveIntensity={0.6} transparent opacity={0.85} />
         </mesh>
-        {/* glowing underbelly emitter */}
-        <mesh position={[0, -0.04, 0]}>
-          <sphereGeometry args={[0.05, 16, 16]} />
+        {/* underbelly plasma core */}
+        <mesh position={[0, -0.05, 0]}>
+          <sphereGeometry args={[0.07, 20, 20]} />
           <meshBasicMaterial color="#ff2d7a" />
         </mesh>
+        <mesh position={[0, -0.05, 0]} scale={2.2}>
+          <sphereGeometry args={[0.07, 16, 16]} />
+          <meshBasicMaterial color="#ff5da0" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* engine exhaust */}
+        <mesh position={[0, 0, -0.18]} rotation={[Math.PI / 2, 0, 0]}>
+          <coneGeometry args={[0.05, 0.18, 12, 1, true]} />
+          <meshBasicMaterial color="#00f0ff" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+        </mesh>
         {/* wingtip lights */}
-        <mesh position={[0.2, 0, 0]}><sphereGeometry args={[0.012, 8, 8]} /><meshBasicMaterial color="#ff5da0" /></mesh>
-        <mesh position={[-0.2, 0, 0]}><sphereGeometry args={[0.012, 8, 8]} /><meshBasicMaterial color="#5dffb0" /></mesh>
+        <mesh position={[0.24, 0, 0]}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#ff5da0" /></mesh>
+        <mesh position={[-0.24, 0, 0]}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#5dffb0" /></mesh>
+        {/* wingtip halos */}
+        <mesh position={[0.24, 0, 0]} scale={3}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#ff5da0" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} /></mesh>
+        <mesh position={[-0.24, 0, 0]} scale={3}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#5dffb0" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} /></mesh>
       </group>
     );
   }
 
   if (kind === "asteroid") {
-    // Rocky irregular asteroid
+    // Chunky rocky asteroid with molten cracks + dust halo
     return (
       <group>
+        {/* core rock */}
         <mesh>
-          <icosahedronGeometry args={[0.16, 1]} />
-          <meshStandardMaterial color="#3a2418" roughness={0.95} metalness={0.05} flatShading />
+          <icosahedronGeometry args={[0.22, 1]} />
+          <meshStandardMaterial color="#2e1b10" roughness={0.95} metalness={0.08} flatShading emissive="#ff3a00" emissiveIntensity={0.18} />
         </mesh>
-        {/* dusty halo */}
-        <mesh scale={1.6}>
-          <sphereGeometry args={[0.12, 12, 12]} />
-          <meshBasicMaterial color="#8a5a3a" transparent opacity={0.06} blending={THREE.AdditiveBlending} depthWrite={false} />
+        {/* glowing fissure layer */}
+        <mesh scale={1.012}>
+          <icosahedronGeometry args={[0.22, 1]} />
+          <meshBasicMaterial color="#ff5a1f" wireframe transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* outer dust halo */}
+        <mesh scale={1.9}>
+          <sphereGeometry args={[0.18, 16, 16]} />
+          <meshBasicMaterial color="#ff8a4a" transparent opacity={0.10} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* tight inner glow */}
+        <mesh scale={1.25}>
+          <sphereGeometry args={[0.18, 16, 16]} />
+          <meshBasicMaterial color="#ffb070" transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
         </mesh>
       </group>
     );
   }
 
-  // shard / drone — sharp geometric with magenta glow
-  const geom = kind === "shard"
-    ? <octahedronGeometry args={[0.15]} />
-    : <tetrahedronGeometry args={[0.16]} />;
+  // shard / drone — sharp geometric with magenta/cyan glow + energy halo
+  const isShard = kind === "shard";
+  const accent = isShard ? "#ff2d7a" : "#00e5ff";
+  const accentSoft = isShard ? "#ff5da0" : "#5deaff";
+  const geom = isShard
+    ? <octahedronGeometry args={[0.22]} />
+    : <tetrahedronGeometry args={[0.24]} />;
   return (
     <>
       <mesh>
         {geom}
-        <meshStandardMaterial color="#0a0c18" emissive="#ff2d7a" emissiveIntensity={0.8} metalness={0.85} roughness={0.18} />
+        <meshStandardMaterial color="#0a0c18" emissive={accent} emissiveIntensity={1.0} metalness={0.9} roughness={0.15} />
       </mesh>
-      <mesh scale={1.005}>
+      <mesh scale={1.04}>
         {geom}
-        <meshBasicMaterial color="#ff5da0" wireframe transparent opacity={0.65} />
+        <meshBasicMaterial color={accentSoft} wireframe transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      {/* energy aura */}
+      <mesh scale={1.8}>
+        <sphereGeometry args={[0.18, 16, 16]} />
+        <meshBasicMaterial color={accent} transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      {/* tiny pulsing core */}
+      <mesh scale={0.35}>
+        <sphereGeometry args={[0.18, 12, 12]} />
+        <meshBasicMaterial color="#ffffff" />
       </mesh>
     </>
   );
