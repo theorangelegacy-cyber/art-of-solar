@@ -297,6 +297,7 @@ interface Laser {
   to: THREE.Vector3;
   life: number;
   maxLife: number;
+  phase: number;
   ref: THREE.Group | null;
 }
 
@@ -513,7 +514,7 @@ function DefenseSystem({
       for (const a of attackers.current) {
         if (!a.alive) continue;
         const d = turretWorld.distanceTo(a.pos);
-        if (d < closestDist && d < 6.5) { closestDist = d; closest = a; }
+        if (d < closestDist && d < 3.25) { closestDist = d; closest = a; }
       }
 
       if (closest && fireCooldowns.current[t] <= 0) {
@@ -532,7 +533,8 @@ function DefenseSystem({
           id: idCounter.current++,
           from: barrelTip,
           to: closest.pos.clone(),
-          life: 0.36, maxLife: 0.36,
+          life: 0.3, maxLife: 0.3,
+          phase: Math.random() * Math.PI * 2,
           ref: null,
         });
         closest.hp -= 1;
@@ -554,9 +556,20 @@ function DefenseSystem({
       l.life -= dtClamped;
       if (l.ref) {
         const t = Math.max(0, l.life / l.maxLife);
-        l.ref.children.forEach((child) => {
+        const lifeProgress = 1 - t;
+        const pulse = 0.7 + Math.sin(lifeProgress * Math.PI * 3 + l.phase) * 0.3;
+        const wave = Math.sin(lifeProgress * Math.PI * 2 + l.phase) * 0.016;
+        const waveTwist = Math.cos(lifeProgress * Math.PI * 2.5 + l.phase) * 0.01;
+        l.ref.position.x += wave;
+        l.ref.position.z += waveTwist;
+        l.ref.rotation.y = wave * 3.8;
+        l.ref.rotation.z = waveTwist * 6;
+        l.ref.children.forEach((child, index) => {
           const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
-          if (m && "opacity" in m) m.opacity = (m.userData?.baseOpacity ?? 1) * t;
+          if (m && "opacity" in m) {
+            const childPulse = index < 3 ? pulse : 0.9 + pulse * 0.1;
+            m.opacity = (m.userData?.baseOpacity ?? 1) * t * childPulse;
+          }
         });
       }
     }
@@ -651,6 +664,8 @@ function DefenseSystem({
         const dir = l.to.clone().sub(l.from);
         const len = dir.length();
         const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+        const pulseT = 1 - l.life / l.maxLife;
+        const radiusPulse = 1 + Math.sin(pulseT * Math.PI * 3 + l.phase) * 0.16;
 
         return (
           <group
@@ -661,7 +676,7 @@ function DefenseSystem({
           >
             {/* hot white core */}
             <mesh>
-              <cylinderGeometry args={[0.006, 0.006, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.0015 * radiusPulse, 0.0015 * radiusPulse, len, 8, 1, true]} />
               <meshBasicMaterial
                 color="#ffffff"
                 transparent
@@ -674,7 +689,7 @@ function DefenseSystem({
             </mesh>
             {/* inner orange plasma */}
             <mesh>
-              <cylinderGeometry args={[0.018, 0.018, len, 12, 1, true]} />
+              <cylinderGeometry args={[0.004 * radiusPulse, 0.004 * radiusPulse, len, 12, 1, true]} />
               <meshBasicMaterial
                 color="#ffb060"
                 transparent
@@ -685,30 +700,17 @@ function DefenseSystem({
                 userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
-            {/* mid orange glow */}
+            {/* soft breathing field */}
             <mesh>
-              <cylinderGeometry args={[0.038, 0.038, len, 12, 1, true]} />
+              <cylinderGeometry args={[0.01 * radiusPulse, 0.01 * radiusPulse, len, 12, 1, true]} />
               <meshBasicMaterial
                 color="#ff6a1f"
                 transparent
-                opacity={0.55}
+                opacity={0.42}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
                 side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.55 }}
-              />
-            </mesh>
-            {/* outer soft halo — water-like diffusion */}
-            <mesh>
-              <cylinderGeometry args={[0.075, 0.075, len, 12, 1, true]} />
-              <meshBasicMaterial
-                color="#ff3a00"
-                transparent
-                opacity={0.22}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-                side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.22 }}
+                userData={{ baseOpacity: 0.42 }}
               />
             </mesh>
             {/* impact flash at target end */}
