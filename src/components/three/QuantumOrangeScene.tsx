@@ -351,7 +351,7 @@ function spawnAttacker(id: number): Attacker {
     hp: kind === "ship" ? 2 : 1,
     ref: null,
     alive: true,
-    scale: 0.85 + Math.random() * 0.5,
+    scale: 0.42 + Math.random() * 0.22,
   };
 }
 
