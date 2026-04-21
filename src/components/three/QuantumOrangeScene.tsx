@@ -168,8 +168,9 @@ function QuantumOrange({
     uniforms.uShield.value = shieldRef.value;
     if (groupRef.current) {
       groupRef.current.rotation.y += dt * 0.1;
-      const s = 1 + scrollProgress.current * 0.12;
+      const s = 0.65 + scrollProgress.current * 0.08;
       groupRef.current.scale.setScalar(s);
+      groupRef.current.position.x = 1.4;
     }
   });
 
