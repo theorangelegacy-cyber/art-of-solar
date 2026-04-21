@@ -446,10 +446,11 @@ function AttackerMesh({ kind }: { kind: AttackerKind }) {
 }
 
 function DefenseSystem({
-  shieldRef, turretRefs,
+  shieldRef, turretRefs, orangeRef,
 }: {
   shieldRef: ShieldRef;
   turretRefs: React.MutableRefObject<THREE.Group[]>;
+  orangeRef: React.MutableRefObject<THREE.Group | null>;
 }) {
   const attackers = useRef<Attacker[]>([]);
   const lasers = useRef<Laser[]>([]);
@@ -460,21 +461,31 @@ function DefenseSystem({
   const groupRef = useRef<THREE.Group>(null!);
   const [, setRenderVersion] = useState(0);
 
+  const getOrangeState = () => {
+    const center = new THREE.Vector3();
+    const scale = new THREE.Vector3(1, 1, 1);
+    orangeRef.current?.getWorldPosition(center);
+    orangeRef.current?.getWorldScale(scale);
+    return { center, radius: scale.x || 1 };
+  };
+
   useEffect(() => {
-    for (let i = 0; i < 20; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    const { center, radius } = getOrangeState();
+    for (let i = 0; i < 20; i++) attackers.current.push(spawnAttacker(idCounter.current++, center, radius));
     setRenderVersion((v) => v + 1);
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
     let didMutate = false;
+    const { center: orangeCenter, radius: orangeRadius } = getOrangeState();
 
     spawnTimer.current -= dtClamped;
     const aliveCount = attackers.current.filter((a) => a.alive).length;
     const target = 20;
     if (spawnTimer.current <= 0) {
       const toSpawn = aliveCount < target - 3 ? 2 : 1;
-      for (let i = 0; i < toSpawn; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+      for (let i = 0; i < toSpawn; i++) attackers.current.push(spawnAttacker(idCounter.current++, orangeCenter, orangeRadius));
       spawnTimer.current = 0.24 + Math.random() * 0.12 + (aliveCount > target ? 0.15 : 0);
       didMutate = true;
     }
@@ -488,12 +499,12 @@ function DefenseSystem({
         a.ref.rotation.y += a.rotSpeed.y * dtClamped;
         a.ref.rotation.z += a.rotSpeed.z * dtClamped;
       }
-      if (a.pos.length() < 1.05) {
+      if (a.pos.distanceTo(orangeCenter) < orangeRadius * 1.05) {
         a.alive = false;
         shieldRef.value = 1;
         bursts.current.push({
           id: idCounter.current++,
-          pos: a.pos.clone().normalize().multiplyScalar(1.05),
+          pos: a.pos.clone().sub(orangeCenter).normalize().multiplyScalar(orangeRadius * 1.05).add(orangeCenter),
           life: 0.6, maxLife: 0.6,
           ref: null,
         });
@@ -510,10 +521,11 @@ function DefenseSystem({
 
       let closest: Attacker | null = null;
       let closestDist = Infinity;
+      const fireRange = orangeRadius * 4.8;
       for (const a of attackers.current) {
         if (!a.alive) continue;
         const d = turretWorld.distanceTo(a.pos);
-        if (d < closestDist && d < 3.25) { closestDist = d; closest = a; }
+        if (d < closestDist && d < fireRange) { closestDist = d; closest = a; }
       }
 
       if (closest && fireCooldowns.current[t] <= 0) {
