@@ -634,8 +634,8 @@ function DefenseSystem({
             <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 1 }} />
           </mesh>
           <mesh>
-            <sphereGeometry args={[0.28, 24, 24]} />
-            <meshBasicMaterial color="#5dffb0" transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.8 }} />
+            <sphereGeometry args={[0.22, 24, 24]} />
+            <meshBasicMaterial color="#ffb060" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.85 }} />
           </mesh>
           <mesh>
             <sphereGeometry args={[0.42, 24, 24]} />
