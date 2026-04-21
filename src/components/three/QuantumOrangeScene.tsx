@@ -90,31 +90,37 @@ const orangeFragment = /* glsl */ `
     peel = smoothstep(0.35, 0.78, peel) * 0.22;
 
     // Base color: deep -> mid -> hi gradient driven by light direction
-    vec3 base = mix(uDeep, uMid, ndl1 * 0.85 + 0.15);
-    base = mix(base, uHi, pow(ndl1, 3.0) * 0.85);
-    base += uHi * peel * 0.45;
+    vec3 base = mix(uDeep, uMid, ndl1 * 0.9 + 0.25);
+    base = mix(base, uHi, pow(ndl1, 2.4) * 1.0);
+    base += uHi * peel * 0.55;
 
     // Cool fill from opposite side adds dimensionality
-    base += vec3(0.08, 0.04, 0.02) * ndl2;
+    base += vec3(0.12, 0.06, 0.03) * ndl2;
+
+    // Always-on ambient brightness so it never looks dim/pale
+    base += uMid * 0.18;
 
     // Hot specular highlight (the Apple-glass key reflection)
     vec3 H1 = normalize(L1 + V);
     float spec = pow(max(dot(N, H1), 0.0), 96.0);
-    base += uHotSpec * spec * 0.95;
-    // soft secondary highlight
-    float spec2 = pow(max(dot(N, H1), 0.0), 24.0) * 0.18;
+    base += uHotSpec * spec * 1.1;
+    float spec2 = pow(max(dot(N, H1), 0.0), 24.0) * 0.22;
     base += uHotSpec * spec2;
 
-    // Bioluminescent green rim — restrained
-    base += uRim * fres * 0.45;
+    // Warm rim glow
+    base += uRim * fres * 0.55;
 
-    // Shield ripple on hit
+    // Shield ripple on hit — bright cyan-green flash
     float ripple = sin(length(vWorldPos.xy) * 24.0 - uTime * 9.0);
     ripple = smoothstep(0.4, 1.0, ripple) * uShield;
-    base += vec3(0.25, 0.95, 0.6) * ripple * 0.55;
+    base += vec3(0.3, 1.0, 0.7) * ripple * 0.7;
 
-    // very mild tone-mapping for crispness
-    base = base / (base + vec3(1.0));
+    // Saturation boost
+    float luma = dot(base, vec3(0.299, 0.587, 0.114));
+    base = mix(vec3(luma), base, 1.25);
+
+    // Gentle filmic — preserves vibrance better than Reinhard
+    base = base / (base + vec3(0.85));
     base = pow(base, vec3(1.0/2.2));
 
     gl_FragColor = vec4(base, 1.0);
@@ -139,11 +145,11 @@ function QuantumOrange({
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uDeep: { value: new THREE.Color("#a82a00") },   // saturated deep orange-red
-    uMid:  { value: new THREE.Color("#ff7a18") },   // vibrant orange
-    uHi:   { value: new THREE.Color("#ffc955") },   // bright sunlit highlight
+    uDeep: { value: new THREE.Color("#c93600") },   // hyper-saturated deep
+    uMid:  { value: new THREE.Color("#ff8a14") },   // pure vibrant orange
+    uHi:   { value: new THREE.Color("#ffd86b") },   // sunlit highlight
     uHotSpec: { value: new THREE.Color("#ffffff") },
-    uRim:  { value: new THREE.Color("#ffb347") },   // warm rim, no green
+    uRim:  { value: new THREE.Color("#ffb347") },
     uShield: { value: 0 },
   }), []);
 
@@ -334,7 +340,7 @@ function spawnAttacker(id: number): Attacker {
   // Cinematic approach: mostly toward orange, slight tangential drift
   const toCenter = pos.clone().negate().normalize();
   const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.18);
-  const vel = toCenter.multiplyScalar(0.35 + Math.random() * 0.35).add(tangent);
+  const vel = toCenter.multiplyScalar(0.65 + Math.random() * 0.55).add(tangent);
 
   const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
@@ -428,16 +434,18 @@ function DefenseSystem({
   const groupRef = useRef<THREE.Group>(null!);
 
   useEffect(() => {
-    for (let i = 0; i < 8; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    for (let i = 0; i < 14; i++) attackers.current.push(spawnAttacker(idCounter.current++));
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
 
     spawnTimer.current -= dtClamped;
-    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 12) {
-      attackers.current.push(spawnAttacker(idCounter.current++));
-      spawnTimer.current = 0.4 + Math.random() * 0.7;
+    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 22) {
+      // burst-spawn 1-2 at a time for relentless action
+      const burst = Math.random() < 0.4 ? 2 : 1;
+      for (let i = 0; i < burst; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+      spawnTimer.current = 0.15 + Math.random() * 0.35;
     }
 
     for (const a of attackers.current) {
@@ -486,7 +494,7 @@ function DefenseSystem({
           turret.quaternion.copy(parentQuat.invert().multiply(targetQuat));
         }
 
-        fireCooldowns.current[t] = 0.4 + Math.random() * 0.25;
+        fireCooldowns.current[t] = 0.18 + Math.random() * 0.18;
         // emit laser from barrel tip in world space
         const barrelTip = turretWorld.clone().add(dir.clone().multiplyScalar(0.09));
         lasers.current.push({
@@ -727,11 +735,12 @@ export default function QuantumOrangeScene({
         <color attach="background" args={["#05060f"]} />
 
         {/* Premium three-point lighting — Apple product photography */}
-        <ambientLight intensity={0.28} />
-        <directionalLight position={[4, 6, 4]} intensity={1.6} color="#fff5e6" />
-        <directionalLight position={[-4, -1, 2]} intensity={0.55} color="#7af0c0" />
-        <pointLight position={[0, 0, 3.5]} intensity={0.45} color="#ffb380" />
-        <pointLight position={[2, -3, -2]} intensity={0.3} color="#ff5a0f" />
+        <ambientLight intensity={0.55} />
+        <directionalLight position={[4, 6, 4]} intensity={2.4} color="#fff5e6" />
+        <directionalLight position={[-4, -1, 2]} intensity={0.8} color="#7af0c0" />
+        <pointLight position={[0, 0, 3.5]} intensity={0.7} color="#ffb380" />
+        <pointLight position={[2, -3, -2]} intensity={0.5} color="#ff6a1f" />
+        <pointLight position={[1.4, 0, 1.5]} intensity={0.6} color="#ffd86b" />
 
         <Suspense fallback={null}>
           <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} />
@@ -742,7 +751,7 @@ export default function QuantumOrangeScene({
         {enablePostprocessing && !reduced && (
           <EffectComposer multisampling={0}>
             <SMAA />
-            <Bloom intensity={0.85} luminanceThreshold={0.55} luminanceSmoothing={0.9} mipmapBlur radius={0.85} />
+            <Bloom intensity={1.15} luminanceThreshold={0.5} luminanceSmoothing={0.9} mipmapBlur radius={0.95} />
             <Vignette eskil={false} offset={0.32} darkness={0.85} />
           </EffectComposer>
         )}
