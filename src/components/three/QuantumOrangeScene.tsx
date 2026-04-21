@@ -494,7 +494,7 @@ function DefenseSystem({
           turret.quaternion.copy(parentQuat.invert().multiply(targetQuat));
         }
 
-        fireCooldowns.current[t] = 0.4 + Math.random() * 0.25;
+        fireCooldowns.current[t] = 0.18 + Math.random() * 0.18;
         // emit laser from barrel tip in world space
         const barrelTip = turretWorld.clone().add(dir.clone().multiplyScalar(0.09));
         lasers.current.push({
