@@ -139,11 +139,11 @@ function QuantumOrange({
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uDeep: { value: new THREE.Color("#5a1a02") },
-    uMid: { value: new THREE.Color("#ff7028") },
-    uHi: { value: new THREE.Color("#ffd9a8") },
-    uHotSpec: { value: new THREE.Color("#fff4e0") },
-    uRim: { value: new THREE.Color("#3df3a0") },
+    uDeep: { value: new THREE.Color("#a82a00") },   // saturated deep orange-red
+    uMid:  { value: new THREE.Color("#ff7a18") },   // vibrant orange
+    uHi:   { value: new THREE.Color("#ffc955") },   // bright sunlit highlight
+    uHotSpec: { value: new THREE.Color("#ffffff") },
+    uRim:  { value: new THREE.Color("#ffb347") },   // warm rim, no green
     uShield: { value: 0 },
   }), []);
 
@@ -215,17 +215,40 @@ function QuantumOrange({
         />
       </mesh>
 
-      {/* Stem — sleek, flush */}
+      {/* Stem — short woody nub */}
       <mesh position={[0, 1.005, 0]}>
-        <cylinderGeometry args={[0.035, 0.05, 0.06, 32]} />
-        <meshStandardMaterial color="#3a1a08" roughness={0.6} metalness={0.05} />
+        <cylinderGeometry args={[0.028, 0.045, 0.06, 24]} />
+        <meshStandardMaterial color="#4a2410" roughness={0.85} metalness={0} />
       </mesh>
 
-      {/* Leaf */}
-      <mesh position={[0.07, 1.06, 0]} rotation={[0, 0.3, -0.7]}>
-        <sphereGeometry args={[0.13, 32, 16]} />
-        <meshStandardMaterial color="#1f6b3a" roughness={0.45} metalness={0.1} />
-      </mesh>
+      {/* Leaf — flat teardrop shape from custom geometry, double-sided */}
+      <group position={[0.02, 1.05, 0]} rotation={[-0.25, 0.4, -0.55]}>
+        <mesh>
+          <shapeGeometry args={[(() => {
+            const s = new THREE.Shape();
+            // teardrop leaf outline
+            s.moveTo(0, 0);
+            s.bezierCurveTo(0.06, 0.04, 0.13, 0.18, 0.10, 0.30);
+            s.bezierCurveTo(0.07, 0.36, 0.02, 0.38, 0, 0.40);
+            s.bezierCurveTo(-0.02, 0.38, -0.07, 0.36, -0.10, 0.30);
+            s.bezierCurveTo(-0.13, 0.18, -0.06, 0.04, 0, 0);
+            return s;
+          })()]} />
+          <meshStandardMaterial
+            color="#2f8a3e"
+            roughness={0.55}
+            metalness={0.05}
+            side={THREE.DoubleSide}
+            emissive="#0a3a18"
+            emissiveIntensity={0.15}
+          />
+        </mesh>
+        {/* central vein */}
+        <mesh position={[0, 0.2, 0.001]}>
+          <boxGeometry args={[0.006, 0.36, 0.001]} />
+          <meshStandardMaterial color="#1a5a26" roughness={0.7} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
 
       {/* 6 turrets — sleeker, lower-profile, chrome */}
       {turretSlots.map((s, i) => (
@@ -265,7 +288,7 @@ function QuantumOrange({
    ATTACKERS — geometric shapes with edge glow
    ===================================================================== */
 
-type AttackerKind = "tetra" | "octa" | "cube" | "cone";
+type AttackerKind = "asteroid" | "ship" | "shard" | "drone";
 
 interface Attacker {
   id: number;
@@ -276,6 +299,7 @@ interface Attacker {
   hp: number;
   ref: THREE.Group | null;
   alive: boolean;
+  scale: number;
 }
 
 interface Laser {
@@ -296,51 +320,91 @@ interface Burst {
 }
 
 function spawnAttacker(id: number): Attacker {
-  const phi = Math.acos(2 * Math.random() - 1);
-  const theta = Math.random() * Math.PI * 2;
-  const dist = 4.5 + Math.random() * 1.5;
+  // True 360° spherical distribution (uniform on sphere)
+  const u = Math.random();
+  const v = Math.random();
+  const theta = 2 * Math.PI * u;
+  const phi = Math.acos(2 * v - 1);
+  const dist = 3.8 + Math.random() * 1.6;
   const pos = new THREE.Vector3(
     Math.sin(phi) * Math.cos(theta),
+    Math.cos(phi),                  // full -1..1 vertical coverage
     Math.sin(phi) * Math.sin(theta),
-    Math.cos(phi),
   ).multiplyScalar(dist);
-  const vel = pos.clone().negate().normalize().multiplyScalar(0.4 + Math.random() * 0.3);
-  const kinds: AttackerKind[] = ["tetra", "octa", "cube", "cone"];
+  // Cinematic approach: mostly toward orange, slight tangential drift
+  const toCenter = pos.clone().negate().normalize();
+  const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.18);
+  const vel = toCenter.multiplyScalar(0.35 + Math.random() * 0.35).add(tangent);
+
+  const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
+  const kind = kinds[Math.floor(Math.random() * kinds.length)];
   return {
     id,
-    kind: kinds[Math.floor(Math.random() * kinds.length)],
+    kind,
     pos,
     vel,
-    rotSpeed: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(2),
-    hp: 1,
+    rotSpeed: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(kind === "ship" ? 0.6 : 2.2),
+    hp: kind === "ship" ? 2 : 1,
     ref: null,
     alive: true,
+    scale: 0.85 + Math.random() * 0.5,
   };
 }
 
 function AttackerMesh({ kind }: { kind: AttackerKind }) {
-  const geom = (() => {
-    switch (kind) {
-      case "tetra": return <tetrahedronGeometry args={[0.15]} />;
-      case "octa":  return <octahedronGeometry args={[0.16]} />;
-      case "cube":  return <boxGeometry args={[0.18, 0.18, 0.18]} />;
-      case "cone":  return <coneGeometry args={[0.11, 0.26, 5]} />;
-    }
-  })();
+  if (kind === "ship") {
+    // Cinematic black alien ship — flat hull + dome + glowing underside
+    return (
+      <group>
+        {/* main hull — flattened ellipsoid */}
+        <mesh scale={[1, 0.32, 0.62]}>
+          <sphereGeometry args={[0.22, 32, 16]} />
+          <meshStandardMaterial color="#06070d" metalness={0.92} roughness={0.22} emissive="#1a0030" emissiveIntensity={0.25} />
+        </mesh>
+        {/* dorsal ridge */}
+        <mesh position={[0, 0.04, 0]} scale={[0.5, 0.18, 0.3]}>
+          <sphereGeometry args={[0.22, 24, 12]} />
+          <meshStandardMaterial color="#0a0b14" metalness={0.95} roughness={0.18} />
+        </mesh>
+        {/* glowing underbelly emitter */}
+        <mesh position={[0, -0.04, 0]}>
+          <sphereGeometry args={[0.05, 16, 16]} />
+          <meshBasicMaterial color="#ff2d7a" />
+        </mesh>
+        {/* wingtip lights */}
+        <mesh position={[0.2, 0, 0]}><sphereGeometry args={[0.012, 8, 8]} /><meshBasicMaterial color="#ff5da0" /></mesh>
+        <mesh position={[-0.2, 0, 0]}><sphereGeometry args={[0.012, 8, 8]} /><meshBasicMaterial color="#5dffb0" /></mesh>
+      </group>
+    );
+  }
+
+  if (kind === "asteroid") {
+    // Rocky irregular asteroid
+    return (
+      <group>
+        <mesh>
+          <icosahedronGeometry args={[0.16, 1]} />
+          <meshStandardMaterial color="#3a2418" roughness={0.95} metalness={0.05} flatShading />
+        </mesh>
+        {/* dusty halo */}
+        <mesh scale={1.6}>
+          <sphereGeometry args={[0.12, 12, 12]} />
+          <meshBasicMaterial color="#8a5a3a" transparent opacity={0.06} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+      </group>
+    );
+  }
+
+  // shard / drone — sharp geometric with magenta glow
+  const geom = kind === "shard"
+    ? <octahedronGeometry args={[0.15]} />
+    : <tetrahedronGeometry args={[0.16]} />;
   return (
     <>
-      {/* solid body — dark with magenta emissive */}
       <mesh>
         {geom}
-        <meshStandardMaterial
-          color="#0a0c18"
-          emissive="#ff2d7a"
-          emissiveIntensity={0.7}
-          metalness={0.85}
-          roughness={0.18}
-        />
+        <meshStandardMaterial color="#0a0c18" emissive="#ff2d7a" emissiveIntensity={0.8} metalness={0.85} roughness={0.18} />
       </mesh>
-      {/* wireframe overlay for "engineered shape" feel */}
       <mesh scale={1.005}>
         {geom}
         <meshBasicMaterial color="#ff5da0" wireframe transparent opacity={0.65} />
@@ -364,16 +428,16 @@ function DefenseSystem({
   const groupRef = useRef<THREE.Group>(null!);
 
   useEffect(() => {
-    for (let i = 0; i < 4; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    for (let i = 0; i < 8; i++) attackers.current.push(spawnAttacker(idCounter.current++));
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
 
     spawnTimer.current -= dtClamped;
-    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 7) {
+    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 12) {
       attackers.current.push(spawnAttacker(idCounter.current++));
-      spawnTimer.current = 0.9 + Math.random() * 1.2;
+      spawnTimer.current = 0.4 + Math.random() * 0.7;
     }
 
     for (const a of attackers.current) {
@@ -476,12 +540,15 @@ function DefenseSystem({
   return (
     <group ref={groupRef}>
       {attackers.current.map((a) => (
-        <group key={a.id} ref={(el) => { if (el) a.ref = el; }} position={a.pos}>
+        <group key={a.id} ref={(el) => { if (el) a.ref = el; }} position={a.pos} scale={a.scale}>
           <AttackerMesh kind={a.kind} />
-          {/* soft glow halo */}
+          {/* soft glow halo — color varies by kind */}
           <mesh scale={1.8}>
             <sphereGeometry args={[0.12, 16, 16]} />
-            <meshBasicMaterial color="#ff2d7a" transparent opacity={0.1} blending={THREE.AdditiveBlending} depthWrite={false} />
+            <meshBasicMaterial
+              color={a.kind === "asteroid" ? "#8a5a3a" : a.kind === "ship" ? "#9a30ff" : "#ff2d7a"}
+              transparent opacity={0.12} blending={THREE.AdditiveBlending} depthWrite={false}
+            />
           </mesh>
         </group>
       ))}
