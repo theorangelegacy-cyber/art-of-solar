@@ -284,8 +284,11 @@ interface Attacker {
   rotSpeed: THREE.Vector3;
   hp: number;
   ref: THREE.Group | null;
+  trailRef: THREE.Mesh | null;
+  trailPositions: THREE.Vector3[];
   alive: boolean;
   scale: number;
+  hue: number;
 }
 
 interface Laser {
