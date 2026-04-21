@@ -90,31 +90,37 @@ const orangeFragment = /* glsl */ `
     peel = smoothstep(0.35, 0.78, peel) * 0.22;
 
     // Base color: deep -> mid -> hi gradient driven by light direction
-    vec3 base = mix(uDeep, uMid, ndl1 * 0.85 + 0.15);
-    base = mix(base, uHi, pow(ndl1, 3.0) * 0.85);
-    base += uHi * peel * 0.45;
+    vec3 base = mix(uDeep, uMid, ndl1 * 0.9 + 0.25);
+    base = mix(base, uHi, pow(ndl1, 2.4) * 1.0);
+    base += uHi * peel * 0.55;
 
     // Cool fill from opposite side adds dimensionality
-    base += vec3(0.08, 0.04, 0.02) * ndl2;
+    base += vec3(0.12, 0.06, 0.03) * ndl2;
+
+    // Always-on ambient brightness so it never looks dim/pale
+    base += uMid * 0.18;
 
     // Hot specular highlight (the Apple-glass key reflection)
     vec3 H1 = normalize(L1 + V);
     float spec = pow(max(dot(N, H1), 0.0), 96.0);
-    base += uHotSpec * spec * 0.95;
-    // soft secondary highlight
-    float spec2 = pow(max(dot(N, H1), 0.0), 24.0) * 0.18;
+    base += uHotSpec * spec * 1.1;
+    float spec2 = pow(max(dot(N, H1), 0.0), 24.0) * 0.22;
     base += uHotSpec * spec2;
 
-    // Bioluminescent green rim — restrained
-    base += uRim * fres * 0.45;
+    // Warm rim glow
+    base += uRim * fres * 0.55;
 
-    // Shield ripple on hit
+    // Shield ripple on hit — bright cyan-green flash
     float ripple = sin(length(vWorldPos.xy) * 24.0 - uTime * 9.0);
     ripple = smoothstep(0.4, 1.0, ripple) * uShield;
-    base += vec3(0.25, 0.95, 0.6) * ripple * 0.55;
+    base += vec3(0.3, 1.0, 0.7) * ripple * 0.7;
 
-    // very mild tone-mapping for crispness
-    base = base / (base + vec3(1.0));
+    // Saturation boost
+    float luma = dot(base, vec3(0.299, 0.587, 0.114));
+    base = mix(vec3(luma), base, 1.25);
+
+    // Gentle filmic — preserves vibrance better than Reinhard
+    base = base / (base + vec3(0.85));
     base = pow(base, vec3(1.0/2.2));
 
     gl_FragColor = vec4(base, 1.0);
