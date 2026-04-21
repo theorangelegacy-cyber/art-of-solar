@@ -297,6 +297,7 @@ interface Laser {
   to: THREE.Vector3;
   life: number;
   maxLife: number;
+  phase: number;
   ref: THREE.Group | null;
 }
 
@@ -513,7 +514,7 @@ function DefenseSystem({
       for (const a of attackers.current) {
         if (!a.alive) continue;
         const d = turretWorld.distanceTo(a.pos);
-        if (d < closestDist && d < 6.5) { closestDist = d; closest = a; }
+        if (d < closestDist && d < 3.25) { closestDist = d; closest = a; }
       }
 
       if (closest && fireCooldowns.current[t] <= 0) {
@@ -532,7 +533,8 @@ function DefenseSystem({
           id: idCounter.current++,
           from: barrelTip,
           to: closest.pos.clone(),
-          life: 0.36, maxLife: 0.36,
+          life: 0.3, maxLife: 0.3,
+          phase: Math.random() * Math.PI * 2,
           ref: null,
         });
         closest.hp -= 1;
