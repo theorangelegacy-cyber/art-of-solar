@@ -172,32 +172,23 @@ export default function OrbitalPlanetSystem() {
 
                   <div className="mt-8 grid sm:grid-cols-2 gap-2">
                     {d.features.map((f, i) => (
-                      <button
+                      <motion.div
                         key={f}
-                        onClick={goNext}
-                        className="flex items-center justify-between gap-4 px-4 py-3 rounded-sm border bg-background/60 text-left transition-all hover:bg-surface-1"
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: 0.1 + i * 0.06 }}
+                        className="flex items-center gap-3 px-4 py-3 rounded-sm border bg-background/60"
                         style={{ borderColor: `hsl(${d.hue} 60% 45% / 0.35)` }}
                       >
-                        <motion.div
-                          initial={{ opacity: 0, x: -8 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: 0.1 + i * 0.06 }}
-                          className="flex items-center gap-3 min-w-0"
-                        >
-                          <span
-                            className="h-1.5 w-1.5 rounded-full flex-shrink-0"
-                            style={{
-                              background: `hsl(${d.hue} 80% 65%)`,
-                              boxShadow: `0 0 8px hsl(${d.hue} 80% 60% / 0.7)`,
-                            }}
-                          />
-                          <span className="text-sm text-foreground underline underline-offset-4">{f}</span>
-                        </motion.div>
-                        <span className="inline-flex items-center gap-2 flex-shrink-0 text-2xs font-mono uppercase tracking-mono text-muted-foreground">
-                          <span>Click here</span>
-                          <span className="grid h-6 w-6 place-items-center rounded-sm border border-border text-foreground">↗</span>
-                        </span>
-                      </button>
+                        <span
+                          className="h-1.5 w-1.5 rounded-full flex-shrink-0"
+                          style={{
+                            background: `hsl(${d.hue} 80% 65%)`,
+                            boxShadow: `0 0 8px hsl(${d.hue} 80% 60% / 0.7)`,
+                          }}
+                        />
+                        <span className="text-sm text-foreground">{f}</span>
+                      </motion.div>
                     ))}
                   </div>
 
