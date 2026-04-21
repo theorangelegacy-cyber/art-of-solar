@@ -340,7 +340,7 @@ function spawnAttacker(id: number): Attacker {
   // Cinematic approach: mostly toward orange, slight tangential drift
   const toCenter = pos.clone().negate().normalize();
   const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.18);
-  const vel = toCenter.multiplyScalar(0.35 + Math.random() * 0.35).add(tangent);
+  const vel = toCenter.multiplyScalar(0.65 + Math.random() * 0.55).add(tangent);
 
   const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
