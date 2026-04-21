@@ -659,8 +659,9 @@ function DefenseSystem({
             position={mid}
             quaternion={quat}
           >
+            {/* hot white core */}
             <mesh>
-              <cylinderGeometry args={[0.0015, 0.0015, len, 6, 1, true]} />
+              <cylinderGeometry args={[0.006, 0.006, len, 8, 1, true]} />
               <meshBasicMaterial
                 color="#ffffff"
                 transparent
@@ -671,10 +672,11 @@ function DefenseSystem({
                 userData={{ baseOpacity: 1 }}
               />
             </mesh>
+            {/* inner orange plasma */}
             <mesh>
-              <cylinderGeometry args={[0.004, 0.004, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.018, 0.018, len, 12, 1, true]} />
               <meshBasicMaterial
-                color="#ff8a1f"
+                color="#ffb060"
                 transparent
                 opacity={0.95}
                 blending={THREE.AdditiveBlending}
@@ -683,27 +685,65 @@ function DefenseSystem({
                 userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
+            {/* mid orange glow */}
             <mesh>
-              <cylinderGeometry args={[0.010, 0.010, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.038, 0.038, len, 12, 1, true]} />
               <meshBasicMaterial
-                color="#ff5a0f"
+                color="#ff6a1f"
                 transparent
-                opacity={0.32}
+                opacity={0.55}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
                 side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.32 }}
+                userData={{ baseOpacity: 0.55 }}
               />
             </mesh>
+            {/* outer soft halo — water-like diffusion */}
+            <mesh>
+              <cylinderGeometry args={[0.075, 0.075, len, 12, 1, true]} />
+              <meshBasicMaterial
+                color="#ff3a00"
+                transparent
+                opacity={0.22}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                userData={{ baseOpacity: 0.22 }}
+              />
+            </mesh>
+            {/* impact flash at target end */}
             <mesh position={[0, -len / 2, 0]}>
-              <sphereGeometry args={[0.035, 12, 12]} />
+              <sphereGeometry args={[0.07, 16, 16]} />
               <meshBasicMaterial
                 color="#fff0c8"
                 transparent
-                opacity={0.95}
+                opacity={1}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
-                userData={{ baseOpacity: 0.95 }}
+                userData={{ baseOpacity: 1 }}
+              />
+            </mesh>
+            <mesh position={[0, -len / 2, 0]} scale={2.2}>
+              <sphereGeometry args={[0.07, 16, 16]} />
+              <meshBasicMaterial
+                color="#ff8a3c"
+                transparent
+                opacity={0.55}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                userData={{ baseOpacity: 0.55 }}
+              />
+            </mesh>
+            {/* muzzle flash at turret end */}
+            <mesh position={[0, len / 2, 0]} scale={1.4}>
+              <sphereGeometry args={[0.04, 12, 12]} />
+              <meshBasicMaterial
+                color="#ffffff"
+                transparent
+                opacity={0.9}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                userData={{ baseOpacity: 0.9 }}
               />
             </mesh>
           </group>
