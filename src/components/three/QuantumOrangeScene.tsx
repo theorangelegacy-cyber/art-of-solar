@@ -434,18 +434,18 @@ function DefenseSystem({
   const groupRef = useRef<THREE.Group>(null!);
 
   useEffect(() => {
-    for (let i = 0; i < 14; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    for (let i = 0; i < 35; i++) attackers.current.push(spawnAttacker(idCounter.current++));
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
 
     spawnTimer.current -= dtClamped;
-    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 22) {
-      // burst-spawn 1-2 at a time for relentless action
-      const burst = Math.random() < 0.4 ? 2 : 1;
+    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 55) {
+      // heavy burst-spawn — Tower-style swarm
+      const burst = 2 + Math.floor(Math.random() * 4);
       for (let i = 0; i < burst; i++) attackers.current.push(spawnAttacker(idCounter.current++));
-      spawnTimer.current = 0.15 + Math.random() * 0.35;
+      spawnTimer.current = 0.08 + Math.random() * 0.18;
     }
 
     for (const a of attackers.current) {
@@ -481,7 +481,7 @@ function DefenseSystem({
       for (const a of attackers.current) {
         if (!a.alive) continue;
         const d = turretWorld.distanceTo(a.pos);
-        if (d < closestDist && d < 4.5) { closestDist = d; closest = a; }
+        if (d < closestDist && d < 6.5) { closestDist = d; closest = a; }
       }
 
       if (closest && fireCooldowns.current[t] <= 0) {
@@ -494,7 +494,7 @@ function DefenseSystem({
           turret.quaternion.copy(parentQuat.invert().multiply(targetQuat));
         }
 
-        fireCooldowns.current[t] = 0.18 + Math.random() * 0.18;
+        fireCooldowns.current[t] = 0.08 + Math.random() * 0.10;
         // emit laser from barrel tip in world space
         const barrelTip = turretWorld.clone().add(dir.clone().multiplyScalar(0.09));
         lasers.current.push({
