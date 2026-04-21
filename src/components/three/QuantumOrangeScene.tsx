@@ -428,16 +428,16 @@ function DefenseSystem({
   const groupRef = useRef<THREE.Group>(null!);
 
   useEffect(() => {
-    for (let i = 0; i < 4; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    for (let i = 0; i < 8; i++) attackers.current.push(spawnAttacker(idCounter.current++));
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
 
     spawnTimer.current -= dtClamped;
-    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 7) {
+    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 12) {
       attackers.current.push(spawnAttacker(idCounter.current++));
-      spawnTimer.current = 0.9 + Math.random() * 1.2;
+      spawnTimer.current = 0.4 + Math.random() * 0.7;
     }
 
     for (const a of attackers.current) {
