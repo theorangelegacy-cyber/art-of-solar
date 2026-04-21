@@ -216,6 +216,33 @@
 
   .quantum-cursor, .quantum-cursor * { cursor: none !important; }
   .quantum-cursor a, .quantum-cursor button, .quantum-cursor input, .quantum-cursor textarea, .quantum-cursor [role="button"] { cursor: none !important; }
+
+  /* Light section — inverts the palette inside the section only */
+  .section-light {
+    --background: 0 0% 100%;
+    --background-deep: 0 0% 97%;
+    --surface-1: 220 20% 97%;
+    --surface-2: 220 18% 94%;
+    --foreground: 230 30% 8%;
+    --foreground-dim: 230 12% 32%;
+    --card: 0 0% 100%;
+    --card-foreground: 230 30% 8%;
+    --secondary: 220 18% 94%;
+    --secondary-foreground: 230 30% 8%;
+    --muted: 220 18% 94%;
+    --muted-foreground: 230 10% 40%;
+    --border: 220 15% 86%;
+    --border-bright: 19 90% 50%;
+    --input: 220 15% 90%;
+
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+  .section-light .bg-grid-fine {
+    background-image:
+      linear-gradient(hsl(220 20% 50% / 0.10) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(220 20% 50% / 0.10) 1px, transparent 1px);
+  }
 }
 
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
