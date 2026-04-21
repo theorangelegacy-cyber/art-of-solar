@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import quantumOrangeImg from "@/assets/quantum-orange.jpg";
 
 /* =====================================================================
    OrbitalPlanetSystem
@@ -73,7 +74,7 @@ export default function OrbitalPlanetSystem() {
   const focusedPlanet = focused !== null ? PLANETS[focused] : null;
 
   return (
-    <section className="relative py-28 md:py-36 border-t border-border overflow-hidden">
+    <section className="relative py-20 md:py-24 border-t border-border overflow-hidden">
       {/* starfield */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid-fine opacity-[0.04]" />
@@ -81,19 +82,18 @@ export default function OrbitalPlanetSystem() {
       </div>
 
       <div className="container">
-        <div className="flex items-end justify-between flex-wrap gap-6 mb-10">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3 font-mono text-2xs tracking-mono uppercase text-accent mb-5">
+        <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 font-mono text-2xs tracking-mono uppercase text-accent mb-3">
               <span className="text-muted-foreground">§ 02</span>
               <span className="h-px w-8 bg-accent/50" />
               <span>Orbital System · Live</span>
             </div>
-            <h2 className="font-display text-3xl md:text-5xl text-foreground leading-[1.02]">
-              Five disciplines.<br />
-              <span className="font-serif-italic text-foreground-dim">One gravitational field.</span>
+            <h2 className="font-display text-2xl md:text-4xl text-foreground leading-[1.05]">
+              Five disciplines. <span className="font-serif-italic">One gravitational field.</span>
             </h2>
-            <p className="mt-4 text-foreground-dim text-base md:text-lg max-w-2xl">
-              Click any planet to enter its orbit. Drag to rotate. Each capability is a world unto itself — bound together by a single sun.
+            <p className="mt-3 text-foreground-dim text-sm md:text-base max-w-xl">
+              Click any planet to enter its orbit. Drag to rotate.
             </p>
           </div>
           <div className="flex items-center gap-4 font-mono text-2xs tracking-mono uppercase text-muted-foreground">
@@ -186,22 +186,30 @@ function SystemView({
       ref={stageRef}
       className="absolute inset-0 grid place-items-center [perspective:1400px]"
     >
-      {/* Sun (center) */}
+      {/* Sun (center) — actual high-def quantum orange */}
       <button
         onClick={onRelease}
         aria-label="Return to system view"
         className="absolute z-20 group"
         style={{
-          width: 90, height: 90, borderRadius: "9999px",
-          background: "var(--gradient-orange)",
-          boxShadow: "var(--glow-orange)",
+          width: 120, height: 120, borderRadius: "9999px",
           transition: "transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
           transform: focused !== null ? "scale(0.55)" : "scale(1)",
+          filter: "drop-shadow(0 0 24px hsl(var(--primary) / 0.55)) drop-shadow(0 0 48px hsl(28 100% 62% / 0.25))",
         }}
       >
-        <span className="absolute inset-0 rounded-full animate-pulse-soft" />
-        <span className="absolute -inset-3 rounded-full border border-accent/40 animate-spin-slow" style={{ borderStyle: "dashed" }} />
-        <span className="absolute -inset-7 rounded-full border border-primary/20 animate-spin-slow" style={{ borderStyle: "dashed", animationDuration: "60s", animationDirection: "reverse" }} />
+        <img
+          src={quantumOrangeImg}
+          alt=""
+          width={240}
+          height={240}
+          className="absolute inset-0 h-full w-full rounded-full object-cover animate-spin-slow"
+          style={{ animationDuration: "80s" }}
+          draggable={false}
+        />
+        <span aria-hidden className="absolute inset-0 rounded-full" style={{ boxShadow: "inset 0 0 28px hsl(28 100% 62% / 0.35)" }} />
+        <span aria-hidden className="absolute -inset-3 rounded-full border border-accent/40 animate-spin-slow" style={{ borderStyle: "dashed" }} />
+        <span aria-hidden className="absolute -inset-7 rounded-full border border-primary/20 animate-spin-slow" style={{ borderStyle: "dashed", animationDuration: "60s", animationDirection: "reverse" }} />
         <span className="sr-only">Quantum Orange · core</span>
       </button>
 
