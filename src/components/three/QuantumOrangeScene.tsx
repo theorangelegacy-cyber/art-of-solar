@@ -139,11 +139,11 @@ function QuantumOrange({
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uDeep: { value: new THREE.Color("#a82a00") },   // saturated deep orange-red
-    uMid:  { value: new THREE.Color("#ff7a18") },   // vibrant orange
-    uHi:   { value: new THREE.Color("#ffc955") },   // bright sunlit highlight
+    uDeep: { value: new THREE.Color("#c93600") },   // hyper-saturated deep
+    uMid:  { value: new THREE.Color("#ff8a14") },   // pure vibrant orange
+    uHi:   { value: new THREE.Color("#ffd86b") },   // sunlit highlight
     uHotSpec: { value: new THREE.Color("#ffffff") },
-    uRim:  { value: new THREE.Color("#ffb347") },   // warm rim, no green
+    uRim:  { value: new THREE.Color("#ffb347") },
     uShield: { value: 0 },
   }), []);
 
