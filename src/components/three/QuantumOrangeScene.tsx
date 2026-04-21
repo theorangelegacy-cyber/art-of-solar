@@ -647,7 +647,7 @@ export default function QuantumOrangeScene({
     <div className={className}>
       <Canvas
         dpr={[1.25, compact ? 2 : 2.5]}
-        camera={{ position: [3.2, 0.3, 8.5], fov: 35 }}
+        camera={{ position: [0, 0.2, 6.5], fov: 28 }}
         gl={{
           antialias: true,
           alpha: true,
