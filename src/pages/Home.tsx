@@ -5,6 +5,7 @@ import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { CornerFrame, Readout, SectionHead, Stat, TelemetryStrip, LabRow } from "@/components/HUD";
 
 const QuantumOrangeScene = lazy(() => import("@/components/three/QuantumOrangeScene"));
+const OrbitalPlanetSystem = lazy(() => import("@/components/OrbitalPlanetSystem"));
 
 const services = [
   { code: "WD/01", title: "Site Architecture",     desc: "Conversion-engineered firm sites. Sub-second hero, schema-grade SEO, native mobile discipline.", spec: "≤ 0.8s LCP · 100 Lighthouse" },
@@ -201,6 +202,17 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ============================================================
+          ORBITAL PLANET SYSTEM
+          ============================================================ */}
+      <Suspense fallback={
+        <div className="py-28 text-center font-mono text-2xs tracking-mono uppercase text-accent">
+          <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-accent animate-ticker" />Calibrating orbits</span>
+        </div>
+      }>
+        <OrbitalPlanetSystem />
+      </Suspense>
 
       {/* ============================================================
           DOCTRINE / WHY ONE SYSTEM
