@@ -134,7 +134,7 @@ export default function Services() {
       ))}
 
       {/* CTA */}
-      <section className="relative py-28">
+      <section className="section-light relative py-28 border-t border-border">
         <div className="container">
           <CornerFrame>
             <div className="relative overflow-hidden p-10 md:p-16 text-center bg-surface-1/40">

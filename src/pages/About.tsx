@@ -46,7 +46,7 @@ export default function About() {
       </section>
 
       {/* PRINCIPLES */}
-      <section className="relative py-24 border-t border-border">
+      <section className="section-light relative py-24 border-t border-border">
         <div className="container">
           <div className="font-mono text-2xs tracking-mono uppercase text-accent mb-3">§ 01 · Principles</div>
           <h2 className="font-display text-3xl md:text-5xl mb-12 max-w-2xl">Four constants that govern the work.</h2>
@@ -122,7 +122,7 @@ export default function About() {
       </section>
 
       {/* TEAM POSTURE */}
-      <section className="relative py-24 border-t border-border bg-surface-1/30">
+      <section className="section-light relative py-24 border-t border-border">
         <div className="container">
           <div className="grid lg:grid-cols-12 gap-10">
             <div className="lg:col-span-5">
