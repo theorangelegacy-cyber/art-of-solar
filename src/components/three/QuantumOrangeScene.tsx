@@ -572,9 +572,9 @@ function DefenseSystem({
             position={mid}
             quaternion={quat}
           >
-            {/* HOT INNER CORE — razor thin */}
+            {/* HOT INNER CORE — pure white razor */}
             <mesh>
-              <cylinderGeometry args={[0.0025, 0.0025, len, 6, 1, true]} />
+              <cylinderGeometry args={[0.0015, 0.0015, len, 6, 1, true]} />
               <meshBasicMaterial
                 color="#ffffff"
                 transparent
@@ -585,42 +585,42 @@ function DefenseSystem({
                 userData={{ baseOpacity: 1 }}
               />
             </mesh>
-            {/* MID GLOW */}
+            {/* THIN ORANGE BEAM */}
             <mesh>
-              <cylinderGeometry args={[0.008, 0.008, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.004, 0.004, len, 8, 1, true]} />
               <meshBasicMaterial
-                color="#5dffb0"
+                color="#ff8a1f"
                 transparent
-                opacity={0.85}
+                opacity={0.95}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
                 side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.85 }}
+                userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
-            {/* OUTER AURA — wide soft */}
+            {/* SOFT OUTER GLOW — narrow */}
             <mesh>
-              <cylinderGeometry args={[0.022, 0.022, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.010, 0.010, len, 8, 1, true]} />
               <meshBasicMaterial
-                color="#3df3a0"
+                color="#ff5a0f"
                 transparent
-                opacity={0.25}
+                opacity={0.32}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
                 side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.25 }}
+                userData={{ baseOpacity: 0.32 }}
               />
             </mesh>
-            {/* MUZZLE FLASH at start */}
+            {/* MUZZLE FLASH */}
             <mesh position={[0, -len / 2, 0]}>
-              <sphereGeometry args={[0.05, 12, 12]} />
+              <sphereGeometry args={[0.035, 12, 12]} />
               <meshBasicMaterial
-                color="#ffffff"
+                color="#fff0c8"
                 transparent
-                opacity={0.9}
+                opacity={0.95}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
-                userData={{ baseOpacity: 0.9 }}
+                userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
           </group>
