@@ -328,10 +328,10 @@ function spawnAttacker(id: number): Attacker {
   const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
   const baseScale =
-    kind === "ship" ? 0.95 + Math.random() * 0.35 :
-    kind === "asteroid" ? 0.85 + Math.random() * 0.55 :
-    kind === "shard" ? 0.75 + Math.random() * 0.35 :
-    0.7 + Math.random() * 0.3;
+    kind === "ship" ? 0.08 + Math.random() * 0.07 :
+    kind === "asteroid" ? 0.05 + Math.random() * 0.1 :
+    kind === "shard" ? 0.06 + Math.random() * 0.08 :
+    0.05 + Math.random() * 0.08;
   return {
     id,
     kind,
@@ -528,7 +528,7 @@ function DefenseSystem({
         }
 
         fireCooldowns.current[t] = 0.16 + Math.random() * 0.08;
-        const barrelTip = turretWorld.clone().add(dir.clone().multiplyScalar(0.09));
+        const barrelTip = turretWorld.clone();
         lasers.current.push({
           id: idCounter.current++,
           from: barrelTip,
@@ -560,8 +560,8 @@ function DefenseSystem({
         const pulse = 0.7 + Math.sin(lifeProgress * Math.PI * 3 + l.phase) * 0.3;
         const wave = Math.sin(lifeProgress * Math.PI * 2 + l.phase) * 0.016;
         const waveTwist = Math.cos(lifeProgress * Math.PI * 2.5 + l.phase) * 0.01;
-        l.ref.position.x += wave;
-        l.ref.position.z += waveTwist;
+        const baseMid = l.from.clone().add(l.to).multiplyScalar(0.5);
+        l.ref.position.copy(baseMid).add(new THREE.Vector3(wave, 0, waveTwist));
         l.ref.rotation.y = wave * 3.8;
         l.ref.rotation.z = waveTwist * 6;
         l.ref.children.forEach((child, index) => {
