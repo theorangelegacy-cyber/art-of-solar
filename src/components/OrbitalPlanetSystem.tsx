@@ -78,7 +78,7 @@ export default function OrbitalPlanetSystem() {
               <span>What we build</span>
             </div>
             <h2 className="font-display text-3xl md:text-5xl text-foreground leading-[1.05]">
-              Five systems. <span className="font-serif-italic text-foreground-dim">One firm.</span>
+              Quantum system. <span className="font-serif-italic text-foreground-dim">One firm.</span>
             </h2>
           </div>
           <div className="font-mono text-2xs tracking-mono uppercase text-muted-foreground">

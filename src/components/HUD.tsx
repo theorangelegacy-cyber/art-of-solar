@@ -102,7 +102,7 @@ export function SectionHead({
         <span className="h-px w-8 bg-accent/50" />
         {kicker && <span>{kicker}</span>}
       </div>
-      <h2 className="font-display text-3xl md:text-5xl text-foreground leading-[1.02]">
+      <h2 className="font-display md:text-5xl text-foreground leading-[1.02] text-3xl">
         {title}
       </h2>
       {desc && <p className="mt-4 text-foreground-dim text-base md:text-lg max-w-2xl">{desc}</p>}
