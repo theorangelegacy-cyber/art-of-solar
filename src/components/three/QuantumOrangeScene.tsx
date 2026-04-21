@@ -852,6 +852,7 @@ export default function QuantumOrangeScene({
 
   const shieldRef = useRef<{ value: number }>({ value: 0 }).current;
   const turretRefs = useRef<THREE.Group[]>([]);
+  const orangeRef = useRef<THREE.Group | null>(null);
 
   return (
     <div className={className}>
@@ -877,8 +878,8 @@ export default function QuantumOrangeScene({
         <pointLight position={[1.4, 0, 1.5]} intensity={0.6} color="#ffd86b" />
 
         <Suspense fallback={null}>
-          <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} compact={compact} />
-          <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} />
+          <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} compact={compact} orangeRef={orangeRef} />
+          <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} orangeRef={orangeRef} />
           <StarField count={compact ? 600 : 1200} />
         </Suspense>
 
