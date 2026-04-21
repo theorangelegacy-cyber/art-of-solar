@@ -111,12 +111,12 @@ export default function Home() {
               <span className="h-px w-10 bg-accent/50" />
               <span>Quantum Legal Infrastructure</span>
             </div>
-            <h1 className="font-display md:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-tight text-foreground text-5xl">
+            <h1 className="font-display md:text-7xl lg:text-[5.5rem] leading-[0.96] tracking-tight text-foreground text-6xl">
               The modern law firm,<br />
               <span className="font-serif-italic text-foreground/95">re-rendered</span> <span className="text-gradient-orange text-4xl">in real time.</span>
             </h1>
             <p className="mt-6 max-w-xl text-foreground-dim text-base md:text-lg leading-relaxed">
-              We collapse five disconnected systems — site, intake, automation, CRM, case OS — into one entangled substrate. Engineered for family-law firms operating beyond linear time.
+              We consolidate your disconnected systems — site, intake, automation, CRM, case OS — into one entangled substrate. Engineered for family-law firms operating beyond linear time.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -224,7 +224,7 @@ export default function Home() {
               <SectionHead
                 index="02"
                 kicker="Doctrine"
-                title={<>Most firms wire seven tools.<br /><span className="font-serif-italic text-foreground-dim">We collapse them into one.</span></>}
+                title={<>Most firms mismanage countless tools.<br /><span className="font-serif-italic text-foreground-dim">We collapse them into one timebending system.</span></>}
                 desc="The friction in your firm isn't talent — it's the seams between systems. We remove the seams."
               />
               <Link to="/about" className="mt-8 inline-flex items-center gap-2 font-mono text-2xs tracking-mono uppercase text-accent underline-trace">
