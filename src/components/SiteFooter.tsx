@@ -41,7 +41,7 @@ export default function SiteFooter() {
           <div className="md:col-span-4">
             <div className="font-mono text-2xs tracking-mono uppercase text-accent mb-3">Telemetry</div>
             <ul className="space-y-1 font-mono text-2xs tracking-mono-tight text-muted-foreground">
-              <li title="Greetings - we come from Uranus">COORD · URANUS · 01000111 01110010 01100101 01100101 01110100 01101001 01101110 01100111 01110011 00100000 00101101 00100000 01110111 01100101 00100000 01100011 01101111 01101101 01100101 00100000 01100110 01110010 01101111 01101101 00100000 01010101 01110010 01100001 01101110 01110101 01110011</li>
+              <li title="Celestial coordinates of Uranus (J2000 Equatorial)">COORD · URANUS · RA 03h 42m 12s · Dec +19° 48′ 22″</li>
               <li>SECTOR · LEGAL/FAMILY · TIER-1</li>
               <li>RESPONSE WINDOW · ≤24H</li>
               <li>CONTACT · hello@quantumorange.dynamics</li>
