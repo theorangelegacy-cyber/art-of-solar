@@ -569,18 +569,19 @@ function DefenseSystem({
         const t = Math.max(0, l.life / l.maxLife);
         const lifeProgress = 1 - t;
         const pulse = 0.7 + Math.sin(lifeProgress * Math.PI * 3 + l.phase) * 0.3;
-        const wave = Math.sin(lifeProgress * Math.PI * 2 + l.phase) * 0.016;
-        const waveTwist = Math.cos(lifeProgress * Math.PI * 2.5 + l.phase) * 0.01;
         const baseMid = l.from.clone().add(l.to).multiplyScalar(0.5);
-        l.ref.position.copy(baseMid).add(new THREE.Vector3(wave, 0, waveTwist));
-        l.ref.rotation.y = wave * 3.8;
-        l.ref.rotation.z = waveTwist * 6;
+        l.ref.position.copy(baseMid);
         l.ref.children.forEach((child, index) => {
           const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
           if (m && "opacity" in m) {
             const childPulse = index < 3 ? pulse : 0.9 + pulse * 0.1;
             m.opacity = (m.userData?.baseOpacity ?? 1) * t * childPulse;
           }
+
+          if (index === 0) child.scale.setScalar(0.92 + pulse * 0.08);
+          if (index === 1) child.scale.setScalar(0.9 + pulse * 0.16);
+          if (index === 2) child.scale.setScalar(0.95 + pulse * 0.28);
+          if (index >= 3) child.scale.setScalar(0.9 + pulse * 0.2);
         });
       }
     }
@@ -619,34 +620,36 @@ function DefenseSystem({
     <group ref={groupRef}>
       {attackers.current.map((a) => {
         const haloColor =
-          a.kind === "asteroid" ? "#ff8a4a" :
+          a.kind === "asteroid" ? "#8d7768" :
           a.kind === "ship" ? "#9a30ff" :
           a.kind === "shard" ? "#ff2d7a" : "#00e5ff";
         const trailColor =
-          a.kind === "asteroid" ? "#ff5a1f" :
+          a.kind === "asteroid" ? "#6f6054" :
           a.kind === "ship" ? "#00f0ff" :
           a.kind === "shard" ? "#ff5da0" : "#5deaff";
+        const haloOpacity = a.kind === "asteroid" ? 0.04 : 0.22;
+        const haloOuterOpacity = a.kind === "asteroid" ? 0.015 : 0.08;
+        const trailCoreOpacity = a.kind === "asteroid" ? 0.18 : 0.55;
+        const trailOuterOpacity = a.kind === "asteroid" ? 0.06 : 0.18;
         return (
           <group key={a.id}>
             <group ref={(el) => { if (el) a.ref = el; }} position={a.pos} scale={a.scale}>
               <AttackerMesh kind={a.kind} />
-              {/* outer atmospheric halo — much more prominent */}
               <mesh scale={2.4}>
                 <sphereGeometry args={[0.16, 16, 16]} />
                 <meshBasicMaterial
                   color={haloColor}
-                  transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false}
+                  transparent opacity={haloOpacity} blending={THREE.AdditiveBlending} depthWrite={false}
                 />
               </mesh>
               <mesh scale={3.6}>
                 <sphereGeometry args={[0.16, 12, 12]} />
                 <meshBasicMaterial
                   color={haloColor}
-                  transparent opacity={0.08} blending={THREE.AdditiveBlending} depthWrite={false}
+                  transparent opacity={haloOuterOpacity} blending={THREE.AdditiveBlending} depthWrite={false}
                 />
               </mesh>
             </group>
-            {/* motion trail — soft elongated streak behind the attacker */}
             {(() => {
               const speed = a.vel.length();
               const trailLen = Math.min(0.9, 0.35 + speed * 0.6) * a.scale;
@@ -657,11 +660,11 @@ function DefenseSystem({
                 <group position={mid} quaternion={quat}>
                   <mesh>
                     <coneGeometry args={[0.05 * a.scale, trailLen, 12, 1, true]} />
-                    <meshBasicMaterial color={trailColor} transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+                    <meshBasicMaterial color={trailColor} transparent opacity={trailCoreOpacity} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
                   </mesh>
                   <mesh>
                     <coneGeometry args={[0.10 * a.scale, trailLen, 12, 1, true]} />
-                    <meshBasicMaterial color={trailColor} transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+                    <meshBasicMaterial color={trailColor} transparent opacity={trailOuterOpacity} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
                   </mesh>
                 </group>
               );
