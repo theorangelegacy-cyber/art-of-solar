@@ -739,7 +739,7 @@ export default function QuantumOrangeScene({
 
         <Suspense fallback={null}>
           <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} compact={compact} />
-          {!reduced && <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} />}
+          <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} />
           <StarField count={compact ? 600 : 1200} />
         </Suspense>
 
