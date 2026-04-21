@@ -3,9 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 /* =====================================================================
    DisciplineGrid — clean 2D futuristic interactive selector
-   - No audio, no 3D planets
-   - Plain-English copy
-   - Tabs through 5 disciplines with arrow keys / clicks
    ===================================================================== */
 
 type Discipline = {
@@ -50,26 +47,29 @@ const DISCIPLINES: Discipline[] = [
   },
 ];
 
+const nextIndex = (index: number) => (index + 1) % DISCIPLINES.length;
+
 export default function OrbitalPlanetSystem() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") setActive((a) => (a + 1) % DISCIPLINES.length);
-      if (e.key === "ArrowLeft")  setActive((a) => (a - 1 + DISCIPLINES.length) % DISCIPLINES.length);
+      if (e.key === "ArrowRight") setActive((a) => nextIndex(a));
+      if (e.key === "ArrowLeft") setActive((a) => (a - 1 + DISCIPLINES.length) % DISCIPLINES.length);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   const d = DISCIPLINES[active];
+  const next = DISCIPLINES[nextIndex(active)];
+  const goNext = () => setActive((a) => nextIndex(a));
 
   return (
     <section className="relative py-20 md:py-28 border-t border-border overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-grid-fine opacity-[0.04]" />
 
       <div className="container">
-        {/* Header */}
         <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 font-mono text-2xs tracking-mono uppercase text-accent mb-3">
@@ -89,29 +89,21 @@ export default function OrbitalPlanetSystem() {
           </div>
         </div>
 
-        {/* Grid stage */}
         <div className="relative border border-border bg-background-deep/60 rounded-sm overflow-hidden">
-          {/* corner ticks */}
           <span className="absolute top-0 left-0 h-3 w-3 border-t border-l border-border-bright/60 z-10" />
           <span className="absolute top-0 right-0 h-3 w-3 border-t border-r border-border-bright/60 z-10" />
           <span className="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-border-bright/60 z-10" />
           <span className="absolute bottom-0 right-0 h-3 w-3 border-b border-r border-border-bright/60 z-10" />
 
           <div className="grid md:grid-cols-12">
-            {/* Left: tabs */}
             <div className="md:col-span-4 border-b md:border-b-0 md:border-r border-border">
               {DISCIPLINES.map((p, i) => {
                 const isActive = i === active;
                 return (
-                  <button
+                  <div
                     key={p.code}
-                    onClick={() => setActive(i)}
-                    className={`group relative w-full text-left px-5 py-5 transition-all border-b border-border last:border-b-0 ${
-                      isActive ? "bg-surface-1" : "hover:bg-surface-1/40"
-                    }`}
-                    aria-current={isActive}
+                    className={`relative border-b border-border last:border-b-0 ${isActive ? "bg-surface-1" : "hover:bg-surface-1/40"}`}
                   >
-                    {/* active indicator bar */}
                     {isActive && (
                       <motion.span
                         layoutId="disciplineBar"
@@ -122,31 +114,46 @@ export default function OrbitalPlanetSystem() {
                         }}
                       />
                     )}
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="h-2.5 w-2.5 rounded-full flex-shrink-0 transition-all"
-                        style={{
-                          background: `hsl(${p.hue} 80% 60%)`,
-                          boxShadow: isActive
-                            ? `0 0 16px hsl(${p.hue} 80% 60% / 0.9), 0 0 4px hsl(${p.hue} 80% 60%)`
-                            : `0 0 4px hsl(${p.hue} 80% 60% / 0.4)`,
-                        }}
-                      />
-                      <div className="min-w-0">
-                        <div className={`font-mono text-2xs tracking-mono uppercase ${isActive ? "text-accent" : "text-muted-foreground"}`}>
-                          {p.code}
-                        </div>
-                        <div className={`font-display text-base md:text-lg transition-colors ${isActive ? "text-foreground" : "text-foreground-dim group-hover:text-foreground"}`}>
-                          {p.name}
+
+                    <button
+                      onClick={() => setActive(i)}
+                      className="w-full text-left px-5 py-5 pr-28 transition-all"
+                      aria-current={isActive}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full flex-shrink-0 transition-all"
+                          style={{
+                            background: `hsl(${p.hue} 80% 60%)`,
+                            boxShadow: isActive
+                              ? `0 0 16px hsl(${p.hue} 80% 60% / 0.9), 0 0 4px hsl(${p.hue} 80% 60%)`
+                              : `0 0 4px hsl(${p.hue} 80% 60% / 0.4)`,
+                          }}
+                        />
+                        <div className="min-w-0">
+                          <div className={`font-mono text-2xs tracking-mono uppercase ${isActive ? "text-accent" : "text-muted-foreground"}`}>
+                            {p.code}
+                          </div>
+                          <div className={`font-display text-base md:text-lg transition-colors underline underline-offset-4 ${isActive ? "text-foreground" : "text-foreground-dim group-hover:text-foreground"}`}>
+                            {p.name}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </button>
+                    </button>
+
+                    <button
+                      onClick={goNext}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center gap-2 rounded-sm border border-border bg-background/70 px-2.5 py-2 text-2xs font-mono uppercase tracking-mono text-muted-foreground transition-all hover:bg-surface-1 hover:text-foreground"
+                      aria-label={`Go to ${next.name}`}
+                    >
+                      <span className="underline underline-offset-4">Click here</span>
+                      <span className="grid h-6 w-6 place-items-center rounded-sm border border-border text-foreground">↗</span>
+                    </button>
+                  </div>
                 );
               })}
             </div>
 
-            {/* Right: detail panel */}
             <div className="md:col-span-8 relative min-h-[440px] p-6 md:p-10">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -166,36 +173,51 @@ export default function OrbitalPlanetSystem() {
                     {d.desc}
                   </p>
 
-                  {/* Feature grid */}
                   <div className="mt-8 grid sm:grid-cols-2 gap-2">
                     {d.features.map((f, i) => (
-                      <motion.div
+                      <button
                         key={f}
-                        initial={{ opacity: 0, x: -8 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: 0.1 + i * 0.06 }}
-                        className="flex items-center gap-3 px-4 py-3 rounded-sm border bg-background/60"
-                        style={{
-                          borderColor: `hsl(${d.hue} 60% 45% / 0.35)`,
-                        }}
+                        onClick={goNext}
+                        className="flex items-center justify-between gap-4 px-4 py-3 rounded-sm border bg-background/60 text-left transition-all hover:bg-surface-1"
+                        style={{ borderColor: `hsl(${d.hue} 60% 45% / 0.35)` }}
                       >
-                        <span
-                          className="h-1.5 w-1.5 rounded-full flex-shrink-0"
-                          style={{
-                            background: `hsl(${d.hue} 80% 65%)`,
-                            boxShadow: `0 0 8px hsl(${d.hue} 80% 60% / 0.7)`,
-                          }}
-                        />
-                        <span className="text-sm text-foreground">{f}</span>
-                      </motion.div>
+                        <motion.div
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: 0.1 + i * 0.06 }}
+                          className="flex items-center gap-3 min-w-0"
+                        >
+                          <span
+                            className="h-1.5 w-1.5 rounded-full flex-shrink-0"
+                            style={{
+                              background: `hsl(${d.hue} 80% 65%)`,
+                              boxShadow: `0 0 8px hsl(${d.hue} 80% 60% / 0.7)`,
+                            }}
+                          />
+                          <span className="text-sm text-foreground underline underline-offset-4">{f}</span>
+                        </motion.div>
+                        <span className="inline-flex items-center gap-2 flex-shrink-0 text-2xs font-mono uppercase tracking-mono text-muted-foreground">
+                          <span>Click here</span>
+                          <span className="grid h-6 w-6 place-items-center rounded-sm border border-border text-foreground">↗</span>
+                        </span>
+                      </button>
                     ))}
                   </div>
 
-                  {/* Footer hint */}
-                  <div className="mt-10 flex items-center gap-2 font-mono text-2xs tracking-mono uppercase text-muted-foreground">
-                    <span className="hidden md:inline">← →</span>
-                    <span className="hidden md:inline">keyboard navigate</span>
-                    <span className="md:hidden">tap to switch</span>
+                  <div className="mt-10 flex items-center justify-between gap-4 flex-wrap">
+                    <div className="flex items-center gap-2 font-mono text-2xs tracking-mono uppercase text-muted-foreground">
+                      <span className="hidden md:inline">← →</span>
+                      <span className="hidden md:inline">keyboard navigate</span>
+                      <span className="md:hidden">tap to switch</span>
+                    </div>
+
+                    <button
+                      onClick={goNext}
+                      className="inline-flex items-center gap-3 rounded-sm border border-border bg-surface-1 px-4 py-3 font-mono text-2xs uppercase tracking-mono text-foreground transition-all hover:bg-background"
+                    >
+                      <span className="underline underline-offset-4">Next: {next.name}</span>
+                      <span className="grid h-7 w-7 place-items-center rounded-sm border border-border">→</span>
+                    </button>
                   </div>
                 </motion.div>
               </AnimatePresence>
