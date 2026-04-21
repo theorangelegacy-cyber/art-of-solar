@@ -254,35 +254,14 @@ function QuantumOrange({
         </mesh>
       </group>
 
-      {/* 6 turrets — sleeker, lower-profile, chrome */}
+      {/* 6 invisible emitter anchors — the orange itself fires the lasers from these surface points */}
       {turretSlots.map((s, i) => (
         <group
           key={i}
           ref={(el) => { if (el) turretRefs.current[i] = el; }}
           position={s.pos}
           quaternion={s.quat}
-        >
-          {/* recessed base ring */}
-          <mesh>
-            <torusGeometry args={[0.055, 0.008, 16, 32]} />
-            <meshStandardMaterial color="#c8c8d0" metalness={0.95} roughness={0.18} />
-          </mesh>
-          {/* dome housing */}
-          <mesh position={[0, 0.012, 0]}>
-            <sphereGeometry args={[0.05, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-            <meshStandardMaterial color="#1a1a22" metalness={0.9} roughness={0.22} />
-          </mesh>
-          {/* slim barrel */}
-          <mesh position={[0, 0.05, 0]}>
-            <cylinderGeometry args={[0.008, 0.012, 0.07, 16]} />
-            <meshStandardMaterial color="#e8e8ec" metalness={0.95} roughness={0.15} />
-          </mesh>
-          {/* glowing emitter */}
-          <mesh position={[0, 0.085, 0]}>
-            <sphereGeometry args={[0.012, 12, 12]} />
-            <meshBasicMaterial color="#ffb060" />
-          </mesh>
-        </group>
+        />
       ))}
     </group>
   );
