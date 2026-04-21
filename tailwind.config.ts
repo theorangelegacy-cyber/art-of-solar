@@ -7,23 +7,32 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "1.25rem",
+      padding: "1.5rem",
       screens: {
-        "2xl": "1400px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1440px",
       },
     },
     extend: {
       colors: {
         border: "hsl(var(--border))",
+        "border-bright": "hsl(var(--border-bright))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         "background-deep": "hsl(var(--background-deep))",
+        "surface-1": "hsl(var(--surface-1))",
+        "surface-2": "hsl(var(--surface-2))",
         foreground: "hsl(var(--foreground))",
+        "foreground-dim": "hsl(var(--foreground-dim))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           glow: "hsl(var(--primary-glow))",
+          deep: "hsl(var(--primary-deep))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -40,7 +49,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
-          glow: "hsl(var(--accent-glow))",
+          dim: "hsl(var(--accent-dim))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -63,18 +72,21 @@ export default {
       },
       backgroundImage: {
         "gradient-orange": "var(--gradient-orange)",
-        "gradient-hero": "var(--gradient-hero)",
         "gradient-aurora": "var(--gradient-aurora)",
       },
       boxShadow: {
         "glow-orange": "var(--glow-orange)",
+        "glow-orange-soft": "var(--glow-orange-soft)",
         "glow-green": "var(--glow-green)",
         panel: "var(--shadow-panel)",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        sm: "calc(var(--radius) - 3px)",
+      },
+      fontSize: {
+        "2xs": ["0.6875rem", { lineHeight: "1rem" }],
       },
       keyframes: {
         "accordion-down": {
@@ -86,43 +98,33 @@ export default {
           to: { height: "0" },
         },
         "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        "scale-in": {
-          "0%": { transform: "scale(0.96)", opacity: "0" },
-          "100%": { transform: "scale(1)", opacity: "1" },
+        "pulse-soft": {
+          "0%, 100%": { opacity: "0.92" },
+          "50%": { opacity: "1" },
         },
-        "pulse-glow": {
-          "0%, 100%": { opacity: "0.85", filter: "drop-shadow(0 0 18px hsl(22 100% 55% / 0.6))" },
-          "50%": { opacity: "1", filter: "drop-shadow(0 0 36px hsl(30 100% 64% / 0.9))" },
-        },
-        drift: {
-          "0%, 100%": { transform: "translate3d(0,0,0)" },
-          "50%": { transform: "translate3d(0,-8px,0)" },
-        },
-        "spin-slow": {
-          to: { transform: "rotate(360deg)" },
-        },
-        "warp-in": {
-          "0%": { opacity: "0", transform: "scale(1.06)", filter: "blur(8px)" },
-          "100%": { opacity: "1", transform: "scale(1)", filter: "blur(0)" },
-        },
+        "spin-slow": { to: { transform: "rotate(360deg)" } },
         flicker: {
           "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.55" },
+          "48%": { opacity: "0.6" },
+          "50%": { opacity: "0.3" },
+          "52%": { opacity: "0.85" },
+        },
+        ticker: {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.5s ease-out",
-        "scale-in": "scale-in 0.4s ease-out",
-        "pulse-glow": "pulse-glow 4s ease-in-out infinite",
-        drift: "drift 6s ease-in-out infinite",
-        "spin-slow": "spin-slow 30s linear infinite",
-        "warp-in": "warp-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
-        flicker: "flicker 3s ease-in-out infinite",
+        "fade-in": "fade-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "pulse-soft": "pulse-soft 4s ease-in-out infinite",
+        "spin-slow": "spin-slow 60s linear infinite",
+        flicker: "flicker 4s steps(1, end) infinite",
+        ticker: "ticker 1.4s ease-in-out infinite",
       },
     },
   },
