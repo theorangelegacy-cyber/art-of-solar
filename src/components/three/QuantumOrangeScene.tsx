@@ -314,29 +314,36 @@ function spawnAttacker(id: number): Attacker {
   const v = Math.random();
   const theta = 2 * Math.PI * u;
   const phi = Math.acos(2 * v - 1);
-  const dist = 3.8 + Math.random() * 1.6;
+  const dist = 4.2 + Math.random() * 1.8;
   const pos = new THREE.Vector3(
     Math.sin(phi) * Math.cos(theta),
-    Math.cos(phi),                  // full -1..1 vertical coverage
+    Math.cos(phi),
     Math.sin(phi) * Math.sin(theta),
   ).multiplyScalar(dist);
-  // Cinematic approach: mostly toward orange, slight tangential drift
   const toCenter = pos.clone().negate().normalize();
-  const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.18);
-  const vel = toCenter.multiplyScalar(0.32 + Math.random() * 0.22).add(tangent);
+  const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.22);
+  const vel = toCenter.multiplyScalar(0.34 + Math.random() * 0.26).add(tangent);
 
   const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
+  const baseScale =
+    kind === "ship" ? 0.95 + Math.random() * 0.35 :
+    kind === "asteroid" ? 0.85 + Math.random() * 0.55 :
+    kind === "shard" ? 0.75 + Math.random() * 0.35 :
+    0.7 + Math.random() * 0.3;
   return {
     id,
     kind,
     pos,
     vel,
     rotSpeed: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(kind === "ship" ? 0.6 : 2.2),
-    hp: kind === "ship" ? 2 : 1,
+    hp: kind === "ship" ? 3 : kind === "asteroid" ? 2 : 1,
     ref: null,
+    trailRef: null,
+    trailPositions: [],
     alive: true,
-    scale: 0.42 + Math.random() * 0.22,
+    scale: baseScale,
+    hue: Math.random(),
   };
 }
 
