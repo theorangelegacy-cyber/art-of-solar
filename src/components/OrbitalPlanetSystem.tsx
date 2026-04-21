@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import quantumOrangeImg from "@/assets/quantum-orange.jpg";
 
 /* =====================================================================
    OrbitalPlanetSystem
@@ -185,22 +186,30 @@ function SystemView({
       ref={stageRef}
       className="absolute inset-0 grid place-items-center [perspective:1400px]"
     >
-      {/* Sun (center) */}
+      {/* Sun (center) — actual high-def quantum orange */}
       <button
         onClick={onRelease}
         aria-label="Return to system view"
         className="absolute z-20 group"
         style={{
-          width: 90, height: 90, borderRadius: "9999px",
-          background: "var(--gradient-orange)",
-          boxShadow: "var(--glow-orange)",
+          width: 120, height: 120, borderRadius: "9999px",
           transition: "transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
           transform: focused !== null ? "scale(0.55)" : "scale(1)",
+          filter: "drop-shadow(0 0 24px hsl(var(--primary) / 0.55)) drop-shadow(0 0 48px hsl(28 100% 62% / 0.25))",
         }}
       >
-        <span className="absolute inset-0 rounded-full animate-pulse-soft" />
-        <span className="absolute -inset-3 rounded-full border border-accent/40 animate-spin-slow" style={{ borderStyle: "dashed" }} />
-        <span className="absolute -inset-7 rounded-full border border-primary/20 animate-spin-slow" style={{ borderStyle: "dashed", animationDuration: "60s", animationDirection: "reverse" }} />
+        <img
+          src={quantumOrangeImg}
+          alt=""
+          width={240}
+          height={240}
+          className="absolute inset-0 h-full w-full rounded-full object-cover animate-spin-slow"
+          style={{ animationDuration: "80s" }}
+          draggable={false}
+        />
+        <span aria-hidden className="absolute inset-0 rounded-full" style={{ boxShadow: "inset 0 0 28px hsl(28 100% 62% / 0.35)" }} />
+        <span aria-hidden className="absolute -inset-3 rounded-full border border-accent/40 animate-spin-slow" style={{ borderStyle: "dashed" }} />
+        <span aria-hidden className="absolute -inset-7 rounded-full border border-primary/20 animate-spin-slow" style={{ borderStyle: "dashed", animationDuration: "60s", animationDirection: "reverse" }} />
         <span className="sr-only">Quantum Orange · core</span>
       </button>
 
