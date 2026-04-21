@@ -284,8 +284,11 @@ interface Attacker {
   rotSpeed: THREE.Vector3;
   hp: number;
   ref: THREE.Group | null;
+  trailRef: THREE.Mesh | null;
+  trailPositions: THREE.Vector3[];
   alive: boolean;
   scale: number;
+  hue: number;
 }
 
 interface Laser {
@@ -311,89 +314,132 @@ function spawnAttacker(id: number): Attacker {
   const v = Math.random();
   const theta = 2 * Math.PI * u;
   const phi = Math.acos(2 * v - 1);
-  const dist = 3.8 + Math.random() * 1.6;
+  const dist = 4.2 + Math.random() * 1.8;
   const pos = new THREE.Vector3(
     Math.sin(phi) * Math.cos(theta),
-    Math.cos(phi),                  // full -1..1 vertical coverage
+    Math.cos(phi),
     Math.sin(phi) * Math.sin(theta),
   ).multiplyScalar(dist);
-  // Cinematic approach: mostly toward orange, slight tangential drift
   const toCenter = pos.clone().negate().normalize();
-  const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.18);
-  const vel = toCenter.multiplyScalar(0.32 + Math.random() * 0.22).add(tangent);
+  const tangent = new THREE.Vector3(-toCenter.z, 0, toCenter.x).multiplyScalar((Math.random() - 0.5) * 0.22);
+  const vel = toCenter.multiplyScalar(0.34 + Math.random() * 0.26).add(tangent);
 
   const kinds: AttackerKind[] = ["asteroid", "ship", "shard", "drone"];
   const kind = kinds[Math.floor(Math.random() * kinds.length)];
+  const baseScale =
+    kind === "ship" ? 0.95 + Math.random() * 0.35 :
+    kind === "asteroid" ? 0.85 + Math.random() * 0.55 :
+    kind === "shard" ? 0.75 + Math.random() * 0.35 :
+    0.7 + Math.random() * 0.3;
   return {
     id,
     kind,
     pos,
     vel,
     rotSpeed: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).multiplyScalar(kind === "ship" ? 0.6 : 2.2),
-    hp: kind === "ship" ? 2 : 1,
+    hp: kind === "ship" ? 3 : kind === "asteroid" ? 2 : 1,
     ref: null,
+    trailRef: null,
+    trailPositions: [],
     alive: true,
-    scale: 0.42 + Math.random() * 0.22,
+    scale: baseScale,
+    hue: Math.random(),
   };
 }
 
 function AttackerMesh({ kind }: { kind: AttackerKind }) {
   if (kind === "ship") {
-    // Cinematic black alien ship — flat hull + dome + glowing underside
+    // Cinematic alien ship — sleek dark hull, glowing cyan core, wingtip lights, engine glow
     return (
       <group>
         {/* main hull — flattened ellipsoid */}
-        <mesh scale={[1, 0.32, 0.62]}>
-          <sphereGeometry args={[0.22, 32, 16]} />
-          <meshStandardMaterial color="#06070d" metalness={0.92} roughness={0.22} emissive="#1a0030" emissiveIntensity={0.25} />
+        <mesh scale={[1, 0.34, 0.7]}>
+          <sphereGeometry args={[0.26, 40, 20]} />
+          <meshStandardMaterial color="#080912" metalness={0.95} roughness={0.18} emissive="#1a0040" emissiveIntensity={0.35} />
         </mesh>
-        {/* dorsal ridge */}
-        <mesh position={[0, 0.04, 0]} scale={[0.5, 0.18, 0.3]}>
-          <sphereGeometry args={[0.22, 24, 12]} />
-          <meshStandardMaterial color="#0a0b14" metalness={0.95} roughness={0.18} />
+        {/* dorsal canopy — translucent dome */}
+        <mesh position={[0, 0.05, 0.02]} scale={[0.55, 0.22, 0.36]}>
+          <sphereGeometry args={[0.26, 28, 14]} />
+          <meshStandardMaterial color="#1d2540" metalness={0.6} roughness={0.05} emissive="#00d4ff" emissiveIntensity={0.6} transparent opacity={0.85} />
         </mesh>
-        {/* glowing underbelly emitter */}
-        <mesh position={[0, -0.04, 0]}>
-          <sphereGeometry args={[0.05, 16, 16]} />
+        {/* underbelly plasma core */}
+        <mesh position={[0, -0.05, 0]}>
+          <sphereGeometry args={[0.07, 20, 20]} />
           <meshBasicMaterial color="#ff2d7a" />
         </mesh>
+        <mesh position={[0, -0.05, 0]} scale={2.2}>
+          <sphereGeometry args={[0.07, 16, 16]} />
+          <meshBasicMaterial color="#ff5da0" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* engine exhaust */}
+        <mesh position={[0, 0, -0.18]} rotation={[Math.PI / 2, 0, 0]}>
+          <coneGeometry args={[0.05, 0.18, 12, 1, true]} />
+          <meshBasicMaterial color="#00f0ff" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+        </mesh>
         {/* wingtip lights */}
-        <mesh position={[0.2, 0, 0]}><sphereGeometry args={[0.012, 8, 8]} /><meshBasicMaterial color="#ff5da0" /></mesh>
-        <mesh position={[-0.2, 0, 0]}><sphereGeometry args={[0.012, 8, 8]} /><meshBasicMaterial color="#5dffb0" /></mesh>
+        <mesh position={[0.24, 0, 0]}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#ff5da0" /></mesh>
+        <mesh position={[-0.24, 0, 0]}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#5dffb0" /></mesh>
+        {/* wingtip halos */}
+        <mesh position={[0.24, 0, 0]} scale={3}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#ff5da0" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} /></mesh>
+        <mesh position={[-0.24, 0, 0]} scale={3}><sphereGeometry args={[0.022, 10, 10]} /><meshBasicMaterial color="#5dffb0" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} /></mesh>
       </group>
     );
   }
 
   if (kind === "asteroid") {
-    // Rocky irregular asteroid
+    // Chunky rocky asteroid with molten cracks + dust halo
     return (
       <group>
+        {/* core rock */}
         <mesh>
-          <icosahedronGeometry args={[0.16, 1]} />
-          <meshStandardMaterial color="#3a2418" roughness={0.95} metalness={0.05} flatShading />
+          <icosahedronGeometry args={[0.22, 1]} />
+          <meshStandardMaterial color="#2e1b10" roughness={0.95} metalness={0.08} flatShading emissive="#ff3a00" emissiveIntensity={0.18} />
         </mesh>
-        {/* dusty halo */}
-        <mesh scale={1.6}>
-          <sphereGeometry args={[0.12, 12, 12]} />
-          <meshBasicMaterial color="#8a5a3a" transparent opacity={0.06} blending={THREE.AdditiveBlending} depthWrite={false} />
+        {/* glowing fissure layer */}
+        <mesh scale={1.012}>
+          <icosahedronGeometry args={[0.22, 1]} />
+          <meshBasicMaterial color="#ff5a1f" wireframe transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* outer dust halo */}
+        <mesh scale={1.9}>
+          <sphereGeometry args={[0.18, 16, 16]} />
+          <meshBasicMaterial color="#ff8a4a" transparent opacity={0.10} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+        {/* tight inner glow */}
+        <mesh scale={1.25}>
+          <sphereGeometry args={[0.18, 16, 16]} />
+          <meshBasicMaterial color="#ffb070" transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
         </mesh>
       </group>
     );
   }
 
-  // shard / drone — sharp geometric with magenta glow
-  const geom = kind === "shard"
-    ? <octahedronGeometry args={[0.15]} />
-    : <tetrahedronGeometry args={[0.16]} />;
+  // shard / drone — sharp geometric with magenta/cyan glow + energy halo
+  const isShard = kind === "shard";
+  const accent = isShard ? "#ff2d7a" : "#00e5ff";
+  const accentSoft = isShard ? "#ff5da0" : "#5deaff";
+  const geom = isShard
+    ? <octahedronGeometry args={[0.22]} />
+    : <tetrahedronGeometry args={[0.24]} />;
   return (
     <>
       <mesh>
         {geom}
-        <meshStandardMaterial color="#0a0c18" emissive="#ff2d7a" emissiveIntensity={0.8} metalness={0.85} roughness={0.18} />
+        <meshStandardMaterial color="#0a0c18" emissive={accent} emissiveIntensity={1.0} metalness={0.9} roughness={0.15} />
       </mesh>
-      <mesh scale={1.005}>
+      <mesh scale={1.04}>
         {geom}
-        <meshBasicMaterial color="#ff5da0" wireframe transparent opacity={0.65} />
+        <meshBasicMaterial color={accentSoft} wireframe transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      {/* energy aura */}
+      <mesh scale={1.8}>
+        <sphereGeometry args={[0.18, 16, 16]} />
+        <meshBasicMaterial color={accent} transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      {/* tiny pulsing core */}
+      <mesh scale={0.35}>
+        <sphereGeometry args={[0.18, 12, 12]} />
+        <meshBasicMaterial color="#ffffff" />
       </mesh>
     </>
   );
@@ -486,7 +532,7 @@ function DefenseSystem({
           id: idCounter.current++,
           from: barrelTip,
           to: closest.pos.clone(),
-          life: 0.24, maxLife: 0.24,
+          life: 0.36, maxLife: 0.36,
           ref: null,
         });
         closest.hp -= 1;
@@ -547,18 +593,58 @@ function DefenseSystem({
 
   return (
     <group ref={groupRef}>
-      {attackers.current.map((a) => (
-        <group key={a.id} ref={(el) => { if (el) a.ref = el; }} position={a.pos} scale={a.scale}>
-          <AttackerMesh kind={a.kind} />
-          <mesh scale={1.8}>
-            <sphereGeometry args={[0.12, 16, 16]} />
-            <meshBasicMaterial
-              color={a.kind === "asteroid" ? "#8a5a3a" : a.kind === "ship" ? "#9a30ff" : "#ff2d7a"}
-              transparent opacity={0.12} blending={THREE.AdditiveBlending} depthWrite={false}
-            />
-          </mesh>
-        </group>
-      ))}
+      {attackers.current.map((a) => {
+        const haloColor =
+          a.kind === "asteroid" ? "#ff8a4a" :
+          a.kind === "ship" ? "#9a30ff" :
+          a.kind === "shard" ? "#ff2d7a" : "#00e5ff";
+        const trailColor =
+          a.kind === "asteroid" ? "#ff5a1f" :
+          a.kind === "ship" ? "#00f0ff" :
+          a.kind === "shard" ? "#ff5da0" : "#5deaff";
+        return (
+          <group key={a.id}>
+            <group ref={(el) => { if (el) a.ref = el; }} position={a.pos} scale={a.scale}>
+              <AttackerMesh kind={a.kind} />
+              {/* outer atmospheric halo — much more prominent */}
+              <mesh scale={2.4}>
+                <sphereGeometry args={[0.16, 16, 16]} />
+                <meshBasicMaterial
+                  color={haloColor}
+                  transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false}
+                />
+              </mesh>
+              <mesh scale={3.6}>
+                <sphereGeometry args={[0.16, 12, 12]} />
+                <meshBasicMaterial
+                  color={haloColor}
+                  transparent opacity={0.08} blending={THREE.AdditiveBlending} depthWrite={false}
+                />
+              </mesh>
+            </group>
+            {/* motion trail — soft elongated streak behind the attacker */}
+            {(() => {
+              const speed = a.vel.length();
+              const trailLen = Math.min(0.9, 0.35 + speed * 0.6) * a.scale;
+              const dirNeg = a.vel.clone().normalize().multiplyScalar(-1);
+              const mid = a.pos.clone().add(dirNeg.clone().multiplyScalar(trailLen * 0.5));
+              const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dirNeg);
+              return (
+                <group position={mid} quaternion={quat}>
+                  <mesh>
+                    <coneGeometry args={[0.05 * a.scale, trailLen, 12, 1, true]} />
+                    <meshBasicMaterial color={trailColor} transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+                  </mesh>
+                  <mesh>
+                    <coneGeometry args={[0.10 * a.scale, trailLen, 12, 1, true]} />
+                    <meshBasicMaterial color={trailColor} transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+                  </mesh>
+                </group>
+              );
+            })()}
+          </group>
+        );
+      })}
 
       {lasers.current.map((l) => {
         const mid = l.from.clone().add(l.to).multiplyScalar(0.5);
@@ -573,8 +659,9 @@ function DefenseSystem({
             position={mid}
             quaternion={quat}
           >
+            {/* hot white core */}
             <mesh>
-              <cylinderGeometry args={[0.0015, 0.0015, len, 6, 1, true]} />
+              <cylinderGeometry args={[0.006, 0.006, len, 8, 1, true]} />
               <meshBasicMaterial
                 color="#ffffff"
                 transparent
@@ -585,10 +672,11 @@ function DefenseSystem({
                 userData={{ baseOpacity: 1 }}
               />
             </mesh>
+            {/* inner orange plasma */}
             <mesh>
-              <cylinderGeometry args={[0.004, 0.004, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.018, 0.018, len, 12, 1, true]} />
               <meshBasicMaterial
-                color="#ff8a1f"
+                color="#ffb060"
                 transparent
                 opacity={0.95}
                 blending={THREE.AdditiveBlending}
@@ -597,27 +685,65 @@ function DefenseSystem({
                 userData={{ baseOpacity: 0.95 }}
               />
             </mesh>
+            {/* mid orange glow */}
             <mesh>
-              <cylinderGeometry args={[0.010, 0.010, len, 8, 1, true]} />
+              <cylinderGeometry args={[0.038, 0.038, len, 12, 1, true]} />
               <meshBasicMaterial
-                color="#ff5a0f"
+                color="#ff6a1f"
                 transparent
-                opacity={0.32}
+                opacity={0.55}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
                 side={THREE.DoubleSide}
-                userData={{ baseOpacity: 0.32 }}
+                userData={{ baseOpacity: 0.55 }}
               />
             </mesh>
+            {/* outer soft halo — water-like diffusion */}
+            <mesh>
+              <cylinderGeometry args={[0.075, 0.075, len, 12, 1, true]} />
+              <meshBasicMaterial
+                color="#ff3a00"
+                transparent
+                opacity={0.22}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                userData={{ baseOpacity: 0.22 }}
+              />
+            </mesh>
+            {/* impact flash at target end */}
             <mesh position={[0, -len / 2, 0]}>
-              <sphereGeometry args={[0.035, 12, 12]} />
+              <sphereGeometry args={[0.07, 16, 16]} />
               <meshBasicMaterial
                 color="#fff0c8"
                 transparent
-                opacity={0.95}
+                opacity={1}
                 blending={THREE.AdditiveBlending}
                 depthWrite={false}
-                userData={{ baseOpacity: 0.95 }}
+                userData={{ baseOpacity: 1 }}
+              />
+            </mesh>
+            <mesh position={[0, -len / 2, 0]} scale={2.2}>
+              <sphereGeometry args={[0.07, 16, 16]} />
+              <meshBasicMaterial
+                color="#ff8a3c"
+                transparent
+                opacity={0.55}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                userData={{ baseOpacity: 0.55 }}
+              />
+            </mesh>
+            {/* muzzle flash at turret end */}
+            <mesh position={[0, len / 2, 0]} scale={1.4}>
+              <sphereGeometry args={[0.04, 12, 12]} />
+              <meshBasicMaterial
+                color="#ffffff"
+                transparent
+                opacity={0.9}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                userData={{ baseOpacity: 0.9 }}
               />
             </mesh>
           </group>
