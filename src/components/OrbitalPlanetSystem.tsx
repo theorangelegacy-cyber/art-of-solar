@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePlanetAudio } from "@/hooks/usePlanetAudio";
 
 /* =====================================================================
    OrbitalPlanetSystem — Apple-grade preset planet selector
@@ -56,25 +57,49 @@ const PLANETS: Planet[] = [
 export default function OrbitalPlanetSystem() {
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
+  const audio = usePlanetAudio(true);
+  const firstChangeRef = useRef(true);
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
+  // Tune hum + play whoosh on planet change (skip initial mount)
+  useEffect(() => {
+    if (reduced) return;
+    audio.tuneHum(PLANETS[active].hue);
+    if (firstChangeRef.current) { firstChangeRef.current = false; return; }
+    audio.playWhoosh();
+  }, [active, reduced, audio]);
+
+  // Pause hum when section leaves viewport
+  const sectionRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (reduced || !sectionRef.current) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => audio.setHumActive(entry.isIntersecting),
+      { threshold: 0.25 }
+    );
+    obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, [reduced, audio]);
+
   // Keyboard navigation
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") setActive((a) => (a + 1) % PLANETS.length);
-      if (e.key === "ArrowLeft") setActive((a) => (a - 1 + PLANETS.length) % PLANETS.length);
+      if (e.key === "ArrowRight") { audio.unlock(); setActive((a) => (a + 1) % PLANETS.length); }
+      if (e.key === "ArrowLeft")  { audio.unlock(); setActive((a) => (a - 1 + PLANETS.length) % PLANETS.length); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [audio]);
+
+  const handleSelect = (i: number) => { audio.unlock(); setActive(i); };
 
   const planet = PLANETS[active];
 
   return (
-    <section className="relative py-20 md:py-28 border-t border-border overflow-hidden">
+    <section ref={sectionRef} className="relative py-20 md:py-28 border-t border-border overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid-fine opacity-[0.04]" />
         <Starfield />
@@ -141,7 +166,7 @@ export default function OrbitalPlanetSystem() {
                 return (
                   <button
                     key={p.code}
-                    onClick={() => setActive(i)}
+                    onClick={() => handleSelect(i)}
                     className={`group relative flex-1 min-w-[160px] px-4 py-5 text-left transition-all ${
                       isActive ? "bg-surface-1" : "hover:bg-surface-1/50"
                     } ${i > 0 ? "border-l border-border" : ""}`}
