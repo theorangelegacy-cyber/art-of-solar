@@ -1,30 +1,42 @@
 import { useRef, useMemo, Suspense, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Vignette, SMAA } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 /* =====================================================================
    APPLE-GRADE QUANTUM ORANGE — Tower Defense Hero
-   Sculpted 3D orange (procedural, no photo) auto-targeting incoming
-   geometric attackers with laser turrets. Physics + particles.
+   v3 — high-poly orange, refined PBR-ish shading, sleek turrets,
+   premium lasers (thin core + soft halo + impact flash), sharp attackers.
    ===================================================================== */
 
-/* ---------- Orange shader: soft, sculpted, premium ---------- */
+/* ---------- Orange shader: smooth, sculpted, premium ---------- */
 
 const orangeVertex = /* glsl */ `
   varying vec3 vNormal;
   varying vec3 vViewDir;
   varying vec3 vWorldPos;
+  varying vec3 vObjectPos;
   uniform float uTime;
 
   // tiny dimples — much subtler than before, Apple-product-grade
   float hash(vec3 p){ return fract(sin(dot(p, vec3(12.9898, 78.233, 45.164))) * 43758.5453); }
+  float vnoise(vec3 p){
+    vec3 i = floor(p); vec3 f = fract(p);
+    f = f*f*(3.0-2.0*f);
+    return mix(
+      mix(mix(hash(i+vec3(0,0,0)), hash(i+vec3(1,0,0)), f.x),
+          mix(hash(i+vec3(0,1,0)), hash(i+vec3(1,1,0)), f.x), f.y),
+      mix(mix(hash(i+vec3(0,0,1)), hash(i+vec3(1,0,1)), f.x),
+          mix(hash(i+vec3(0,1,1)), hash(i+vec3(1,1,1)), f.x), f.y),
+      f.z);
+  }
 
   void main() {
     vNormal = normalize(normalMatrix * normal);
-    vec3 displaced = position;
-    float h = hash(floor(position * 24.0));
-    displaced += normal * (h - 0.5) * 0.006; // very subtle peel
+    vObjectPos = position;
+    // very subtle, smooth dimples — much softer than before
+    float n = vnoise(position * 8.0);
+    vec3 displaced = position + normal * (n - 0.5) * 0.012;
     vec4 mv = modelViewMatrix * vec4(displaced, 1.0);
     vViewDir = normalize(-mv.xyz);
     vWorldPos = (modelMatrix * vec4(displaced, 1.0)).xyz;
@@ -37,15 +49,17 @@ const orangeFragment = /* glsl */ `
   varying vec3 vNormal;
   varying vec3 vViewDir;
   varying vec3 vWorldPos;
+  varying vec3 vObjectPos;
   uniform float uTime;
-  uniform vec3 uDeep;     // shadow side
-  uniform vec3 uMid;      // mid orange
-  uniform vec3 uHi;       // highlight peach
-  uniform vec3 uRim;      // green rim
-  uniform float uShield;  // 0..1 shield flash on hit
+  uniform vec3 uDeep;
+  uniform vec3 uMid;
+  uniform vec3 uHi;
+  uniform vec3 uHotSpec;
+  uniform vec3 uRim;
+  uniform float uShield;
 
   float hash(vec3 p){ return fract(sin(dot(p, vec3(127.1,311.7,74.7)))*43758.5453); }
-  float noise(vec3 p){
+  float vnoise(vec3 p){
     vec3 i = floor(p); vec3 f = fract(p);
     f = f*f*(3.0-2.0*f);
     return mix(
@@ -55,43 +69,60 @@ const orangeFragment = /* glsl */ `
           mix(hash(i+vec3(0,1,1)), hash(i+vec3(1,1,1)), f.x), f.y),
       f.z);
   }
+  float fbm(vec3 p){
+    float v = 0.0; float a = 0.5;
+    for(int i = 0; i < 4; i++){ v += a * vnoise(p); p *= 2.02; a *= 0.5; }
+    return v;
+  }
 
   void main() {
     vec3 N = normalize(vNormal);
     vec3 V = normalize(vViewDir);
-    vec3 L = normalize(vec3(0.55, 0.75, 0.6)); // key light, top-right
+    vec3 L1 = normalize(vec3(0.55, 0.85, 0.65));   // key
+    vec3 L2 = normalize(vec3(-0.6, -0.2, 0.4));    // fill (cool)
 
-    float ndl = max(dot(N, L), 0.0);
-    float fres = pow(1.0 - max(dot(N, V), 0.0), 2.6);
+    float ndl1 = max(dot(N, L1), 0.0);
+    float ndl2 = max(dot(N, L2), 0.0);
+    float fres = pow(1.0 - max(dot(N, V), 0.0), 3.0);
 
-    // micro peel texture — keeps it tactile but soft
-    float peel = noise(vWorldPos * 28.0);
-    peel = smoothstep(0.4, 0.85, peel) * 0.18;
+    // Smoother peel: layered fbm at moderate freq — no aliasing pixels
+    float peel = fbm(vObjectPos * 12.0);
+    peel = smoothstep(0.35, 0.78, peel) * 0.22;
 
-    // base gradient (deep -> mid -> hi)
-    vec3 base = mix(uDeep, uMid, ndl);
-    base = mix(base, uHi, pow(ndl, 4.0) * 0.85);
-    base += uHi * peel * 0.35;
+    // Base color: deep -> mid -> hi gradient driven by light direction
+    vec3 base = mix(uDeep, uMid, ndl1 * 0.85 + 0.15);
+    base = mix(base, uHi, pow(ndl1, 3.0) * 0.85);
+    base += uHi * peel * 0.45;
 
-    // soft specular highlight (Apple key light)
-    vec3 H = normalize(L + V);
-    float spec = pow(max(dot(N, H), 0.0), 64.0) * 0.55;
-    base += vec3(spec);
+    // Cool fill from opposite side adds dimensionality
+    base += vec3(0.08, 0.04, 0.02) * ndl2;
 
-    // subtle green bioluminescent rim
-    base += uRim * fres * 0.55;
+    // Hot specular highlight (the Apple-glass key reflection)
+    vec3 H1 = normalize(L1 + V);
+    float spec = pow(max(dot(N, H1), 0.0), 96.0);
+    base += uHotSpec * spec * 0.95;
+    // soft secondary highlight
+    float spec2 = pow(max(dot(N, H1), 0.0), 24.0) * 0.18;
+    base += uHotSpec * spec2;
 
-    // shield ripple on hit — concentric pulse
-    float ripple = sin(length(vWorldPos.xy) * 22.0 - uTime * 8.0);
-    ripple = smoothstep(0.3, 1.0, ripple) * uShield;
-    base += vec3(0.2, 0.9, 0.55) * ripple * 0.6;
+    // Bioluminescent green rim — restrained
+    base += uRim * fres * 0.45;
+
+    // Shield ripple on hit
+    float ripple = sin(length(vWorldPos.xy) * 24.0 - uTime * 9.0);
+    ripple = smoothstep(0.4, 1.0, ripple) * uShield;
+    base += vec3(0.25, 0.95, 0.6) * ripple * 0.55;
+
+    // very mild tone-mapping for crispness
+    base = base / (base + vec3(1.0));
+    base = pow(base, vec3(1.0/2.2));
 
     gl_FragColor = vec4(base, 1.0);
   }
 `;
 
 /* =====================================================================
-   THE ORANGE — premium sphere with 6 micro turrets at orbiting positions
+   THE ORANGE
    ===================================================================== */
 
 type ShieldRef = { value: number };
@@ -108,14 +139,15 @@ function QuantumOrange({
 
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uDeep: { value: new THREE.Color("#7a2604") },
-    uMid: { value: new THREE.Color("#ff6a1a") },
-    uHi: { value: new THREE.Color("#ffd29a") },
+    uDeep: { value: new THREE.Color("#5a1a02") },
+    uMid: { value: new THREE.Color("#ff7028") },
+    uHi: { value: new THREE.Color("#ffd9a8") },
+    uHotSpec: { value: new THREE.Color("#fff4e0") },
     uRim: { value: new THREE.Color("#3df3a0") },
     uShield: { value: 0 },
   }), []);
 
-  // 6 turret slots distributed around the sphere
+  // 6 turret slots — golden-ratio sphere distribution
   const turretSlots = useMemo(() => {
     const slots: { pos: THREE.Vector3; quat: THREE.Quaternion }[] = [];
     const phi = Math.PI * (3 - Math.sqrt(5));
@@ -132,11 +164,10 @@ function QuantumOrange({
 
   useFrame((state, dt) => {
     uniforms.uTime.value += dt;
-    // shield decays
     shieldRef.value = Math.max(0, shieldRef.value - dt * 2.5);
     uniforms.uShield.value = shieldRef.value;
     if (groupRef.current) {
-      groupRef.current.rotation.y += dt * 0.12;
+      groupRef.current.rotation.y += dt * 0.1;
       const s = 1 + scrollProgress.current * 0.12;
       groupRef.current.scale.setScalar(s);
     }
@@ -144,25 +175,58 @@ function QuantumOrange({
 
   return (
     <group ref={groupRef}>
-      {/* main orange */}
+      {/* Main orange — high poly sphere for smooth silhouette */}
       <mesh>
-        <sphereGeometry args={[1, 128, 128]} />
-        <shaderMaterial ref={matRef} vertexShader={orangeVertex} fragmentShader={orangeFragment} uniforms={uniforms} />
+        <sphereGeometry args={[1, 256, 256]} />
+        <shaderMaterial
+          ref={matRef}
+          vertexShader={orangeVertex}
+          fragmentShader={orangeFragment}
+          uniforms={uniforms}
+        />
       </mesh>
 
-      {/* stem nub */}
-      <mesh position={[0, 1.02, 0]}>
-        <cylinderGeometry args={[0.04, 0.06, 0.08, 16]} />
-        <meshStandardMaterial color="#3a1a08" roughness={0.7} />
+      {/* Outer atmospheric halo — soft fresnel sphere */}
+      <mesh scale={1.04}>
+        <sphereGeometry args={[1, 64, 64]} />
+        <shaderMaterial
+          transparent
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          uniforms={{ uColor: { value: new THREE.Color("#ff8a3c") } }}
+          vertexShader={`
+            varying vec3 vN; varying vec3 vV;
+            void main(){
+              vN = normalize(normalMatrix * normal);
+              vec4 mv = modelViewMatrix * vec4(position, 1.0);
+              vV = normalize(-mv.xyz);
+              gl_Position = projectionMatrix * mv;
+            }
+          `}
+          fragmentShader={`
+            varying vec3 vN; varying vec3 vV;
+            uniform vec3 uColor;
+            void main(){
+              float fres = pow(1.0 - max(dot(normalize(vN), normalize(vV)), 0.0), 3.5);
+              gl_FragColor = vec4(uColor, fres * 0.45);
+            }
+          `}
+        />
       </mesh>
 
-      {/* leaf */}
-      <mesh position={[0.06, 1.08, 0]} rotation={[0, 0, -0.6]}>
-        <sphereGeometry args={[0.12, 16, 8]} />
-        <meshStandardMaterial color="#1f6b3a" roughness={0.5} metalness={0.1} />
+      {/* Stem — sleek, flush */}
+      <mesh position={[0, 1.005, 0]}>
+        <cylinderGeometry args={[0.035, 0.05, 0.06, 32]} />
+        <meshStandardMaterial color="#3a1a08" roughness={0.6} metalness={0.05} />
       </mesh>
 
-      {/* 6 turrets — small chrome cylinders pointing outward */}
+      {/* Leaf */}
+      <mesh position={[0.07, 1.06, 0]} rotation={[0, 0.3, -0.7]}>
+        <sphereGeometry args={[0.13, 32, 16]} />
+        <meshStandardMaterial color="#1f6b3a" roughness={0.45} metalness={0.1} />
+      </mesh>
+
+      {/* 6 turrets — sleeker, lower-profile, chrome */}
       {turretSlots.map((s, i) => (
         <group
           key={i}
@@ -170,20 +234,25 @@ function QuantumOrange({
           position={s.pos}
           quaternion={s.quat}
         >
-          {/* base ring */}
+          {/* recessed base ring */}
           <mesh>
-            <torusGeometry args={[0.06, 0.012, 8, 24]} />
-            <meshStandardMaterial color="#1a1a1f" metalness={0.9} roughness={0.25} />
+            <torusGeometry args={[0.055, 0.008, 16, 32]} />
+            <meshStandardMaterial color="#c8c8d0" metalness={0.95} roughness={0.18} />
           </mesh>
-          {/* turret barrel — points along local +Y */}
+          {/* dome housing */}
+          <mesh position={[0, 0.012, 0]}>
+            <sphereGeometry args={[0.05, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            <meshStandardMaterial color="#1a1a22" metalness={0.9} roughness={0.22} />
+          </mesh>
+          {/* slim barrel */}
           <mesh position={[0, 0.05, 0]}>
-            <cylinderGeometry args={[0.018, 0.026, 0.1, 16]} />
-            <meshStandardMaterial color="#e8e8ec" metalness={0.95} roughness={0.18} />
+            <cylinderGeometry args={[0.008, 0.012, 0.07, 16]} />
+            <meshStandardMaterial color="#e8e8ec" metalness={0.95} roughness={0.15} />
           </mesh>
-          {/* glowing tip */}
-          <mesh position={[0, 0.105, 0]}>
-            <sphereGeometry args={[0.018, 12, 12]} />
-            <meshBasicMaterial color="#3df3a0" />
+          {/* glowing emitter */}
+          <mesh position={[0, 0.085, 0]}>
+            <sphereGeometry args={[0.01, 12, 12]} />
+            <meshBasicMaterial color="#5dffb0" />
           </mesh>
         </group>
       ))}
@@ -192,7 +261,7 @@ function QuantumOrange({
 }
 
 /* =====================================================================
-   ATTACKERS — futuristic geometric shapes incoming from outer ring
+   ATTACKERS — geometric shapes with edge glow
    ===================================================================== */
 
 type AttackerKind = "tetra" | "octa" | "cube" | "cone";
@@ -213,18 +282,19 @@ interface Laser {
   from: THREE.Vector3;
   to: THREE.Vector3;
   life: number;
-  ref: THREE.Mesh | null;
+  maxLife: number;
+  ref: THREE.Group | null;
 }
 
 interface Burst {
   id: number;
   pos: THREE.Vector3;
   life: number;
+  maxLife: number;
   ref: THREE.Group | null;
 }
 
 function spawnAttacker(id: number): Attacker {
-  // spawn from random direction at distance ~5
   const phi = Math.acos(2 * Math.random() - 1);
   const theta = Math.random() * Math.PI * 2;
   const dist = 4.5 + Math.random() * 1.5;
@@ -233,8 +303,7 @@ function spawnAttacker(id: number): Attacker {
     Math.sin(phi) * Math.sin(theta),
     Math.cos(phi),
   ).multiplyScalar(dist);
-  // velocity heads toward origin
-  const vel = pos.clone().negate().normalize().multiplyScalar(0.45 + Math.random() * 0.35);
+  const vel = pos.clone().negate().normalize().multiplyScalar(0.4 + Math.random() * 0.3);
   const kinds: AttackerKind[] = ["tetra", "octa", "cube", "cone"];
   return {
     id,
@@ -249,24 +318,35 @@ function spawnAttacker(id: number): Attacker {
 }
 
 function AttackerMesh({ kind }: { kind: AttackerKind }) {
-  const mat = (
-    <meshStandardMaterial
-      color="#0b0d18"
-      emissive="#ff3a8a"
-      emissiveIntensity={0.6}
-      metalness={0.7}
-      roughness={0.25}
-    />
+  const geom = (() => {
+    switch (kind) {
+      case "tetra": return <tetrahedronGeometry args={[0.15]} />;
+      case "octa":  return <octahedronGeometry args={[0.16]} />;
+      case "cube":  return <boxGeometry args={[0.18, 0.18, 0.18]} />;
+      case "cone":  return <coneGeometry args={[0.11, 0.26, 5]} />;
+    }
+  })();
+  return (
+    <>
+      {/* solid body — dark with magenta emissive */}
+      <mesh>
+        {geom}
+        <meshStandardMaterial
+          color="#0a0c18"
+          emissive="#ff2d7a"
+          emissiveIntensity={0.7}
+          metalness={0.85}
+          roughness={0.18}
+        />
+      </mesh>
+      {/* wireframe overlay for "engineered shape" feel */}
+      <mesh scale={1.005}>
+        {geom}
+        <meshBasicMaterial color="#ff5da0" wireframe transparent opacity={0.65} />
+      </mesh>
+    </>
   );
-  switch (kind) {
-    case "tetra": return <mesh><tetrahedronGeometry args={[0.18]} />{mat}</mesh>;
-    case "octa":  return <mesh><octahedronGeometry args={[0.18]} />{mat}</mesh>;
-    case "cube":  return <mesh><boxGeometry args={[0.22, 0.22, 0.22]} />{mat}</mesh>;
-    case "cone":  return <mesh><coneGeometry args={[0.14, 0.32, 6]} />{mat}</mesh>;
-  }
 }
-
-/* ---------- The defense system orchestrator ---------- */
 
 function DefenseSystem({
   shieldRef, turretRefs,
@@ -282,7 +362,6 @@ function DefenseSystem({
   const fireCooldowns = useRef<number[]>([0, 0, 0, 0, 0, 0]);
   const groupRef = useRef<THREE.Group>(null!);
 
-  // Initial wave
   useEffect(() => {
     for (let i = 0; i < 4; i++) attackers.current.push(spawnAttacker(idCounter.current++));
   }, []);
@@ -290,14 +369,12 @@ function DefenseSystem({
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
 
-    // spawn new attackers
     spawnTimer.current -= dtClamped;
     if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 7) {
       attackers.current.push(spawnAttacker(idCounter.current++));
       spawnTimer.current = 0.9 + Math.random() * 1.2;
     }
 
-    // update attackers
     for (const a of attackers.current) {
       if (!a.alive) continue;
       a.pos.addScaledVector(a.vel, dtClamped);
@@ -307,29 +384,25 @@ function DefenseSystem({
         a.ref.rotation.y += a.rotSpeed.y * dtClamped;
         a.ref.rotation.z += a.rotSpeed.z * dtClamped;
       }
-      // hit the orange — shield flash + destroy attacker
       if (a.pos.length() < 1.05) {
         a.alive = false;
         shieldRef.value = 1;
         bursts.current.push({
           id: idCounter.current++,
           pos: a.pos.clone().normalize().multiplyScalar(1.05),
-          life: 0.5,
+          life: 0.55, maxLife: 0.55,
           ref: null,
         });
       }
     }
 
-    // turrets fire at nearest alive attacker
     for (let t = 0; t < 6; t++) {
       fireCooldowns.current[t] -= dtClamped;
       const turret = turretRefs.current[t];
       if (!turret) continue;
-      // turret world position
       const turretWorld = new THREE.Vector3();
       turret.getWorldPosition(turretWorld);
 
-      // find closest alive attacker
       let closest: Attacker | null = null;
       let closestDist = Infinity;
       for (const a of attackers.current) {
@@ -339,10 +412,8 @@ function DefenseSystem({
       }
 
       if (closest && fireCooldowns.current[t] <= 0) {
-        // aim turret at target (rotate group so local +Y points at target)
         const dir = closest.pos.clone().sub(turretWorld).normalize();
         const targetQuat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-        // since turret is child of orange group, convert world quat to local
         const parent = turret.parent;
         if (parent) {
           const parentQuat = new THREE.Quaternion();
@@ -350,13 +421,14 @@ function DefenseSystem({
           turret.quaternion.copy(parentQuat.invert().multiply(targetQuat));
         }
 
-        // fire
-        fireCooldowns.current[t] = 0.35 + Math.random() * 0.2;
+        fireCooldowns.current[t] = 0.4 + Math.random() * 0.25;
+        // emit laser from barrel tip in world space
+        const barrelTip = turretWorld.clone().add(dir.clone().multiplyScalar(0.09));
         lasers.current.push({
           id: idCounter.current++,
-          from: turretWorld.clone(),
+          from: barrelTip,
           to: closest.pos.clone(),
-          life: 0.12,
+          life: 0.18, maxLife: 0.18,
           ref: null,
         });
         closest.hp -= 1;
@@ -365,37 +437,36 @@ function DefenseSystem({
           bursts.current.push({
             id: idCounter.current++,
             pos: closest.pos.clone(),
-            life: 0.45,
+            life: 0.5, maxLife: 0.5,
             ref: null,
           });
         }
       }
     }
 
-    // update lasers
     for (const l of lasers.current) {
       l.life -= dtClamped;
       if (l.ref) {
-        const opacity = Math.max(0, l.life / 0.12);
-        (l.ref.material as THREE.MeshBasicMaterial).opacity = opacity;
-      }
-    }
-
-    // update bursts
-    for (const b of bursts.current) {
-      b.life -= dtClamped;
-      if (b.ref) {
-        const t = 1 - b.life / 0.45;
-        b.ref.scale.setScalar(0.2 + t * 1.4);
-        b.ref.children.forEach((child) => {
+        const t = Math.max(0, l.life / l.maxLife);
+        l.ref.children.forEach((child) => {
           const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
-          if (m) m.opacity = Math.max(0, b.life / 0.45);
+          if (m && "opacity" in m) m.opacity = (m.userData?.baseOpacity ?? 1) * t;
         });
       }
     }
 
-    // GC
-    attackers.current = attackers.current.filter(a => a.alive || (a.ref && false));
+    for (const b of bursts.current) {
+      b.life -= dtClamped;
+      if (b.ref) {
+        const t = 1 - b.life / b.maxLife;
+        b.ref.scale.setScalar(0.15 + t * 1.6);
+        b.ref.children.forEach((child) => {
+          const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
+          if (m) m.opacity = (m.userData?.baseOpacity ?? 1) * Math.max(0, b.life / b.maxLife);
+        });
+      }
+    }
+
     attackers.current = attackers.current.filter(a => a.alive);
     lasers.current = lasers.current.filter(l => l.life > 0);
     bursts.current = bursts.current.filter(b => b.life > 0);
@@ -406,10 +477,10 @@ function DefenseSystem({
       {attackers.current.map((a) => (
         <group key={a.id} ref={(el) => { if (el) a.ref = el; }} position={a.pos}>
           <AttackerMesh kind={a.kind} />
-          {/* glow halo */}
-          <mesh scale={1.6}>
-            <sphereGeometry args={[0.14, 12, 12]} />
-            <meshBasicMaterial color="#ff3a8a" transparent opacity={0.12} blending={THREE.AdditiveBlending} depthWrite={false} />
+          {/* soft glow halo */}
+          <mesh scale={1.8}>
+            <sphereGeometry args={[0.12, 16, 16]} />
+            <meshBasicMaterial color="#ff2d7a" transparent opacity={0.1} blending={THREE.AdditiveBlending} depthWrite={false} />
           </mesh>
         </group>
       ))}
@@ -419,28 +490,82 @@ function DefenseSystem({
         const dir = l.to.clone().sub(l.from);
         const len = dir.length();
         const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+
         return (
-          <mesh
+          <group
             key={l.id}
             ref={(el) => { if (el) l.ref = el; }}
             position={mid}
             quaternion={quat}
           >
-            <cylinderGeometry args={[0.012, 0.012, len, 8]} />
-            <meshBasicMaterial color="#5dffb0" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} />
-          </mesh>
+            {/* HOT INNER CORE — razor thin */}
+            <mesh>
+              <cylinderGeometry args={[0.0025, 0.0025, len, 6, 1, true]} />
+              <meshBasicMaterial
+                color="#ffffff"
+                transparent
+                opacity={1}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                userData={{ baseOpacity: 1 }}
+              />
+            </mesh>
+            {/* MID GLOW */}
+            <mesh>
+              <cylinderGeometry args={[0.008, 0.008, len, 8, 1, true]} />
+              <meshBasicMaterial
+                color="#5dffb0"
+                transparent
+                opacity={0.85}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                userData={{ baseOpacity: 0.85 }}
+              />
+            </mesh>
+            {/* OUTER AURA — wide soft */}
+            <mesh>
+              <cylinderGeometry args={[0.022, 0.022, len, 8, 1, true]} />
+              <meshBasicMaterial
+                color="#3df3a0"
+                transparent
+                opacity={0.25}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                userData={{ baseOpacity: 0.25 }}
+              />
+            </mesh>
+            {/* MUZZLE FLASH at start */}
+            <mesh position={[0, -len / 2, 0]}>
+              <sphereGeometry args={[0.05, 12, 12]} />
+              <meshBasicMaterial
+                color="#ffffff"
+                transparent
+                opacity={0.9}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                userData={{ baseOpacity: 0.9 }}
+              />
+            </mesh>
+          </group>
         );
       })}
 
       {bursts.current.map((b) => (
         <group key={b.id} ref={(el) => { if (el) b.ref = el; }} position={b.pos}>
           <mesh>
-            <sphereGeometry args={[0.18, 16, 16]} />
-            <meshBasicMaterial color="#5dffb0" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} />
+            <sphereGeometry args={[0.16, 24, 24]} />
+            <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 1 }} />
           </mesh>
           <mesh>
-            <sphereGeometry args={[0.32, 16, 16]} />
-            <meshBasicMaterial color="#ff8a3c" transparent opacity={0.6} blending={THREE.AdditiveBlending} depthWrite={false} />
+            <sphereGeometry args={[0.28, 24, 24]} />
+            <meshBasicMaterial color="#5dffb0" transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.8 }} />
+          </mesh>
+          <mesh>
+            <sphereGeometry args={[0.42, 24, 24]} />
+            <meshBasicMaterial color="#ff8a3c" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.45 }} />
           </mesh>
         </group>
       ))}
@@ -449,16 +574,16 @@ function DefenseSystem({
 }
 
 /* =====================================================================
-   Background — soft star particles, no busy rings
+   Background — soft star particles + nebula gradient
    ===================================================================== */
 
-function StarField({ count = 800 }: { count?: number }) {
+function StarField({ count = 1200 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null!);
   const { mouse } = useThree();
   const positions = useMemo(() => {
     const p = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const r = 6 + Math.random() * 8;
+      const r = 6 + Math.random() * 10;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       p[i * 3] = r * Math.sin(phi) * Math.cos(theta);
@@ -470,8 +595,8 @@ function StarField({ count = 800 }: { count?: number }) {
 
   useFrame((_, dt) => {
     if (!ref.current) return;
-    ref.current.rotation.y += dt * 0.015;
-    ref.current.rotation.x = mouse.y * 0.05;
+    ref.current.rotation.y += dt * 0.012;
+    ref.current.rotation.x = mouse.y * 0.04;
   });
 
   return (
@@ -479,7 +604,15 @@ function StarField({ count = 800 }: { count?: number }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" count={positions.length / 3} array={positions} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial size={0.025} color="#ffffff" transparent opacity={0.55} depthWrite={false} blending={THREE.AdditiveBlending} />
+      <pointsMaterial
+        size={0.018}
+        color="#ffffff"
+        transparent
+        opacity={0.7}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        sizeAttenuation
+      />
     </points>
   );
 }
@@ -513,28 +646,36 @@ export default function QuantumOrangeScene({
   return (
     <div className={className}>
       <Canvas
-        dpr={[1, compact ? 1.5 : 2]}
-        camera={{ position: [0, 0.2, 4.4], fov: 42 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        dpr={[1.25, compact ? 2 : 2.5]}
+        camera={{ position: [0, 0.15, 4.2], fov: 38 }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.05,
+        }}
       >
         <color attach="background" args={["#05060f"]} />
 
-        {/* Soft Apple-style three-point lighting */}
-        <ambientLight intensity={0.35} />
-        <directionalLight position={[4, 5, 3]} intensity={1.4} color="#fff5e6" />
-        <directionalLight position={[-3, -2, 2]} intensity={0.5} color="#7af0c0" />
-        <pointLight position={[0, 0, 3]} intensity={0.4} color="#ffb380" />
+        {/* Premium three-point lighting — Apple product photography */}
+        <ambientLight intensity={0.28} />
+        <directionalLight position={[4, 6, 4]} intensity={1.6} color="#fff5e6" />
+        <directionalLight position={[-4, -1, 2]} intensity={0.55} color="#7af0c0" />
+        <pointLight position={[0, 0, 3.5]} intensity={0.45} color="#ffb380" />
+        <pointLight position={[2, -3, -2]} intensity={0.3} color="#ff5a0f" />
 
         <Suspense fallback={null}>
           <QuantumOrange scrollProgress={prog} shieldRef={shieldRef} turretRefs={turretRefs} />
           {!reduced && <DefenseSystem shieldRef={shieldRef} turretRefs={turretRefs} />}
-          <StarField count={compact ? 400 : 800} />
+          <StarField count={compact ? 600 : 1200} />
         </Suspense>
 
         {enablePostprocessing && !reduced && (
-          <EffectComposer>
-            <Bloom intensity={0.7} luminanceThreshold={0.4} luminanceSmoothing={0.85} mipmapBlur />
-            <Vignette eskil={false} offset={0.3} darkness={0.85} />
+          <EffectComposer multisampling={0}>
+            <SMAA />
+            <Bloom intensity={0.85} luminanceThreshold={0.55} luminanceSmoothing={0.9} mipmapBlur radius={0.85} />
+            <Vignette eskil={false} offset={0.32} darkness={0.85} />
           </EffectComposer>
         )}
       </Canvas>
