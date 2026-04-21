@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-/** Soft-glow custom cursor with green trail. Disabled on touch devices and reduced-motion. */
+/** Soft-glow custom cursor with subtle ring + center dot. Disabled on touch / reduced-motion. */
 export default function QuantumCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
@@ -15,15 +15,29 @@ export default function QuantumCursor() {
 
     let x = window.innerWidth / 2, y = window.innerHeight / 2;
     let rx = x, ry = y;
-    const onMove = (e: MouseEvent) => { x = e.clientX; y = e.clientY; };
+    let isPointer = false;
+    const onMove = (e: MouseEvent) => {
+      x = e.clientX; y = e.clientY;
+      const t = e.target as HTMLElement | null;
+      isPointer = !!(t && (t.closest("a, button, [role='button'], input, textarea, label, [data-cursor='pointer']")));
+    };
     window.addEventListener("mousemove", onMove);
 
     let raf = 0;
     const loop = () => {
-      rx += (x - rx) * 0.18;
-      ry += (y - ry) * 0.18;
-      if (dotRef.current) dotRef.current.style.transform = `translate3d(${x - 4}px, ${y - 4}px, 0)`;
-      if (ringRef.current) ringRef.current.style.transform = `translate3d(${rx - 18}px, ${ry - 18}px, 0)`;
+      rx += (x - rx) * 0.22;
+      ry += (y - ry) * 0.22;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${x - 2}px, ${y - 2}px, 0)`;
+      }
+      if (ringRef.current) {
+        const size = isPointer ? 36 : 22;
+        const off = size / 2;
+        ringRef.current.style.transform = `translate3d(${rx - off}px, ${ry - off}px, 0)`;
+        ringRef.current.style.width = `${size}px`;
+        ringRef.current.style.height = `${size}px`;
+        ringRef.current.style.borderColor = isPointer ? "hsl(var(--accent))" : "hsl(var(--primary) / 0.55)";
+      }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -40,13 +54,13 @@ export default function QuantumCursor() {
       <div
         ref={dotRef}
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[100] h-2 w-2 rounded-full bg-accent shadow-glow-green mix-blend-screen"
+        className="pointer-events-none fixed left-0 top-0 z-[100] h-1 w-1 rounded-full bg-accent mix-blend-screen"
       />
       <div
         ref={ringRef}
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[100] h-9 w-9 rounded-full border border-primary/60 mix-blend-screen"
-        style={{ boxShadow: "0 0 24px hsl(22 100% 55% / 0.5)" }}
+        className="pointer-events-none fixed left-0 top-0 z-[100] rounded-full border mix-blend-screen transition-[width,height,border-color] duration-150"
+        style={{ borderColor: "hsl(var(--primary) / 0.55)" }}
       />
     </>
   );
