@@ -540,12 +540,15 @@ function DefenseSystem({
   return (
     <group ref={groupRef}>
       {attackers.current.map((a) => (
-        <group key={a.id} ref={(el) => { if (el) a.ref = el; }} position={a.pos}>
+        <group key={a.id} ref={(el) => { if (el) a.ref = el; }} position={a.pos} scale={a.scale}>
           <AttackerMesh kind={a.kind} />
-          {/* soft glow halo */}
+          {/* soft glow halo — color varies by kind */}
           <mesh scale={1.8}>
             <sphereGeometry args={[0.12, 16, 16]} />
-            <meshBasicMaterial color="#ff2d7a" transparent opacity={0.1} blending={THREE.AdditiveBlending} depthWrite={false} />
+            <meshBasicMaterial
+              color={a.kind === "asteroid" ? "#8a5a3a" : a.kind === "ship" ? "#9a30ff" : "#ff2d7a"}
+              transparent opacity={0.12} blending={THREE.AdditiveBlending} depthWrite={false}
+            />
           </mesh>
         </group>
       ))}
