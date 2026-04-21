@@ -432,18 +432,27 @@ function DefenseSystem({
   const groupRef = useRef<THREE.Group>(null!);
 
   useEffect(() => {
-    for (let i = 0; i < 35; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+    // pre-populate so it's never empty on mount
+    for (let i = 0; i < 18; i++) attackers.current.push(spawnAttacker(idCounter.current++));
   }, []);
 
   useFrame((_, dt) => {
     const dtClamped = Math.min(dt, 0.05);
 
+    // CONTINUOUS FLOW — steady single spawns at a regular cadence.
+    // Target population ~18 alive at all times. Never empty.
     spawnTimer.current -= dtClamped;
-    if (spawnTimer.current <= 0 && attackers.current.filter(a => a.alive).length < 55) {
-      // heavy burst-spawn — Tower-style swarm
-      const burst = 2 + Math.floor(Math.random() * 4);
-      for (let i = 0; i < burst; i++) attackers.current.push(spawnAttacker(idCounter.current++));
-      spawnTimer.current = 0.08 + Math.random() * 0.18;
+    const aliveCount = attackers.current.filter(a => a.alive).length;
+    const target = 18;
+    if (spawnTimer.current <= 0) {
+      // spawn 1 normally; spawn 2 if we're below target to refill smoothly
+      const toSpawn = aliveCount < target - 4 ? 2 : 1;
+      for (let i = 0; i < toSpawn; i++) attackers.current.push(spawnAttacker(idCounter.current++));
+      // Cadence scales gently with population so flow stays even, not bursty
+      const base = 0.32;
+      const variance = 0.18;
+      const pressure = aliveCount > target ? 0.25 : 0; // slow down when above target
+      spawnTimer.current = base + pressure + Math.random() * variance;
     }
 
     for (const a of attackers.current) {
