@@ -307,6 +307,14 @@ interface Burst {
   life: number;
   maxLife: number;
   ref: THREE.Group | null;
+  kind?: AttackerKind;
+  debris?: {
+    dir: THREE.Vector3;
+    rot: THREE.Vector3;
+    scale: number;
+    shape: number; // 0..1 picks geometry variant
+    tone: string;
+  }[];
 }
 
 function spawnAttacker(id: number, center: THREE.Vector3, orangeRadius: number): Attacker {
@@ -391,24 +399,39 @@ function AttackerMesh({ kind }: { kind: AttackerKind }) {
   }
 
   if (kind === "asteroid") {
-    // Rocky asteroid silhouette — cratered, dusty, no neon glow
+    // Real-looking rock — irregular deformed icosahedron, mottled grey-brown,
+    // with cratered surface chunks and embedded pebbles. No neon, no halo glow.
     return (
       <group>
-        <mesh rotation={[0.4, 0.8, 0.2]} scale={[1, 0.9, 0.82]}>
-          <icosahedronGeometry args={[0.26, 1]} />
-          <meshStandardMaterial color="#4b4038" roughness={1} metalness={0.02} flatShading />
+        {/* main rock body — heavily faceted, irregular */}
+        <mesh rotation={[0.4, 0.8, 0.2]} scale={[1.05, 0.88, 0.94]}>
+          <dodecahedronGeometry args={[0.26, 0]} />
+          <meshStandardMaterial color="#5a4d42" roughness={1} metalness={0.02} flatShading />
         </mesh>
-        <mesh position={[0.1, -0.03, 0.05]} scale={[0.45, 0.34, 0.4]} rotation={[0.2, 0.6, 1]}>
+        {/* secondary chunk fused to the side */}
+        <mesh position={[0.13, -0.04, 0.06]} rotation={[0.2, 0.6, 1]} scale={[0.55, 0.5, 0.48]}>
+          <icosahedronGeometry args={[0.24, 0]} />
+          <meshStandardMaterial color="#6e5d50" roughness={1} metalness={0.01} flatShading />
+        </mesh>
+        {/* darker crater chunk */}
+        <mesh position={[-0.11, 0.07, -0.09]} rotation={[1.1, 0.3, 0.4]} scale={[0.42, 0.34, 0.4]}>
+          <octahedronGeometry args={[0.22, 0]} />
+          <meshStandardMaterial color="#3a302a" roughness={1} metalness={0} flatShading />
+        </mesh>
+        {/* small protruding rock */}
+        <mesh position={[0.04, 0.13, 0.08]} rotation={[0.7, 1.2, 0.2]} scale={0.3}>
+          <tetrahedronGeometry args={[0.22]} />
+          <meshStandardMaterial color="#7a6859" roughness={1} metalness={0.02} flatShading />
+        </mesh>
+        {/* pebble */}
+        <mesh position={[-0.13, -0.08, 0.03]} scale={0.18}>
           <icosahedronGeometry args={[0.22, 0]} />
-          <meshStandardMaterial color="#65554b" roughness={1} metalness={0.01} flatShading />
+          <meshStandardMaterial color="#2d2620" roughness={1} metalness={0} flatShading />
         </mesh>
-        <mesh position={[-0.09, 0.05, -0.08]} scale={[0.24, 0.22, 0.22]}>
-          <sphereGeometry args={[0.22, 10, 10]} />
-          <meshStandardMaterial color="#3d332c" roughness={1} metalness={0} />
-        </mesh>
-        <mesh scale={1.12}>
-          <sphereGeometry args={[0.18, 16, 16]} />
-          <meshBasicMaterial color="#8d7768" transparent opacity={0.08} depthWrite={false} />
+        {/* faint dust shell — very subtle, no glow */}
+        <mesh scale={1.18}>
+          <sphereGeometry args={[0.18, 14, 14]} />
+          <meshBasicMaterial color="#7a6a5c" transparent opacity={0.05} depthWrite={false} />
         </mesh>
       </group>
     );
@@ -553,11 +576,32 @@ function DefenseSystem({
 
         if (closest.hp <= 0) {
           closest.alive = false;
+          const isRock = closest.kind === "asteroid";
+          const debris = isRock
+            ? Array.from({ length: 7 + Math.floor(Math.random() * 4) }, () => ({
+                dir: new THREE.Vector3(
+                  Math.random() - 0.5,
+                  Math.random() - 0.5,
+                  Math.random() - 0.5,
+                ).normalize().multiplyScalar(0.6 + Math.random() * 0.9),
+                rot: new THREE.Vector3(
+                  (Math.random() - 0.5) * 8,
+                  (Math.random() - 0.5) * 8,
+                  (Math.random() - 0.5) * 8,
+                ),
+                scale: closest.scale * (0.18 + Math.random() * 0.32),
+                shape: Math.random(),
+                tone: ["#5a4d42", "#6e5d50", "#3a302a", "#7a6859", "#4a3f37"][Math.floor(Math.random() * 5)],
+              }))
+            : undefined;
           bursts.current.push({
             id: idCounter.current++,
             pos: closest.pos.clone(),
-            life: 0.52, maxLife: 0.52,
+            life: isRock ? 0.95 : 0.52,
+            maxLife: isRock ? 0.95 : 0.52,
             ref: null,
+            kind: closest.kind,
+            debris,
           });
         }
       }
@@ -589,12 +633,44 @@ function DefenseSystem({
     for (const b of bursts.current) {
       b.life -= dtClamped;
       if (b.ref) {
-        const t = 1 - b.life / b.maxLife;
-        b.ref.scale.setScalar(0.15 + t * 1.6);
-        b.ref.children.forEach((child) => {
-          const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
-          if (m) m.opacity = (m.userData?.baseOpacity ?? 1) * Math.max(0, b.life / b.maxLife);
-        });
+        const t = 1 - b.life / b.maxLife; // 0 -> 1
+        const lifeFrac = Math.max(0, b.life / b.maxLife); // 1 -> 0
+        if (b.debris && b.debris.length) {
+          // Rock shatter: each child = one debris chunk; first 2 children are flash + dust
+          b.ref.children.forEach((child, i) => {
+            if (i === 0 || i === 1) {
+              // dust + brief flash
+              const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
+              if (m && "opacity" in m) m.opacity = (m.userData?.baseOpacity ?? 1) * lifeFrac * (i === 0 ? 1 : 0.6);
+              child.scale.setScalar(0.4 + t * (i === 0 ? 1.4 : 2.4));
+              return;
+            }
+            const d = b.debris![i - 2];
+            if (!d) return;
+            const travel = t * 1.0; // outward 0..1
+            child.position.copy(d.dir).multiplyScalar(travel);
+            // gentle settle: slow down + slight drop
+            child.position.y -= t * t * 0.15;
+            child.rotation.x += d.rot.x * dtClamped;
+            child.rotation.y += d.rot.y * dtClamped;
+            child.rotation.z += d.rot.z * dtClamped;
+            // fade out late in life
+            const fade = lifeFrac < 0.35 ? lifeFrac / 0.35 : 1;
+            (child as THREE.Group).traverse?.((sub) => {
+              const mm = (sub as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
+              if (mm && "opacity" in mm) {
+                mm.transparent = true;
+                mm.opacity = fade;
+              }
+            });
+          });
+        } else {
+          b.ref.scale.setScalar(0.15 + t * 1.6);
+          b.ref.children.forEach((child) => {
+            const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
+            if (m) m.opacity = (m.userData?.baseOpacity ?? 1) * lifeFrac;
+          });
+        }
       }
     }
 
@@ -766,22 +842,53 @@ function DefenseSystem({
         );
       })}
 
-      {bursts.current.map((b) => (
-        <group key={b.id} ref={(el) => { if (el) b.ref = el; }} position={b.pos}>
-          <mesh>
-            <sphereGeometry args={[0.16, 24, 24]} />
-            <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 1 }} />
-          </mesh>
-          <mesh>
-            <sphereGeometry args={[0.22, 24, 24]} />
-            <meshBasicMaterial color="#ffb060" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.85 }} />
-          </mesh>
-          <mesh>
-            <sphereGeometry args={[0.42, 24, 24]} />
-            <meshBasicMaterial color="#ff8a3c" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.45 }} />
-          </mesh>
-        </group>
-      ))}
+      {bursts.current.map((b) => {
+        if (b.debris && b.debris.length) {
+          return (
+            <group key={b.id} ref={(el) => { if (el) b.ref = el; }} position={b.pos}>
+              <mesh>
+                <sphereGeometry args={[0.18, 16, 16]} />
+                <meshBasicMaterial color="#7a6a5c" transparent opacity={0.55} depthWrite={false} userData={{ baseOpacity: 0.55 }} />
+              </mesh>
+              <mesh>
+                <sphereGeometry args={[0.10, 16, 16]} />
+                <meshBasicMaterial color="#ffd5a0" transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.9 }} />
+              </mesh>
+              {b.debris.map((d, di) => {
+                const Geom = d.shape < 0.34
+                  ? <tetrahedronGeometry args={[0.22]} />
+                  : d.shape < 0.67
+                  ? <icosahedronGeometry args={[0.2, 0]} />
+                  : <dodecahedronGeometry args={[0.2, 0]} />;
+                return (
+                  <group key={di} scale={d.scale}>
+                    <mesh>
+                      {Geom}
+                      <meshStandardMaterial color={d.tone} roughness={1} metalness={0.02} flatShading transparent />
+                    </mesh>
+                  </group>
+                );
+              })}
+            </group>
+          );
+        }
+        return (
+          <group key={b.id} ref={(el) => { if (el) b.ref = el; }} position={b.pos}>
+            <mesh>
+              <sphereGeometry args={[0.16, 24, 24]} />
+              <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 1 }} />
+            </mesh>
+            <mesh>
+              <sphereGeometry args={[0.22, 24, 24]} />
+              <meshBasicMaterial color="#ffb060" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.85 }} />
+            </mesh>
+            <mesh>
+              <sphereGeometry args={[0.42, 24, 24]} />
+              <meshBasicMaterial color="#ff8a3c" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.45 }} />
+            </mesh>
+          </group>
+        );
+      })}
     </group>
   );
 }
