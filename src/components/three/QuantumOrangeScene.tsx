@@ -307,6 +307,14 @@ interface Burst {
   life: number;
   maxLife: number;
   ref: THREE.Group | null;
+  kind?: AttackerKind;
+  debris?: {
+    dir: THREE.Vector3;
+    rot: THREE.Vector3;
+    scale: number;
+    shape: number; // 0..1 picks geometry variant
+    tone: string;
+  }[];
 }
 
 function spawnAttacker(id: number, center: THREE.Vector3, orangeRadius: number): Attacker {
