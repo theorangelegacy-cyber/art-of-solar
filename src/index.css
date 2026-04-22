@@ -214,9 +214,6 @@
     .marquee, .animate-pulse-soft, .animate-spin-slow, .animate-flicker { animation: none !important; }
   }
 
-  .quantum-cursor, .quantum-cursor * { cursor: none !important; }
-  .quantum-cursor a, .quantum-cursor button, .quantum-cursor input, .quantum-cursor textarea, .quantum-cursor [role="button"] { cursor: none !important; }
-
   /* Light section — inverts the palette inside the section only */
   .section-light {
     --background: 0 0% 100%;
