@@ -842,22 +842,53 @@ function DefenseSystem({
         );
       })}
 
-      {bursts.current.map((b) => (
-        <group key={b.id} ref={(el) => { if (el) b.ref = el; }} position={b.pos}>
-          <mesh>
-            <sphereGeometry args={[0.16, 24, 24]} />
-            <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 1 }} />
-          </mesh>
-          <mesh>
-            <sphereGeometry args={[0.22, 24, 24]} />
-            <meshBasicMaterial color="#ffb060" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.85 }} />
-          </mesh>
-          <mesh>
-            <sphereGeometry args={[0.42, 24, 24]} />
-            <meshBasicMaterial color="#ff8a3c" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.45 }} />
-          </mesh>
-        </group>
-      ))}
+      {bursts.current.map((b) => {
+        if (b.debris && b.debris.length) {
+          return (
+            <group key={b.id} ref={(el) => { if (el) b.ref = el; }} position={b.pos}>
+              <mesh>
+                <sphereGeometry args={[0.18, 16, 16]} />
+                <meshBasicMaterial color="#7a6a5c" transparent opacity={0.55} depthWrite={false} userData={{ baseOpacity: 0.55 }} />
+              </mesh>
+              <mesh>
+                <sphereGeometry args={[0.10, 16, 16]} />
+                <meshBasicMaterial color="#ffd5a0" transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.9 }} />
+              </mesh>
+              {b.debris.map((d, di) => {
+                const Geom = d.shape < 0.34
+                  ? <tetrahedronGeometry args={[0.22]} />
+                  : d.shape < 0.67
+                  ? <icosahedronGeometry args={[0.2, 0]} />
+                  : <dodecahedronGeometry args={[0.2, 0]} />;
+                return (
+                  <group key={di} scale={d.scale}>
+                    <mesh>
+                      {Geom}
+                      <meshStandardMaterial color={d.tone} roughness={1} metalness={0.02} flatShading transparent />
+                    </mesh>
+                  </group>
+                );
+              })}
+            </group>
+          );
+        }
+        return (
+          <group key={b.id} ref={(el) => { if (el) b.ref = el; }} position={b.pos}>
+            <mesh>
+              <sphereGeometry args={[0.16, 24, 24]} />
+              <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 1 }} />
+            </mesh>
+            <mesh>
+              <sphereGeometry args={[0.22, 24, 24]} />
+              <meshBasicMaterial color="#ffb060" transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.85 }} />
+            </mesh>
+            <mesh>
+              <sphereGeometry args={[0.42, 24, 24]} />
+              <meshBasicMaterial color="#ff8a3c" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} userData={{ baseOpacity: 0.45 }} />
+            </mesh>
+          </group>
+        );
+      })}
     </group>
   );
 }
