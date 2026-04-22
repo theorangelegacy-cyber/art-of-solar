@@ -7,7 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import QuantumCursor from "@/components/QuantumCursor";
+
 import BootSequence from "@/components/BootSequence";
 import PageTransition from "@/components/PageTransition";
 import AlienOverlay from "@/components/aliens/AlienOverlay";
@@ -34,7 +34,6 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <BootSequence />
-        <QuantumCursor />
         <SiteNav />
         <AlienOverlay />
         <main className="relative">
