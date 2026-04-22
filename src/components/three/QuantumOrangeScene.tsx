@@ -633,12 +633,44 @@ function DefenseSystem({
     for (const b of bursts.current) {
       b.life -= dtClamped;
       if (b.ref) {
-        const t = 1 - b.life / b.maxLife;
-        b.ref.scale.setScalar(0.15 + t * 1.6);
-        b.ref.children.forEach((child) => {
-          const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
-          if (m) m.opacity = (m.userData?.baseOpacity ?? 1) * Math.max(0, b.life / b.maxLife);
-        });
+        const t = 1 - b.life / b.maxLife; // 0 -> 1
+        const lifeFrac = Math.max(0, b.life / b.maxLife); // 1 -> 0
+        if (b.debris && b.debris.length) {
+          // Rock shatter: each child = one debris chunk; first 2 children are flash + dust
+          b.ref.children.forEach((child, i) => {
+            if (i === 0 || i === 1) {
+              // dust + brief flash
+              const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
+              if (m && "opacity" in m) m.opacity = (m.userData?.baseOpacity ?? 1) * lifeFrac * (i === 0 ? 1 : 0.6);
+              child.scale.setScalar(0.4 + t * (i === 0 ? 1.4 : 2.4));
+              return;
+            }
+            const d = b.debris![i - 2];
+            if (!d) return;
+            const travel = t * 1.0; // outward 0..1
+            child.position.copy(d.dir).multiplyScalar(travel);
+            // gentle settle: slow down + slight drop
+            child.position.y -= t * t * 0.15;
+            child.rotation.x += d.rot.x * dtClamped;
+            child.rotation.y += d.rot.y * dtClamped;
+            child.rotation.z += d.rot.z * dtClamped;
+            // fade out late in life
+            const fade = lifeFrac < 0.35 ? lifeFrac / 0.35 : 1;
+            (child as THREE.Group).traverse?.((sub) => {
+              const mm = (sub as THREE.Mesh).material as THREE.MeshStandardMaterial | undefined;
+              if (mm && "opacity" in mm) {
+                mm.transparent = true;
+                mm.opacity = fade;
+              }
+            });
+          });
+        } else {
+          b.ref.scale.setScalar(0.15 + t * 1.6);
+          b.ref.children.forEach((child) => {
+            const m = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
+            if (m) m.opacity = (m.userData?.baseOpacity ?? 1) * lifeFrac;
+          });
+        }
       }
     }
 
