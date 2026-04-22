@@ -576,11 +576,32 @@ function DefenseSystem({
 
         if (closest.hp <= 0) {
           closest.alive = false;
+          const isRock = closest.kind === "asteroid";
+          const debris = isRock
+            ? Array.from({ length: 7 + Math.floor(Math.random() * 4) }, () => ({
+                dir: new THREE.Vector3(
+                  Math.random() - 0.5,
+                  Math.random() - 0.5,
+                  Math.random() - 0.5,
+                ).normalize().multiplyScalar(0.6 + Math.random() * 0.9),
+                rot: new THREE.Vector3(
+                  (Math.random() - 0.5) * 8,
+                  (Math.random() - 0.5) * 8,
+                  (Math.random() - 0.5) * 8,
+                ),
+                scale: closest.scale * (0.18 + Math.random() * 0.32),
+                shape: Math.random(),
+                tone: ["#5a4d42", "#6e5d50", "#3a302a", "#7a6859", "#4a3f37"][Math.floor(Math.random() * 5)],
+              }))
+            : undefined;
           bursts.current.push({
             id: idCounter.current++,
             pos: closest.pos.clone(),
-            life: 0.52, maxLife: 0.52,
+            life: isRock ? 0.95 : 0.52,
+            maxLife: isRock ? 0.95 : 0.52,
             ref: null,
+            kind: closest.kind,
+            debris,
           });
         }
       }
