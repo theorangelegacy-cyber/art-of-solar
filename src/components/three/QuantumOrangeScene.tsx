@@ -399,24 +399,39 @@ function AttackerMesh({ kind }: { kind: AttackerKind }) {
   }
 
   if (kind === "asteroid") {
-    // Rocky asteroid silhouette — cratered, dusty, no neon glow
+    // Real-looking rock — irregular deformed icosahedron, mottled grey-brown,
+    // with cratered surface chunks and embedded pebbles. No neon, no halo glow.
     return (
       <group>
-        <mesh rotation={[0.4, 0.8, 0.2]} scale={[1, 0.9, 0.82]}>
-          <icosahedronGeometry args={[0.26, 1]} />
-          <meshStandardMaterial color="#4b4038" roughness={1} metalness={0.02} flatShading />
+        {/* main rock body — heavily faceted, irregular */}
+        <mesh rotation={[0.4, 0.8, 0.2]} scale={[1.05, 0.88, 0.94]}>
+          <dodecahedronGeometry args={[0.26, 0]} />
+          <meshStandardMaterial color="#5a4d42" roughness={1} metalness={0.02} flatShading />
         </mesh>
-        <mesh position={[0.1, -0.03, 0.05]} scale={[0.45, 0.34, 0.4]} rotation={[0.2, 0.6, 1]}>
+        {/* secondary chunk fused to the side */}
+        <mesh position={[0.13, -0.04, 0.06]} rotation={[0.2, 0.6, 1]} scale={[0.55, 0.5, 0.48]}>
+          <icosahedronGeometry args={[0.24, 0]} />
+          <meshStandardMaterial color="#6e5d50" roughness={1} metalness={0.01} flatShading />
+        </mesh>
+        {/* darker crater chunk */}
+        <mesh position={[-0.11, 0.07, -0.09]} rotation={[1.1, 0.3, 0.4]} scale={[0.42, 0.34, 0.4]}>
+          <octahedronGeometry args={[0.22, 0]} />
+          <meshStandardMaterial color="#3a302a" roughness={1} metalness={0} flatShading />
+        </mesh>
+        {/* small protruding rock */}
+        <mesh position={[0.04, 0.13, 0.08]} rotation={[0.7, 1.2, 0.2]} scale={0.3}>
+          <tetrahedronGeometry args={[0.22]} />
+          <meshStandardMaterial color="#7a6859" roughness={1} metalness={0.02} flatShading />
+        </mesh>
+        {/* pebble */}
+        <mesh position={[-0.13, -0.08, 0.03]} scale={0.18}>
           <icosahedronGeometry args={[0.22, 0]} />
-          <meshStandardMaterial color="#65554b" roughness={1} metalness={0.01} flatShading />
+          <meshStandardMaterial color="#2d2620" roughness={1} metalness={0} flatShading />
         </mesh>
-        <mesh position={[-0.09, 0.05, -0.08]} scale={[0.24, 0.22, 0.22]}>
-          <sphereGeometry args={[0.22, 10, 10]} />
-          <meshStandardMaterial color="#3d332c" roughness={1} metalness={0} />
-        </mesh>
-        <mesh scale={1.12}>
-          <sphereGeometry args={[0.18, 16, 16]} />
-          <meshBasicMaterial color="#8d7768" transparent opacity={0.08} depthWrite={false} />
+        {/* faint dust shell — very subtle, no glow */}
+        <mesh scale={1.18}>
+          <sphereGeometry args={[0.18, 14, 14]} />
+          <meshBasicMaterial color="#7a6a5c" transparent opacity={0.05} depthWrite={false} />
         </mesh>
       </group>
     );
