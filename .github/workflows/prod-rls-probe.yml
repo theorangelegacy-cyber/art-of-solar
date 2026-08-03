@@ -1,0 +1,42 @@
+name: Prod RLS probe
+
+# Asks the LIVE database the question the migration files cannot answer: can a
+# stranger read user rows right now?
+#
+# Migrations only describe what was intended. This sends the request any visitor
+# can already send -- the publishable (anon) key that ships inside the browser
+# bundle -- and reports what actually comes back. Every request is a read, and
+# no secret is used: the URL comes from project_id in supabase/config.toml and
+# the anon key is found in the tree.
+#
+# It asks PostgREST which tables it exposes rather than trusting the migration
+# list, so a table created through the dashboard is covered too.
+
+on:
+  # push on every branch. workflow_dispatch only becomes dispatchable once this
+  # file reaches the default branch, so push is what fires before merge.
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * 1'
+
+concurrency:
+  group: prod-rls-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    name: Can a stranger read user data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe the live database as an anonymous visitor
+        env:
+          # Optional override; nothing needs setting normally.
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: node scripts/probe-prod-rls.mjs
