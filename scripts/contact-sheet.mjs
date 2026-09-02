@@ -1,0 +1,17 @@
+import { createRequire } from "node:module";
+import { readdirSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+const require = createRequire("C:/Users/theor/AppData/Local/Temp/claude/C--Users-theor-Downloads--claude/f7e19af6-13aa-45d4-adba-3c3cf240cdd8/scratchpad/package.json");
+const { chromium } = require("playwright-core");
+const dir = resolve("public/img/fb");
+const files = readdirSync(dir).filter(f => f.endsWith(".jpg")).sort();
+const html = `<html><body style="margin:0;background:#111;font:12px monospace;color:#fff"><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:6px">${files.map(f => `<figure style="margin:0"><img src="${pathToFileURL(join(dir, f)).href}" style="width:100%;height:190px;object-fit:cover;display:block"><figcaption style="padding:2px 0">${f.slice(0, 2)}</figcaption></figure>`).join("")}</div></body></html>`;
+writeFileSync(join(dir, "..", "..", "..", "proof", "contact-sheet.html"), html);
+const b = await chromium.launch({ executablePath: "C:/Users/theor/AppData/Local/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-win64/chrome-headless-shell.exe" });
+const p = await b.newPage({ viewport: { width: 1400, height: 900 } });
+await p.goto(pathToFileURL(resolve("proof/contact-sheet.html")).href, { waitUntil: "networkidle" });
+await p.waitForTimeout(800);
+await p.screenshot({ path: "proof/contact-sheet.png", fullPage: true });
+await b.close();
+console.log("sheet:", files.length);

@@ -10,7 +10,19 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.output
+.vinxi
+.tanstack/**
+.nitro
 *.local
+
+# Facebook originals (15 MB) and proof screenshots stay local
+public/img/fb/
+proof/
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
 
 # Editor directories and files
 .vscode/*
