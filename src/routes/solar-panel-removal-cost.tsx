@@ -15,9 +15,9 @@ import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/solar-panel-removal-cost`;
-const TITLE = "Solar Panel Removal & Reinstall Cost in Florida (2026 Prices)";
+const TITLE = "Solar Panel Removal & Reinstall Cost in Florida (2026)";
 const DESC =
-  "What it really costs to take solar panels off for a new roof in Florida and put them back. Per-panel pricing, what moves the number, and what a fair quote includes. Orlando to Miami. Written quote before a panel moves.";
+  "What it really costs to take solar panels off for a new roof in Florida and put them back: per-panel prices and what a fair quote includes.";
 
 const FAQS = [
   {

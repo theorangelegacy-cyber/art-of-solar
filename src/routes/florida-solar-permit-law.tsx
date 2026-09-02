@@ -15,9 +15,9 @@ import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/florida-solar-permit-law`;
-const TITLE = "Who Can Legally Remove Solar Panels in Florida? Permits & Licence";
+const TITLE = "Who Can Legally Remove Solar Panels in Florida?";
 const DESC =
-  "Florida law says a roofer cannot detach or reinstall your solar array. It takes a licensed solar or electrical contractor, and the reinstall needs a permit and an inspection. Here is the rule, in plain words, and what happens when it is ignored.";
+  "Your roofer cannot legally detach or reinstall a solar array in Florida. Here is the rule, the permit, and what it costs when it is ignored.";
 
 const FAQS = [
   {

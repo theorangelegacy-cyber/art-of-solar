@@ -15,9 +15,9 @@ import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/solar-detach-and-reset`;
-const TITLE = "Solar Detach & Reset for Roofers | Florida Subcontractor";
+const TITLE = "Solar Detach & Reset for Roofers | Florida";
 const DESC =
-  "Solar detach and reset subcontractor for Florida roofing contractors. We pull the array, you tear off, we reset on new flashed mounts and pull the solar permit. Orlando to Miami, on your schedule. Licensed and insured.";
+  "Detach and reset subcontractor for Florida roofers. We pull the array and the solar permit, you tear off, we reset on new flashed mounts.";
 
 const FAQS = [
   {

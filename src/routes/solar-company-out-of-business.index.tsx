@@ -16,9 +16,9 @@ import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/solar-company-out-of-business`;
-const TITLE = "Solar Company Out of Business? Florida Solar Repair & Takeover";
+const TITLE = "Solar Company Out of Business? Florida Takeover";
 const DESC =
-  "Your solar installer closed and nobody answers. We take over orphaned solar systems across Florida, Orlando to Miami. Any brand, any original company. Written inspection, factory warranties still filed. Licensed and insured.";
+  "Your solar installer closed and nobody answers. We take over orphaned systems across Florida, any brand. Half your warranty is still alive.";
 
 export const Route = createFileRoute("/solar-company-out-of-business/")({
   head: () => ({

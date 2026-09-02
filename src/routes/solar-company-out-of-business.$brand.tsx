@@ -27,8 +27,8 @@ export const Route = createFileRoute("/solar-company-out-of-business/$brand")({
       return { meta: [{ title: "Page not found" }, { name: "robots", content: "noindex" }] };
     const r = loaderData.rescue;
     const url = `${SITE_URL}/solar-company-out-of-business/${params.brand}`;
-    const title = `${r.name} Out of Business? Solar Repair & Service in Florida`;
-    const desc = `${r.name} closed. Your panels did not. Independent licensed solar contractor taking over ${r.name} systems across Florida, Orlando to Miami. Written inspection, factory warranties still filed.`;
+    const title = `${r.name} Out of Business? Florida Solar Repair`;
+    const desc = `${r.name} closed. Your panels did not. Independent licensed Florida solar contractor taking over ${r.name} systems, Orlando to Miami.`;
     return {
       meta: [
         { title },
