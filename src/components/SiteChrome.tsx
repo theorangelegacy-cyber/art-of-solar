@@ -24,14 +24,14 @@ const navLinks = [
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
-    <span className="flex items-center gap-2.5">
-      <img src="/logo-art-of-solar.svg" alt="" aria-hidden className="h-9 w-9 shrink-0" />
+    <span className="flex items-center gap-2 sm:gap-2.5">
+      <img src="/logo-art-of-solar.svg" alt="" aria-hidden className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
       <span
-        className={`text-base leading-none font-extrabold tracking-tight ${light ? "text-white" : "text-navy"}`}
+        className={`text-sm leading-none font-extrabold tracking-tight sm:text-base ${light ? "text-white" : "text-navy"}`}
       >
         Art of <span className="text-orange">Solar</span>
         <span
-          className={`mt-1 block text-[10px] font-bold tracking-[0.16em] uppercase ${light ? "text-white/60" : "text-muted-foreground"}`}
+          className={`mt-1 hidden text-[10px] font-bold tracking-[0.16em] uppercase sm:block ${light ? "text-white/60" : "text-muted-foreground"}`}
         >
           Re-rack &amp; repair
         </span>
