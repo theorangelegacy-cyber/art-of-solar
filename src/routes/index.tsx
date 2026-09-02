@@ -17,7 +17,7 @@ import {
   citiesInCounty,
 } from "@/data/seo";
 import { abs, faqSchema, ld } from "@/data/schema";
-import { GALLERY, IMG } from "@/data/images";
+import { CARD_SIZES, FULL_SIZES, GALLERY, IMG, srcSet } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 export const Route = createFileRoute("/")({
@@ -90,6 +90,8 @@ function Home() {
       <section className="relative isolate overflow-hidden bg-navy-deep text-white">
         <img
           src={IMG.hero}
+          srcSet={srcSet(IMG.hero)}
+          sizes={FULL_SIZES}
           alt="Art of Solar array reinstalled on a tile roof in South Florida"
           width={1800}
           height={1350}
@@ -206,6 +208,8 @@ function Home() {
               >
                 <img
                   src={s.img}
+                  srcSet={srcSet(s.img)}
+                  sizes={CARD_SIZES}
                   alt={s.name}
                   loading="lazy"
                   width={1400}
@@ -348,6 +352,8 @@ function Home() {
             <img
               key={g.src}
               src={g.src}
+              srcSet={srcSet(g.src)}
+              sizes={CARD_SIZES}
               alt={g.alt}
               loading="lazy"
               width={1200}

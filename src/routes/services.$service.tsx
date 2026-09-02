@@ -11,6 +11,7 @@ import {
 import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SERVICE_BY_SLUG, SERVICES, SITE_URL, citiesInCounty } from "@/data/seo";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
+import { srcSet } from "@/data/images";
 
 export const Route = createFileRoute("/services/$service")({
   loader: ({ params }) => {
@@ -101,6 +102,8 @@ function ServicePage() {
         </div>
         <img
           src={s.img}
+          srcSet={srcSet(s.img)}
+          sizes="(min-width: 1024px) 45vw, 100vw"
           alt={s.name}
           width={800}
           height={600}

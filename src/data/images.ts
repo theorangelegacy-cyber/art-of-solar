@@ -31,3 +31,31 @@ export const GALLERY: { src: string; alt: string }[] = [
   { src: "/img/g9.webp", alt: "Solar array on a tile roof next to a pool" },
   { src: "/img/g10.webp", alt: "Solar panels along a roof ridge with a view of the neighborhood" },
 ];
+
+/**
+ * Photos that are narrower than 1024 to begin with, so no -1024 copy exists.
+ * Never list an image here that has one: the browser would fetch a 404.
+ */
+const NO_1024 = new Set(["/img/logo-photo.webp"]);
+
+/**
+ * Offer a phone-sized and a tablet-sized copy of a photo alongside the full one.
+ *
+ * The site used to hand every visitor the same 1400 to 1800 pixel file, phone
+ * included. scripts/resize.mjs writes the -640 and -1024 copies; this tells the
+ * browser they exist so it can pick the small one. Roughly 2.9 MB saved on a
+ * phone across the whole set.
+ */
+export function srcSet(src: string): string {
+  if (!src.endsWith(".webp")) return "";
+  const base = src.slice(0, -".webp".length);
+  const parts = [`${base}-640.webp 640w`];
+  if (!NO_1024.has(src)) parts.push(`${base}-1024.webp 1024w`);
+  parts.push(`${src} 1800w`);
+  return parts.join(", ");
+}
+
+/** One card in a grid: full width on a phone, half on a tablet, a third on a laptop. */
+export const CARD_SIZES = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw";
+/** Something that spans the page. */
+export const FULL_SIZES = "100vw";

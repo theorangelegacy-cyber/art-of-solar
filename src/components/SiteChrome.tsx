@@ -7,6 +7,7 @@ import { Menu } from "lucide-react";
 import { FacebookIcon, links } from "@/components/ContactDock";
 import { BRAND, CITIES, COUNTIES, SERVICES, TRUST, citiesInCounty } from "@/data/seo";
 import { trackEvent } from "@/lib/leads";
+import { srcSet } from "@/data/images";
 import {
   Sheet,
   SheetClose,
@@ -197,6 +198,8 @@ export function PageHero({
       {image && (
         <img
           src={image}
+          srcSet={srcSet(image)}
+          sizes="100vw"
           alt=""
           aria-hidden
           className="absolute inset-0 h-full w-full object-cover opacity-30"
