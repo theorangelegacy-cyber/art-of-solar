@@ -67,7 +67,7 @@ export function ContactDock() {
           href={links.facebook}
           target="_blank"
           rel="noreferrer"
-          onClick={() => trackEvent("facebook_click", { channel: "facebook", label: "dock" })}
+          onClick={() => trackEvent("whatsapp_click", { channel: "facebook", label: "dock" })}
           className={`${cell} border-r border-white/10`}
         >
           <FacebookIcon />
