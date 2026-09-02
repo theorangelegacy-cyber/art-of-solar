@@ -32,8 +32,9 @@ export const Route = createFileRoute("/service-areas/$city")({
     const c = loaderData.city;
     const k = countyOf(c);
     const url = `${SITE_URL}/service-areas/${params.city}`;
-    const title = `${c.name} Solar Panel Removal & Repair | Art of Solar`;
-    const desc = `Solar panel removal and reinstall for new roofs, re-racking, leak repair and orphaned system service in ${c.name}, ${k.name} County. Licensed and insured. Written quote first.`;
+    const title = `Solar Panel Removal & Reinstall in ${c.name}, FL | ${k.name} County`;
+    // The city's own blurb leads the description, so all 55 read differently in results.
+    const desc = `${c.blurb.split(". ")[0]}. Solar detach and reset, re-racking, leak repair and orphaned system service in ${c.name}. Licensed and insured, written quote first.`;
     return {
       meta: [
         { title },
@@ -86,7 +87,7 @@ function CityPage() {
             <span className="text-orange">{c.name}, FL</span>
           </>
         }
-        sub={`New roof coming, installer out of business, or a leak at the mounts? Art of Solar detaches, re-racks, reinstalls and repairs solar systems for ${c.name} homeowners, roofers and installers. Licensed and insured, any brand, any original installer.`}
+        sub={c.blurb}
         crumbs={[
           { name: "Service Areas", to: "/service-areas" },
           { name: c.name, to: `/service-areas/${c.slug}` },
@@ -104,7 +105,66 @@ function CityPage() {
       </PageHero>
       <TrustStrip />
 
-      <section className="container-x py-12 sm:py-20">
+      <section className="container-x grid gap-8 py-12 sm:py-16 lg:grid-cols-[1.1fr_0.9fr]">
+        <div>
+          <p className="eyebrow">Working in {c.name}</p>
+          <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
+            What we check on a {c.name} roof
+          </h2>
+          <p className="mt-4 text-base text-muted-foreground">
+            New roof coming, installer out of business, or a stain on the ceiling under the array?
+            We detach, re-rack, reinstall and repair solar for {c.name} homeowners, roofers and
+            installers. Any brand, any original installer, in business or not.
+          </p>
+          <ul className="mt-6 grid gap-3">
+            <li className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy">
+              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
+                ✓
+              </span>
+              {k.hvhz
+                ? `${c.name} is inside Florida's High-Velocity Hurricane Zone. Every attachment we put on your new roof carries the right product approval, and the reinstall is permitted and inspected.`
+                : `We pull the solar permit through ${k.name} County or your city, whichever holds it for your address, and we meet the inspector so you do not have to.`}
+            </li>
+            <li className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy">
+              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
+                ✓
+              </span>
+              {c.coastal
+                ? `${c.name} sits in salt air, so we check every rail, clamp and grounding lug for corrosion before agreeing to put an array back on a new roof.`
+                : `Inland roofs like ${c.name} let us focus on the things that actually fail here: rail condition, flashing at the mounts and how the array was torqued.`}
+            </li>
+            <li className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy">
+              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
+                ✓
+              </span>
+              Homes in {c.name} are generally served by {k.utility}. We handle the reconnection and
+              net-metering paperwork so the system actually comes back online.
+            </li>
+            <li className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy">
+              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
+                ✓
+              </span>
+              Never the old mounts. Every attachment on your new {c.name} roof is new and flashed, so
+              your roofer's warranty stays intact.
+            </li>
+          </ul>
+        </div>
+        <div className="self-start rounded-3xl border border-line bg-white p-6">
+          <p className="eyebrow">{k.name} County</p>
+          <h3 className="mt-3 text-xl font-extrabold text-navy">Permits and the utility</h3>
+          <p className="mt-3 text-sm text-muted-foreground">{k.note}</p>
+          <div className="mt-6 grid gap-3">
+            <Link to="/solar-panel-removal-cost" className="btn-base btn-navy w-full">
+              What it costs per panel
+            </Link>
+            <Link to="/solar-company-out-of-business" className="btn-base btn-ghost w-full">
+              Installer out of business?
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="container-x py-6 sm:py-12">
         <p className="eyebrow">Services in {c.name}</p>
         <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
           What we do for {c.name} solar owners

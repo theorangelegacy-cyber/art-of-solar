@@ -428,12 +428,25 @@ export type City = {
   slug: string;
   name: string;
   county: string;
+  /**
+   * Two or three true sentences about the roofs and the solar in THIS town.
+   *
+   * This field exists for one reason. Fifty-five city pages built from one
+   * template with only the name swapped are, to Google, one page repeated
+   * fifty-five times, and it keeps one and drops the rest. Every city needs
+   * something real of its own. Keep these accurate and about the work.
+   */
+  blurb: string;
+  /** On or near the water, so attachments and corrosion get looked at harder. */
+  coastal?: boolean;
 };
 
-function city(name: string, county: string): City {
+function city(name: string, county: string, blurb: string, coastal = false): City {
   return {
     name,
     county,
+    blurb,
+    coastal,
     slug: name
       .toLowerCase()
       .replace(/\./g, "")
@@ -443,61 +456,305 @@ function city(name: string, county: string): City {
 }
 
 export const CITIES: City[] = [
-  city("Orlando", "Orange"),
-  city("Winter Park", "Orange"),
-  city("Winter Garden", "Orange"),
-  city("Apopka", "Orange"),
-  city("Ocoee", "Orange"),
-  city("Sanford", "Seminole"),
-  city("Lake Mary", "Seminole"),
-  city("Altamonte Springs", "Seminole"),
-  city("Oviedo", "Seminole"),
-  city("Longwood", "Seminole"),
-  city("Casselberry", "Seminole"),
-  city("Kissimmee", "Osceola"),
-  city("St. Cloud", "Osceola"),
-  city("Titusville", "Brevard"),
-  city("Cocoa", "Brevard"),
-  city("Merritt Island", "Brevard"),
-  city("Melbourne", "Brevard"),
-  city("Palm Bay", "Brevard"),
-  city("Vero Beach", "Indian River"),
-  city("Sebastian", "Indian River"),
-  city("Port St. Lucie", "St. Lucie"),
-  city("Fort Pierce", "St. Lucie"),
-  city("Stuart", "Martin"),
-  city("Palm City", "Martin"),
-  city("Jensen Beach", "Martin"),
-  city("Hobe Sound", "Martin"),
-  city("Jupiter", "Palm Beach"),
-  city("Palm Beach Gardens", "Palm Beach"),
-  city("West Palm Beach", "Palm Beach"),
-  city("Wellington", "Palm Beach"),
-  city("Royal Palm Beach", "Palm Beach"),
-  city("Lake Worth Beach", "Palm Beach"),
-  city("Boynton Beach", "Palm Beach"),
-  city("Delray Beach", "Palm Beach"),
-  city("Boca Raton", "Palm Beach"),
-  city("Deerfield Beach", "Broward"),
-  city("Pompano Beach", "Broward"),
-  city("Coral Springs", "Broward"),
-  city("Fort Lauderdale", "Broward"),
-  city("Plantation", "Broward"),
-  city("Sunrise", "Broward"),
-  city("Davie", "Broward"),
-  city("Weston", "Broward"),
-  city("Pembroke Pines", "Broward"),
-  city("Miramar", "Broward"),
-  city("Hollywood", "Broward"),
-  city("Miami", "Miami-Dade"),
-  city("Miami Gardens", "Miami-Dade"),
-  city("Hialeah", "Miami-Dade"),
-  city("Doral", "Miami-Dade"),
-  city("Miami Beach", "Miami-Dade"),
-  city("Coral Gables", "Miami-Dade"),
-  city("Kendall", "Miami-Dade"),
-  city("Cutler Bay", "Miami-Dade"),
-  city("Homestead", "Miami-Dade"),
+  city(
+    "Orlando",
+    "Orange",
+    "Orlando roofs run from 1950s bungalows in Colonialtown to tile-and-truss builds out by Lake Nona, so no two removals here get quoted the same way. A lot of the city sits under OUC rather than the big statewide utility, which changes who the reconnection paperwork goes to. We work Orlando constantly, so the drive never becomes a surcharge.",
+  ),
+  city(
+    "Winter Park",
+    "Orange",
+    "Winter Park has some of the oldest housing stock we work on, and plenty of it is barrel tile over a roof that has already been replaced once or twice. Tile has to be lifted and set back by hand, and it breaks when a crew is in a hurry. The city also runs its own electric utility, so reconnection here is not the same form as the county next door.",
+  ),
+  city(
+    "Winter Garden",
+    "Orange",
+    "Winter Garden is mostly newer construction, which usually means shingle over a clean truss layout and a straightforward detach. The catch is the HOA density out here: a lot of these neighbourhoods have rules about where an array can sit once it goes back up. We put the reinstall layout in writing so nothing gets argued after the fact.",
+  ),
+  city(
+    "Apopka",
+    "Orange",
+    "Apopka has a wide spread of roof ages, from older ranch homes north of 441 to whole subdivisions that went up in the last fifteen years. The older Apopka roofs are where we most often find mounts that were never flashed properly, and that shows up as a ceiling stain long before anyone thinks to blame the solar.",
+  ),
+  city(
+    "Ocoee",
+    "Orange",
+    "Ocoee sits right on the turnpike run, so we can usually get a crew here without stacking a travel day onto the quote. Most Ocoee arrays we see are shingle installs from the last solar boom, which reuse their rails well and keep the reinstall price at the lower end of the range.",
+  ),
+  city(
+    "Sanford",
+    "Seminole",
+    "Sanford mixes a genuinely historic downtown with newer builds out toward the airport, and the old houses are the interesting ones: steep pitches, small roof planes and not much room to work around an array. Steep, cut-up roofs take longer to detach, and a quote that ignores that will change on the day.",
+  ),
+  city(
+    "Lake Mary",
+    "Seminole",
+    "Lake Mary is heavy on 1990s and 2000s subdivisions, so we see a lot of dimensional shingle with room to spare on the roof plane. These are clean, predictable detach and reset jobs, which is why Lake Mary quotes come back fast and land near the middle of the range.",
+  ),
+  city(
+    "Altamonte Springs",
+    "Seminole",
+    "Altamonte has a lot of roofs coming due for replacement at exactly the same time the solar on them is hitting ten years old. That pairing is worth knowing about, because if the inverter is near the end of its life it is far cheaper to deal with while the array is already down.",
+  ),
+  city(
+    "Oviedo",
+    "Seminole",
+    "Oviedo has tree cover most of Florida would envy, and shade is the first thing we check here. Half the Oviedo systems we get called out to for underproduction do not have a fault at all, they have twenty years of oak growth. We tell you which one it is before quoting anything.",
+  ),
+  city(
+    "Longwood",
+    "Seminole",
+    "Longwood roofs skew older and the lots are wooded, so access is often the real constraint rather than the array. If a lift cannot reach the right side of the house that is a genuine cost, and we would rather say so at the quote than discover it on the morning of the tear-off.",
+  ),
+  city(
+    "Casselberry",
+    "Seminole",
+    "Casselberry is mostly modest single-storey homes, which is the cheapest possible detach and reset: walkable pitch, short carry, no fall-protection setup eating half a day. Small systems here often come in well under what people expect after reading national price guides.",
+  ),
+  city(
+    "Kissimmee",
+    "Osceola",
+    "A big share of Kissimmee sits on the Kissimmee Utility Authority rather than the statewide utility, so reconnection paperwork runs a different route. There is also a lot of short-term rental property here, and those owners care most about days offline. We schedule around the booking calendar where we can.",
+  ),
+  city(
+    "St. Cloud",
+    "Osceola",
+    "St. Cloud has grown fast, so brand new arrays sit a street away from twenty-year-old roofs. A new system on an old roof is the one worth planning early: if the roof has five years left, doing the roof and the detach together costs far less than paying for the array to come down twice.",
+  ),
+  city(
+    "Titusville",
+    "Brevard",
+    "Titusville is coastal-adjacent and salt air reaches further inland here than people expect. Corrosion on rails, clamps and grounding hardware is what we check on every Titusville array, because a corroded attachment is the one that fails in a storm rather than on a sunny afternoon.",
+    true,
+  ),
+  city(
+    "Cocoa",
+    "Brevard",
+    "Cocoa spans the mainland and the beachside, and those are two different jobs. Beachside means salt exposure, tougher attachment hardware and a harder look at every fastener. We price them separately instead of pretending the whole city is one market.",
+    true,
+  ),
+  city(
+    "Merritt Island",
+    "Brevard",
+    "Merritt Island sits between two bodies of water, so every array here lives in salt air year round. Stainless and coated hardware is not an upgrade on this island, it is the baseline, and reusing corroded clamps on a new roof is how a system ends up on the ground after a storm.",
+    true,
+  ),
+  city(
+    "Melbourne",
+    "Brevard",
+    "Melbourne has a large installed base of residential solar and a matching number of systems whose original installer no longer exists. It is one of the places we are called most often for orphaned system work rather than roof work, and the two frequently turn out to be the same visit.",
+    true,
+  ),
+  city(
+    "Palm Bay",
+    "Brevard",
+    "Palm Bay is enormous and mostly newer single-family homes, which means a lot of shingle and a lot of solar that went up during the boom. Straightforward detach and reset country, and because there is so much of it we can often line up two jobs in a day and pass the saving on.",
+  ),
+  city(
+    "Vero Beach",
+    "Indian River",
+    "Vero Beach has a strong barrel-tile tradition on the mainland and a barrier island where salt drives every hardware decision. Tile plus salt is the most demanding combination we work in, and it is where reusing the old mounts on a new roof causes the most damage.",
+    true,
+  ),
+  city(
+    "Sebastian",
+    "Indian River",
+    "Sebastian is largely single-storey and walkable, which keeps the labour side of a detach and reset low. What we watch here is river-side salt exposure on the eastern edge of town, where hardware ages noticeably faster than a few miles inland.",
+    true,
+  ),
+  city(
+    "Port St. Lucie",
+    "St. Lucie",
+    "Port St. Lucie is one of the fastest-growing cities in the state and it has solar on a huge number of newer shingle roofs. Because the housing stock is young, the array is often in better shape than anything else up there, and the honest answer is frequently that the panels are fine and the problem is one part.",
+  ),
+  city(
+    "Fort Pierce",
+    "St. Lucie",
+    "Fort Pierce runs its own municipal utility, so reconnection here goes through a different desk than the county to the south. There is also a lot of older housing near the water, where we check attachment corrosion before we check anything else.",
+    true,
+  ),
+  city(
+    "Stuart",
+    "Martin",
+    "Stuart has a lot of tile, a lot of water, and a lot of homes where the roof and the array were done years apart by two companies that never spoke to each other. Untangling that is normal work for us: we document what is actually up there before anybody quotes a price.",
+    true,
+  ),
+  city(
+    "Palm City",
+    "Martin",
+    "Palm City is heavy on larger homes with cut-up roof planes and multiple arrays facing different ways. More roof planes means more rails, more penetrations and more time, and that is the single biggest reason a Palm City quote can sit above a same-size system elsewhere.",
+  ),
+  city(
+    "Jensen Beach",
+    "Martin",
+    "Jensen Beach is coastal through and through, so corrosion and wind attachment carry the whole conversation. We would rather replace tired clamps during the reinstall than lay a new roof underneath hardware that is already on its way out.",
+    true,
+  ),
+  city(
+    "Hobe Sound",
+    "Martin",
+    "Hobe Sound runs from modest inland homes to large properties near the water, so quotes here vary more than almost anywhere else on our route. Access is often the deciding factor, because long driveways and mature landscaping change how a crew can stage a detach.",
+    true,
+  ),
+  city(
+    "Jupiter",
+    "Palm Beach",
+    "Jupiter is tile country with serious wind exposure, and roofs here are often replaced before they truly need to be because an insurer asked for it. So we do a lot of detach and reset on arrays that are barely used, where the whole job is about protecting equipment that is still nearly new.",
+    true,
+  ),
+  city(
+    "Palm Beach Gardens",
+    "Palm Beach",
+    "Palm Beach Gardens has a high concentration of managed communities, and getting a reinstall layout approved matters as much as getting it engineered. We put the panel layout in writing before the roof comes off, so nothing is a surprise to the association afterwards.",
+  ),
+  city(
+    "West Palm Beach",
+    "Palm Beach",
+    "West Palm Beach has one of the widest roof ranges we work in, from small older homes west of the tracks to substantial properties near the water. The older West Palm roofs are where we most often find that the original solar penetrations were never properly flashed.",
+    true,
+  ),
+  city(
+    "Wellington",
+    "Palm Beach",
+    "Wellington is mostly newer and mostly tile, with large single-storey footprints that are pleasant to work on and slow to re-tile. Tile is the cost driver here, not the panels, and a quote that never mentions tile breakage is not a complete quote.",
+  ),
+  city(
+    "Royal Palm Beach",
+    "Palm Beach",
+    "Royal Palm Beach is largely 1990s and 2000s suburban stock, which detaches and resets predictably. It is also far enough inland that salt corrosion stops being the first thing we look at, and rail condition and flashing take over as the main questions.",
+  ),
+  city(
+    "Lake Worth Beach",
+    "Palm Beach",
+    "Lake Worth Beach has its own municipal electric utility, which catches out contractors who assume the whole county runs on one system. Reconnection paperwork here goes to the city, and getting that wrong is how a reinstalled system sits dark for weeks.",
+    true,
+  ),
+  city(
+    "Boynton Beach",
+    "Palm Beach",
+    "Boynton Beach has a big spread of older condos and single-family homes, and a lot of solar that went up fast during the boom years. Fast installs are the ones where we most often find mounts that were never flashed and rails that were never torqued to spec.",
+    true,
+  ),
+  city(
+    "Delray Beach",
+    "Palm Beach",
+    "Delray Beach mixes historic bungalows near the ocean with newer builds further west, so the roof under an array can be anything from original wood to a modern truss. We look at what is under the panels before quoting, because on the older ones the deck is the real story.",
+    true,
+  ),
+  city(
+    "Boca Raton",
+    "Palm Beach",
+    "Boca Raton is dense with barrel tile and dense with associations, which makes it one of the more demanding places to reset an array cleanly. Tile that has baked in the sun for twenty years does not go back the way it came off unless somebody is patient with it, and we price for that instead of hoping.",
+    true,
+  ),
+  city(
+    "Deerfield Beach",
+    "Broward",
+    "Deerfield Beach sits inside Florida's High-Velocity Hurricane Zone, so every attachment on a reinstall has to carry the right product approval and the whole thing gets inspected. That is stricter than anything north of the county line, and it is not optional.",
+    true,
+  ),
+  city(
+    "Pompano Beach",
+    "Broward",
+    "Pompano Beach combines the hurricane-zone rules with heavy salt exposure, which is the toughest specification we work to. Hardware that is perfectly legal in Orlando does not meet the standard here, and reusing old clamps on a new Pompano roof is not something we will do.",
+    true,
+  ),
+  city(
+    "Coral Springs",
+    "Broward",
+    "Coral Springs is planned, newer and consistent, so detach and reset here is about as predictable as this work gets. It is still inside the hurricane zone, which means the attachments and the permit are held to the tougher Broward standard even when the roof itself is simple.",
+  ),
+  city(
+    "Fort Lauderdale",
+    "Broward",
+    "Fort Lauderdale runs from waterfront properties to older inland neighbourhoods, and the hurricane-zone attachment rules apply to all of it. On the water we are dealing with salt as well, so corrosion checks and product-approved hardware come as a pair rather than separately.",
+    true,
+  ),
+  city(
+    "Plantation",
+    "Broward",
+    "Plantation is where Art of Solar is registered, so this is home ground and the response is fastest here. It is mature suburban housing, largely single-storey, inside the hurricane zone: simple roofs held to strict attachment rules.",
+  ),
+  city(
+    "Sunrise",
+    "Broward",
+    "Sunrise is dense mid-century and later suburban housing with a lot of low-slope, walkable roofs. Low slope is quick to work on but unforgiving about flashing, so the quality of the new mounts matters more here than the difficulty of the climb.",
+  ),
+  city(
+    "Davie",
+    "Broward",
+    "Davie has an unusual mix for Broward: large lots, outbuildings and the occasional ground mount alongside ordinary suburban roofs. Ground mounts and barn roofs are their own quote, and we would rather look at one in person than guess from a satellite image.",
+  ),
+  city(
+    "Weston",
+    "Broward",
+    "Weston is newer, tile-heavy and almost entirely association-governed, so a reinstall has to satisfy the hurricane-zone inspector and the community rules at the same time. We handle the permit side and put the layout in writing for the association.",
+  ),
+  city(
+    "Pembroke Pines",
+    "Broward",
+    "Pembroke Pines has a very large installed base of residential solar, and a lot of it went up through dealer networks that no longer exist. It is one of our busiest areas for orphaned system work, and often the roof job and the repair turn out to be the same visit.",
+  ),
+  city(
+    "Miramar",
+    "Broward",
+    "Miramar is mostly newer construction with clean roof planes, which keeps detach and reset straightforward. Being inside the hurricane zone, the attachments still have to be product-approved and inspected, so simple does not mean casual here.",
+  ),
+  city(
+    "Hollywood",
+    "Broward",
+    "Hollywood has older housing close to the ocean, which is the combination that ages solar hardware fastest: salt, sun, and roofs that have already been replaced once. We check every fastener on a Hollywood array before agreeing to put it back on a new roof.",
+    true,
+  ),
+  city(
+    "Miami",
+    "Miami-Dade",
+    "Miami is the strictest jurisdiction we work in. High-Velocity Hurricane Zone rules govern every attachment, the product approvals get checked, and the reinstall is properly inspected. It also has enormous barrel-tile stock, so this is where careful tile handling matters most of all.",
+    true,
+  ),
+  city(
+    "Miami Gardens",
+    "Miami-Dade",
+    "Miami Gardens is largely single-storey older housing, which is easy to work on and often has roofs that are overdue. When a roof is that tired, taking the array down is usually the moment you find out what the deck underneath is really like.",
+  ),
+  city(
+    "Hialeah",
+    "Miami-Dade",
+    "Hialeah is dense, tile-heavy, and full of homes where there is genuinely tight space to stage a detach. Where a crew can park and where the panels can safely sit for a week are real questions here, and we sort them out before the day rather than on it.",
+  ),
+  city(
+    "Doral",
+    "Miami-Dade",
+    "Doral is newer, planned and tile, with a lot of two-storey homes. Two storeys means fall protection and a longer carry, and that is the honest reason a Doral quote sits above a single-storey system of the same size.",
+  ),
+  city(
+    "Miami Beach",
+    "Miami-Dade",
+    "Miami Beach is salt air, wind exposure and the toughest attachment rules in the state all at once. Hardware corrodes visibly faster here, and anything we put back on a new roof is product-approved and new, never recovered off the old one.",
+    true,
+  ),
+  city(
+    "Coral Gables",
+    "Miami-Dade",
+    "Coral Gables has beautiful old barrel-tile roofs and a design review culture to match, so how an array looks when it goes back matters as much as how it performs. We agree the reinstall layout with you in writing before the panels come down.",
+    true,
+  ),
+  city(
+    "Kendall",
+    "Miami-Dade",
+    "Kendall is sprawling suburban housing with a very large amount of residential solar, much of it sold through companies that have since closed. Between re-roofs and orphaned systems it is one of the areas we are called to most often in Miami-Dade.",
+  ),
+  city(
+    "Cutler Bay",
+    "Miami-Dade",
+    "Cutler Bay was largely rebuilt after Hurricane Andrew, so the housing stock is newer and built to a tougher standard than the age of the neighbourhood suggests. Those roofs take attachments well and the product approvals are straightforward to satisfy.",
+    true,
+  ),
+  city(
+    "Homestead",
+    "Miami-Dade",
+    "Homestead runs its own municipal electric utility, so reconnection here does not go through the same channel as the rest of the county. It is also the southern end of our route, and we plan Homestead work in blocks so nobody pays for the drive twice.",
+  ),
 ];
 
 export const CITY_BY_SLUG: Record<string, City> = Object.fromEntries(
