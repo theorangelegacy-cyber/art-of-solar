@@ -88,7 +88,7 @@ export function SiteHeader() {
             <a
               href={links.call}
               onClick={() => trackEvent("call_click", { channel: "call", label: "header" })}
-              className="btn-base btn-primary px-3.5 py-2 text-sm"
+              className="btn-base btn-primary px-3 py-1.5 text-xs sm:px-3.5 sm:py-2 sm:text-sm"
             >
               Call now
             </a>
@@ -96,7 +96,7 @@ export function SiteHeader() {
             <Link
               to="/contact"
               onClick={() => trackEvent("quote_click", { channel: "form", label: "header" })}
-              className="btn-base btn-primary px-3.5 py-2 text-sm"
+              className="btn-base btn-primary px-3 py-1.5 text-xs sm:px-3.5 sm:py-2 sm:text-sm"
             >
               Free Quote
             </Link>
@@ -106,7 +106,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 aria-label="Open menu"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white text-navy transition-colors hover:bg-steel"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-white text-navy transition-colors hover:bg-steel sm:h-10 sm:w-10"
               >
                 <Menu className="h-5 w-5" />
               </button>
