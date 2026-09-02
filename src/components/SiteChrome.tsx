@@ -344,6 +344,9 @@ export function SiteFooter() {
               <Link to="/service-areas" className="text-white/80 hover:text-white">
                 Service areas
               </Link>
+              <Link to="/solar-company-out-of-business" className="text-white/80 hover:text-white">
+                Installer out of business?
+              </Link>
               <Link to="/about" className="text-white/80 hover:text-white">
                 About Art of Solar
               </Link>
