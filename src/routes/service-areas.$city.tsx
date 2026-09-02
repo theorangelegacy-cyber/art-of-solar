@@ -119,6 +119,16 @@ function CityPage() {
       </PageHero>
       <TrustStrip />
 
+      <section className="container-x py-12 sm:py-16">
+        <div className="rounded-3xl border border-line bg-white p-6 sm:p-8">
+          <p className="eyebrow">On the ground in {c.name}</p>
+          <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
+            Permits, roofs and what goes wrong here
+          </h2>
+          <p className="mt-4 max-w-3xl text-base text-muted-foreground">{c.detail}</p>
+        </div>
+      </section>
+
       <section className="container-x grid gap-8 py-12 sm:py-16 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
           <p className="eyebrow">Working in {c.name}</p>
@@ -154,13 +164,6 @@ function CityPage() {
               Homes in {c.name} are generally served by {k.utility}. We handle the reconnection and
               net-metering paperwork so the system actually comes back online.
             </li>
-            <li className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy">
-              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
-                ✓
-              </span>
-              Never the old mounts. Every attachment on your new {c.name} roof is new and flashed, so
-              your roofer's warranty stays intact.
-            </li>
           </ul>
         </div>
         <div className="self-start rounded-3xl border border-line bg-white p-6">
@@ -183,31 +186,22 @@ function CityPage() {
         <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
           What we do for {c.name} solar owners
         </h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* A link row, not six repeated paragraphs. The town's own writing
+            should be the bulk of this page, not the service blurbs that are
+            identical on all fifty-five of them. */}
+        <ul className="mt-6 flex flex-wrap gap-2">
           {SERVICES.map((s) => (
-            <Link
-              key={s.slug}
-              to="/services/$service"
-              params={{ service: s.slug }}
-              className="card-lift group overflow-hidden rounded-3xl border border-line bg-white"
-            >
-              <img
-                src={s.img}
-                alt={`${s.name} in ${c.name}`}
-                loading="lazy"
-                width={640}
-                height={400}
-                className="aspect-[16/10] w-full object-cover"
-              />
-              <div className="p-5">
-                <h3 className="text-base font-extrabold text-navy sm:text-lg">
-                  {s.name} in {c.name}
-                </h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{s.short}</p>
-              </div>
-            </Link>
+            <li key={s.slug}>
+              <Link
+                to="/services/$service"
+                params={{ service: s.slug }}
+                className="inline-flex rounded-2xl border border-line bg-white px-4 py-2 text-sm font-semibold text-navy transition hover:border-orange hover:text-orange-deep"
+              >
+                {s.name}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="bg-steel py-12 sm:py-20">
