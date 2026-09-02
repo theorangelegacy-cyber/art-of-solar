@@ -126,6 +126,7 @@ function CityPage() {
             Permits, roofs and what goes wrong here
           </h2>
           <p className="mt-4 max-w-3xl text-base text-muted-foreground">{c.detail}</p>
+          <p className="mt-4 max-w-3xl text-base text-muted-foreground">{c.seen}</p>
         </div>
       </section>
 
