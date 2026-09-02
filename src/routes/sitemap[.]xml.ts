@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { CITIES, SERVICES, SITE_URL } from "@/data/seo";
 import { RESCUES } from "@/data/rescues";
+import { FL_COUNTIES } from "@/data/florida";
 
 interface SitemapEntry {
   path: string;
@@ -25,6 +26,12 @@ export const Route = createFileRoute("/sitemap.xml")({
             path: `/services/${s.slug}`,
             changefreq: "monthly" as const,
             priority: "0.9",
+          })),
+          { path: "/counties", changefreq: "monthly" as const, priority: "0.9" },
+          ...FL_COUNTIES.map((c) => ({
+            path: `/counties/${c.slug}`,
+            changefreq: "monthly" as const,
+            priority: c.tier === 1 ? "0.85" : "0.7",
           })),
           { path: "/solar-panel-removal-cost", changefreq: "monthly" as const, priority: "0.95" },
           { path: "/solar-detach-and-reset", changefreq: "monthly" as const, priority: "0.95" },

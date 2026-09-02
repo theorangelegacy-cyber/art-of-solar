@@ -18,6 +18,8 @@ import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SolarDetachAndResetRouteImport } from './routes/solar-detach-and-reset'
 import { Route as SolarPanelRemovalCostRouteImport } from './routes/solar-panel-removal-cost'
+import { Route as CountiesIndexRouteImport } from './routes/counties.index'
+import { Route as CountiesCountyRouteImport } from './routes/counties.$county'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
 import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -70,6 +72,16 @@ const SolarPanelRemovalCostRoute = SolarPanelRemovalCostRouteImport.update({
   path: '/solar-panel-removal-cost',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CountiesIndexRoute = CountiesIndexRouteImport.update({
+  id: '/counties/',
+  path: '/counties/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CountiesCountyRoute = CountiesCountyRouteImport.update({
+  id: '/counties/$county',
+  path: '/counties/$county',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServiceAreasIndexRoute = ServiceAreasIndexRouteImport.update({
   id: '/service-areas/',
   path: '/service-areas/',
@@ -113,9 +125,11 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
   '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
+  '/counties/$county': typeof CountiesCountyRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
   '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
+  '/counties/': typeof CountiesIndexRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/solar-company-out-of-business/': typeof SolarCompanyOutOfBusinessIndexRoute
@@ -130,9 +144,11 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
   '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
+  '/counties/$county': typeof CountiesCountyRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
   '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
+  '/counties': typeof CountiesIndexRoute
   '/service-areas': typeof ServiceAreasIndexRoute
   '/services': typeof ServicesIndexRoute
   '/solar-company-out-of-business': typeof SolarCompanyOutOfBusinessIndexRoute
@@ -148,9 +164,11 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
   '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
+  '/counties/$county': typeof CountiesCountyRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
   '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
+  '/counties/': typeof CountiesIndexRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/solar-company-out-of-business/': typeof SolarCompanyOutOfBusinessIndexRoute
@@ -167,9 +185,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solar-detach-and-reset'
     | '/solar-panel-removal-cost'
+    | '/counties/$county'
     | '/service-areas/$city'
     | '/services/$service'
     | '/solar-company-out-of-business/$brand'
+    | '/counties/'
     | '/service-areas/'
     | '/services/'
     | '/solar-company-out-of-business/'
@@ -184,9 +204,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solar-detach-and-reset'
     | '/solar-panel-removal-cost'
+    | '/counties/$county'
     | '/service-areas/$city'
     | '/services/$service'
     | '/solar-company-out-of-business/$brand'
+    | '/counties'
     | '/service-areas'
     | '/services'
     | '/solar-company-out-of-business'
@@ -201,9 +223,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solar-detach-and-reset'
     | '/solar-panel-removal-cost'
+    | '/counties/$county'
     | '/service-areas/$city'
     | '/services/$service'
     | '/solar-company-out-of-business/$brand'
+    | '/counties/'
     | '/service-areas/'
     | '/services/'
     | '/solar-company-out-of-business/'
@@ -219,9 +243,11 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SolarDetachAndResetRoute: typeof SolarDetachAndResetRoute
   SolarPanelRemovalCostRoute: typeof SolarPanelRemovalCostRoute
+  CountiesCountyRoute: typeof CountiesCountyRoute
   ServiceAreasCityRoute: typeof ServiceAreasCityRoute
   ServicesServiceRoute: typeof ServicesServiceRoute
   SolarCompanyOutOfBusinessBrandRoute: typeof SolarCompanyOutOfBusinessBrandRoute
+  CountiesIndexRoute: typeof CountiesIndexRoute
   ServiceAreasIndexRoute: typeof ServiceAreasIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
   SolarCompanyOutOfBusinessIndexRoute: typeof SolarCompanyOutOfBusinessIndexRoute
@@ -292,6 +318,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SolarPanelRemovalCostRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/counties/': {
+      id: '/counties/'
+      path: '/counties'
+      fullPath: '/counties/'
+      preLoaderRoute: typeof CountiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/counties/$county': {
+      id: '/counties/$county'
+      path: '/counties/$county'
+      fullPath: '/counties/$county'
+      preLoaderRoute: typeof CountiesCountyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/service-areas/': {
       id: '/service-areas/'
       path: '/service-areas'
@@ -347,9 +387,11 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SolarDetachAndResetRoute: SolarDetachAndResetRoute,
   SolarPanelRemovalCostRoute: SolarPanelRemovalCostRoute,
+  CountiesCountyRoute: CountiesCountyRoute,
   ServiceAreasCityRoute: ServiceAreasCityRoute,
   ServicesServiceRoute: ServicesServiceRoute,
   SolarCompanyOutOfBusinessBrandRoute: SolarCompanyOutOfBusinessBrandRoute,
+  CountiesIndexRoute: CountiesIndexRoute,
   ServiceAreasIndexRoute: ServiceAreasIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
   SolarCompanyOutOfBusinessIndexRoute: SolarCompanyOutOfBusinessIndexRoute,

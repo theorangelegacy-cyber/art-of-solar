@@ -9,6 +9,7 @@ import { BRAND, CITIES, COUNTIES, SERVICES, TRUST, citiesInCounty } from "@/data
 import { trackEvent } from "@/lib/leads";
 import { srcSet } from "@/data/images";
 import { RESCUES } from "@/data/rescues";
+import { FL_COUNTIES } from "@/data/florida";
 import {
   Sheet,
   SheetClose,
@@ -349,6 +350,9 @@ export function SiteFooter() {
               <Link to="/service-areas" className="text-white/80 hover:text-white">
                 Service areas
               </Link>
+              <Link to="/counties" className="text-white/80 hover:text-white">
+                All 67 Florida counties
+              </Link>
               <Link to="/solar-panel-removal-cost" className="text-white/80 hover:text-white">
                 What removal costs
               </Link>
@@ -411,6 +415,21 @@ export function SiteFooter() {
               })}
             </ul>
           </div>
+        </div>
+
+        <div className="mt-10 border-t border-white/10 pt-6">
+          <p className="text-xs font-bold tracking-[0.14em] text-white/50 uppercase">
+            Counties we cover
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/60">
+            {FL_COUNTIES.map((k) => (
+              <li key={k.slug}>
+                <Link to="/counties/$county" params={{ county: k.slug }} className="hover:text-white">
+                  {k.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6">
