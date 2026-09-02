@@ -225,6 +225,56 @@ function Home() {
         </div>
       </section>
 
+      {/* Straight answers: the four questions people arrive with */}
+      <section className="container-x py-12 sm:py-20">
+        <p className="eyebrow">Straight answers</p>
+        <h2 className="mt-3 max-w-3xl text-2xl font-extrabold text-navy sm:text-4xl">
+          Whatever brought you here, start with one of these
+        </h2>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              to: "/solar-panel-removal-cost" as const,
+              eyebrow: "What will it cost?",
+              h: "Removal and reinstall prices",
+              p: "Real Florida numbers, per panel and per house, and what a fair quote has on it.",
+            },
+            {
+              to: "/solar-company-out-of-business" as const,
+              eyebrow: "Installer gone?",
+              h: "Orphaned system rescue",
+              p: "Titan, Vision, Lumio, Sunnova, SunPower and more. Half your warranty is still alive.",
+            },
+            {
+              to: "/solar-detach-and-reset" as const,
+              eyebrow: "For roofing contractors",
+              h: "Detach and reset",
+              p: "Give us the tear-off date. The array stops being your problem.",
+            },
+            {
+              to: "/florida-solar-permit-law" as const,
+              eyebrow: "Is my roofer allowed?",
+              h: "Florida permit rules",
+              p: "No, he is not. Here is the rule, and the four bills that arrive when it is ignored.",
+            },
+          ].map((c) => (
+            <Link
+              key={c.to}
+              to={c.to}
+              className="card-lift group rounded-3xl border border-line bg-white p-6"
+            >
+              <p className="text-[11px] font-extrabold tracking-[0.14em] text-orange-deep uppercase">
+                {c.eyebrow}
+              </p>
+              <h3 className="mt-1.5 text-lg font-extrabold text-navy group-hover:text-orange-deep">
+                {c.h}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{c.p}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Recent work */}
       <section className="container-x py-12 sm:py-20">
         <p className="eyebrow">Real work, not stock photos</p>
