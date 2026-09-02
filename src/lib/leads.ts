@@ -13,12 +13,14 @@
  * Schema: supabase/migrations/20260901_sevbo_leads.sql
  */
 
-// Written with bracket access so Vite statically replaces them.
-// The fallbacks mean everything works with no .env configured at all.
+// These name the ONE database that actually holds sevbo_leads and sevbo_events.
+// Do not swap them for the generic VITE_SUPABASE_* variables: Lovable Cloud
+// writes those into .env pointing at its own empty database, which silently
+// sends every lead into a project that has no tables. Own names, own database.
 const SUPABASE_URL =
-  import.meta.env["VITE_SUPABASE_URL"] || "https://isghtmwaxyocvxorprhw.supabase.co";
+  import.meta.env["VITE_SEVBO_SUPABASE_URL"] || "https://isghtmwaxyocvxorprhw.supabase.co";
 const SUPABASE_KEY =
-  import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
+  import.meta.env["VITE_SEVBO_SUPABASE_KEY"] ||
   "sb_publishable_shnRYTdCfZpev1ntRI2olA_QnL1NHiZ";
 
 function rpcUrl(fn: string) {
