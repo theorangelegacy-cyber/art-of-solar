@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Solar panel removal and reinstall for new roofs, re-racking, leak repair and service for solar systems whose installer went out of business. Licensed and insured. Orlando to Miami.",
+          "Solar panel removal and reinstall for a new roof, re-racking, leak repair and rescue for systems whose installer closed. Licensed, Orlando to Miami.",
       },
       { property: "og:title", content: "Art of Solar | Solar Re-Rack, Repair & Service, Orlando to Miami" },
       {

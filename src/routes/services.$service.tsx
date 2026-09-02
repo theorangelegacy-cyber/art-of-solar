@@ -23,8 +23,8 @@ export const Route = createFileRoute("/services/$service")({
       return { meta: [{ title: "Page not found" }, { name: "robots", content: "noindex" }] };
     const s = loaderData.service;
     const url = `${SITE_URL}/services/${params.service}`;
-    const title = `${s.name} in Florida | Art of Solar`;
-    const desc = `${s.short} Licensed and insured. Orlando to Miami. Written quote before a panel moves.`;
+    const title = s.metaTitle;
+    const desc = s.metaDesc;
     return {
       meta: [
         { title },

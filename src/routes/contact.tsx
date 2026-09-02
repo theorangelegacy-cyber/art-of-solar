@@ -12,7 +12,7 @@ export const Route = createFileRoute("/contact")({
     const url = `${SITE_URL}/contact`;
     const title = "Free Solar Re-Rack or Repair Quote | Art of Solar";
     const desc =
-      "Send the address, panel count and a photo. Get a written quote for solar panel removal and reinstall, leak repair or orphaned system service anywhere from Orlando to Miami.";
+      "Send the address, panel count and a photo of the array. You get a written quote for removal, reinstall, leak repair or system rescue. Orlando to Miami.";
     return {
       meta: [
         { title },

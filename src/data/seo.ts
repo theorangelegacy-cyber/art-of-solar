@@ -44,6 +44,16 @@ export const TRUST = [
 export type Service = {
   slug: string;
   name: string;
+  /**
+   * Page title and meta description, written per service.
+   *
+   * Without these the pages fell back to a pattern, and the pattern produced
+   * 200-plus character descriptions that Google chopped mid-sentence, all six
+   * ending in the same generic tail. Titles near 55 characters, descriptions
+   * near 150, and every one a whole sentence.
+   */
+  metaTitle: string;
+  metaDesc: string;
   /** used inside sentences, lowercase */
   phrase: string;
   eyebrow: string;
@@ -58,6 +68,8 @@ export type Service = {
 export const SERVICES: Service[] = [
   {
     slug: "solar-panel-removal-and-reinstall",
+    metaTitle: "Solar Panel Removal & Reinstall for a New Roof | Florida",
+    metaDesc: "Panels off before tear-off, back on after your roof passes, on new flashed mounts. Licensed Florida solar crew, Orlando to Miami. Written quote first.",
     name: "Solar Panel Removal & Reinstall",
     phrase: "solar panel removal and reinstall",
     eyebrow: "Detach & reset for a new roof",
@@ -110,6 +122,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "orphaned-solar-system-repair",
+    metaTitle: "Orphaned Solar System Repair | Installer Gone, Florida",
+    metaDesc: "Your installer closed and nobody answers. We take over abandoned solar systems anywhere in Florida, any brand. Written diagnosis before any repair.",
     name: "Orphaned Solar System Repair",
     phrase: "orphaned solar system repair",
     eyebrow: "Your installer is gone. We are not.",
@@ -165,6 +179,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "solar-roof-leak-repair",
+    metaTitle: "Solar Panel Roof Leak Repair | Florida Mounts & Flashing",
+    metaDesc: "Water coming in around the solar mounts is a solar problem, not a roofing one. We reseal and re-flash the attachments. Orlando to Miami, licensed.",
     name: "Roof Leak & Mount Repair",
     phrase: "roof leak repair around solar mounts",
     eyebrow: "Leaks at the attachments",
@@ -210,6 +226,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "solar-system-inspection",
+    metaTitle: "Solar Panel Inspection & Diagnostics | Florida",
+    metaDesc: "Production dropped, an error code appeared, or you are buying a house with solar on it. We test the whole system and give you the truth in writing.",
     name: "Solar Inspections & Diagnostics",
     phrase: "solar system inspection",
     eyebrow: "Is it actually producing?",
@@ -255,6 +273,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "storm-damage-solar-repair",
+    metaTitle: "Storm Damage Solar Repair & Insurance Claims | Florida",
+    metaDesc: "Cracked panels, lifted rails, water in the inverter. We document the damage the way adjusters need it and rebuild the system. Orlando to Miami.",
     name: "Storm Damage & Insurance Repairs",
     phrase: "storm damage solar repair",
     eyebrow: "After the hurricane",
@@ -300,6 +320,8 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "new-solar-pool-and-hot-water-systems",
+    metaTitle: "New Solar, Pool Heating & Solar Hot Water | Florida",
+    metaDesc: "Survey, design and install for home solar, solar pool heating and solar hot water. Built by the crew that repairs everyone else's work. Florida.",
     name: "New Solar, Pool & Hot Water Systems",
     phrase: "new solar installation",
     eyebrow: "Design, install, inspect",

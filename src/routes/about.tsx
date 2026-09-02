@@ -11,7 +11,7 @@ export const Route = createFileRoute("/about")({
     const url = `${SITE_URL}/about`;
     const title = "About Art of Solar | Artem Sevbo, Florida Solar Re-Rack Pro";
     const desc =
-      "Art of Solar is a private, highly experienced solar installer run by Artem Sevbo. Re-racks, repairs and new systems for homeowners, roofers and installers. Orlando to Miami.";
+      "Art of Solar is run by Artem Sevbo, a licensed Florida solar contractor. Re-racks, repairs and new systems for homeowners, roofers and installers.";
     return {
       meta: [
         { title },
