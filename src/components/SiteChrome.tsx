@@ -136,14 +136,6 @@ export function SiteHeader() {
                       </Link>
                     </SheetClose>
                   ))}
-                  <a
-                    href={links.facebook}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-2 rounded-xl px-3 py-3 text-base font-semibold text-navy transition-colors hover:bg-steel"
-                  >
-                    <FacebookIcon /> Facebook
-                  </a>
                 </nav>
                 <div className="mt-auto space-y-3 pt-6">
                   <SheetClose asChild>
@@ -156,9 +148,6 @@ export function SiteHeader() {
                       Call {links.phoneDisplay}
                     </a>
                   )}
-                  <a href={links.email} className="btn-base btn-ghost w-full">
-                    Email us
-                  </a>
                 </div>
               </div>
             </SheetContent>
