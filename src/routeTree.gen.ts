@@ -19,6 +19,8 @@ import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.in
 import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesServiceRouteImport } from './routes/services.$service'
+import { Route as SolarCompanyOutOfBusinessIndexRouteImport } from './routes/solar-company-out-of-business.index'
+import { Route as SolarCompanyOutOfBusinessBrandRouteImport } from './routes/solar-company-out-of-business.$brand'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +72,18 @@ const ServicesServiceRoute = ServicesServiceRouteImport.update({
   path: '/services/$service',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SolarCompanyOutOfBusinessIndexRoute =
+  SolarCompanyOutOfBusinessIndexRouteImport.update({
+    id: '/solar-company-out-of-business/',
+    path: '/solar-company-out-of-business/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SolarCompanyOutOfBusinessBrandRoute =
+  SolarCompanyOutOfBusinessBrandRouteImport.update({
+    id: '/solar-company-out-of-business/$brand',
+    path: '/solar-company-out-of-business/$brand',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,8 +94,10 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
+  '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/solar-company-out-of-business/': typeof SolarCompanyOutOfBusinessIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,8 +108,10 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
+  '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
   '/service-areas': typeof ServiceAreasIndexRoute
   '/services': typeof ServicesIndexRoute
+  '/solar-company-out-of-business': typeof SolarCompanyOutOfBusinessIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -105,8 +123,10 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
+  '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
   '/service-areas/': typeof ServiceAreasIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/solar-company-out-of-business/': typeof SolarCompanyOutOfBusinessIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,8 +139,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/service-areas/$city'
     | '/services/$service'
+    | '/solar-company-out-of-business/$brand'
     | '/service-areas/'
     | '/services/'
+    | '/solar-company-out-of-business/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,8 +153,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/service-areas/$city'
     | '/services/$service'
+    | '/solar-company-out-of-business/$brand'
     | '/service-areas'
     | '/services'
+    | '/solar-company-out-of-business'
   id:
     | '__root__'
     | '/'
@@ -143,8 +167,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/service-areas/$city'
     | '/services/$service'
+    | '/solar-company-out-of-business/$brand'
     | '/service-areas/'
     | '/services/'
+    | '/solar-company-out-of-business/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -156,8 +182,10 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ServiceAreasCityRoute: typeof ServiceAreasCityRoute
   ServicesServiceRoute: typeof ServicesServiceRoute
+  SolarCompanyOutOfBusinessBrandRoute: typeof SolarCompanyOutOfBusinessBrandRoute
   ServiceAreasIndexRoute: typeof ServiceAreasIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  SolarCompanyOutOfBusinessIndexRoute: typeof SolarCompanyOutOfBusinessIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +260,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/solar-company-out-of-business/': {
+      id: '/solar-company-out-of-business/'
+      path: '/solar-company-out-of-business'
+      fullPath: '/solar-company-out-of-business/'
+      preLoaderRoute: typeof SolarCompanyOutOfBusinessIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solar-company-out-of-business/$brand': {
+      id: '/solar-company-out-of-business/$brand'
+      path: '/solar-company-out-of-business/$brand'
+      fullPath: '/solar-company-out-of-business/$brand'
+      preLoaderRoute: typeof SolarCompanyOutOfBusinessBrandRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -244,8 +286,10 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ServiceAreasCityRoute: ServiceAreasCityRoute,
   ServicesServiceRoute: ServicesServiceRoute,
+  SolarCompanyOutOfBusinessBrandRoute: SolarCompanyOutOfBusinessBrandRoute,
   ServiceAreasIndexRoute: ServiceAreasIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  SolarCompanyOutOfBusinessIndexRoute: SolarCompanyOutOfBusinessIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
