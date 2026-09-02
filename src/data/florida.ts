@@ -894,3 +894,36 @@ export function nearbyCounties(c: FlCounty, n = 8): FlCounty[] {
   const rest = FL_COUNTIES.filter((x) => x.region !== c.region && x.tier === c.tier);
   return [...same, ...rest].slice(0, n);
 }
+
+/**
+ * One written paragraph per region, shown on every county page in it.
+ *
+ * Sixty-seven pages off one template share too much boilerplate, and the
+ * county blurb alone is not enough to carry them apart. Eleven regional
+ * paragraphs plus the per-county blurb is what gets each page over the line.
+ * Same rule as the blurbs: written once, by hand, never generated.
+ */
+export const REGION_NOTES: Record<Region, string> = {
+  "Central Florida":
+    "Central Florida is where the state's solar boom hit suburban tract housing hardest. Whole subdivisions went up between 2015 and 2022 with panels included in the mortgage, sold by dealer networks that no longer exist. The roofs are young, the arrays are young, and the failures we find are almost never the panels: they are inverters, optimizers and attachments that were never torqued properly by a crew that was paid by the install.",
+  "Space Coast":
+    "The Space Coast has been putting solar on roofs longer than most of Florida, so Brevard and Volusia hold a genuinely old installed base alongside new construction. Salt reaches well inland along this stretch of coast, further than homeowners expect, and it attacks the cheap parts first: clamps, grounding lugs and rail splices. A twelve-year-old array here is usually structurally fine and electrically tired.",
+  "Treasure Coast":
+    "The Treasure Coast takes hurricanes head on, which means insurance-driven roof replacement runs constantly here whether the roof needed it or not. A lot of what we detach and reset on this stretch is barely-used equipment coming off a roof that was replaced because an underwriter said so. That is easy work done carefully, and it is the bulk of what we do between Vero Beach and Stuart.",
+  "South Florida":
+    "South Florida is the strictest place in the state to put anything back on a roof. Miami-Dade and Broward sit inside the High-Velocity Hurricane Zone, so attachments need documented product approval and the reinstall is genuinely inspected rather than waved through. Add barrel tile, dense association rules and salt on three sides, and the gap between a proper reset and a rushed one shows up fast.",
+  "Southwest Florida":
+    "Southwest Florida is still working through Hurricane Ian. The volume of roof replacement across Lee, Charlotte and Sarasota since has been unlike anything else in the state, and a great many arrays came off in a hurry and went back on with whoever was available that week. Loose clamps, reused mounts and unflashed penetrations from that period are what we are called out to now, usually when a ceiling starts staining.",
+  "Tampa Bay":
+    "Tampa Bay has the second-largest concentration of residential solar in Florida and three different utilities carving up the map, so the first question on any reinstall here is who actually holds the interconnection. Lots on the Pinellas side are tight, which makes staging a detach and finding somewhere safe to store panels a real planning problem rather than an afterthought.",
+  "Nature Coast":
+    "The Nature Coast is low-density Gulf shoreline and retirement housing, which is the gentlest work in the state: single-storey, walkable pitch, short carries, modest systems. Quotes here routinely come in under what people expect from national price guides. The catch is distance between jobs, so this is country we cover in batches rather than one call at a time.",
+  "North Central Florida":
+    "North Central Florida is cooperative country. Most homes here buy power from a rural electric co-op rather than a big investor utility, and co-op interconnection rules move at their own pace, so a reinstall is planned around the paperwork as much as the roof. Ground mounts on acreage are as common as rooftop arrays, and they are a different, usually easier, job.",
+  "Northeast Florida":
+    "Northeast Florida runs on municipal power around Jacksonville and cooperatives everywhere else, so the reconnection route changes depending on which side of a county line the house sits. There is a large installed base here and a genuine shortage of companies willing to take over somebody else's array, which is most of why we get called this far north.",
+  Panhandle:
+    "The Panhandle is still rebuilding from Hurricane Michael, which means an unusual amount of the roof stock is newer and built to a tougher standard than the age of the neighbourhoods suggests. Those roofs take attachments well. Metal roofing is far more common here than in peninsular Florida, and metal needs completely different hardware from shingle. This is our longest drive in the state and it is booked well ahead.",
+  "Florida Keys":
+    "The Keys are the harshest environment for solar hardware anywhere in Florida: salt on every side, the highest wind design loads in the state, and building rules written to match. Nothing recovered off an old roof goes back onto a new one down here. Access and staging on a narrow island lot is genuinely half the job, and any honest quote for the Keys says so up front.",
+};

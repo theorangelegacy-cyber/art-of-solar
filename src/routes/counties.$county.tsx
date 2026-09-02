@@ -10,7 +10,12 @@ import {
 } from "@/components/SiteChrome";
 import { LeadForm } from "@/components/LeadForm";
 import { CITY_BY_SLUG, SERVICES, SITE_URL } from "@/data/seo";
-import { FL_COUNTY_BY_SLUG, nearbyCounties, type FlCounty } from "@/data/florida";
+import {
+  FL_COUNTY_BY_SLUG,
+  REGION_NOTES,
+  nearbyCounties,
+  type FlCounty,
+} from "@/data/florida";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
 import { IMG, srcSet } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
@@ -207,6 +212,16 @@ function CountyPage() {
         </div>
       </section>
 
+      <section className="container-x pb-10 sm:pb-14">
+        <div className="rounded-3xl border border-line bg-white p-6 sm:p-8">
+          <p className="eyebrow">{c.region}</p>
+          <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
+            What solar looks like in this part of Florida
+          </h2>
+          <p className="mt-4 max-w-3xl text-base text-muted-foreground">{REGION_NOTES[c.region]}</p>
+        </div>
+      </section>
+
       <section className="container-x grid gap-8 pb-12 sm:pb-16 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
           <p className="eyebrow">What we check here</p>
@@ -287,24 +302,42 @@ function CountyPage() {
           <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
             Services across {c.name} County
           </h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map((s) => (
-              <Link
-                key={s.slug}
-                to="/services/$service"
-                params={{ service: s.slug }}
-                className="card-lift group rounded-3xl border border-line bg-white p-6"
-              >
-                <p className="text-[11px] font-extrabold tracking-[0.14em] text-orange-deep uppercase">
-                  {s.eyebrow}
-                </p>
-                <h3 className="mt-1.5 text-lg font-extrabold text-navy group-hover:text-orange-deep">
-                  {s.name}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.short}</p>
-              </Link>
-            ))}
-          </div>
+          {home ? (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {SERVICES.map((s) => (
+                <Link
+                  key={s.slug}
+                  to="/services/$service"
+                  params={{ service: s.slug }}
+                  className="card-lift group rounded-3xl border border-line bg-white p-6"
+                >
+                  <p className="text-[11px] font-extrabold tracking-[0.14em] text-orange-deep uppercase">
+                    {s.eyebrow}
+                  </p>
+                  <h3 className="mt-1.5 text-lg font-extrabold text-navy group-hover:text-orange-deep">
+                    {s.name}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.short}</p>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            /* Travel counties get the list, not six repeated paragraphs. Less
+               boilerplate means the county's own writing carries the page. */
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {SERVICES.map((s) => (
+                <li key={s.slug}>
+                  <Link
+                    to="/services/$service"
+                    params={{ service: s.slug }}
+                    className="inline-flex rounded-2xl border border-line bg-white px-4 py-2 text-sm font-semibold text-navy transition hover:border-orange hover:text-orange-deep"
+                  >
+                    {s.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link to="/solar-panel-removal-cost" className="btn-base btn-navy w-full sm:w-auto">
               What it costs per panel
