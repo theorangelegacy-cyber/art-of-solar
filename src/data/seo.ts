@@ -882,21 +882,21 @@ export function cityFaqs(c: City): { q: string; a: string }[] {
   return [
     {
       q: `Do you remove and reinstall solar panels in ${c.name}?`,
-      a: `Yes. We detach, store and reinstall solar arrays for roof replacements across ${c.name} and the rest of ${k.name} County, and we coordinate directly with your roofer.`,
-    },
-    {
-      q: `My solar installer in ${c.name} went out of business. Can you service the system?`,
-      a: `Yes. Most of the systems we service were installed by companies that are gone. We troubleshoot, repair and maintain solar arrays in ${c.name} no matter who put them up.`,
-    },
-    {
-      q: `Who handles the utility paperwork in ${c.name}?`,
-      a: `We do. Homes in ${c.name} are generally served by ${k.utility}. We handle the interconnection and reconnection forms when a system is reinstalled or brought back online.`,
+      a: `Yes, week in week out. ${c.name} is on our home route, so this is normal scheduling with no travel loading, and we work backwards from your roofer's tear-off date rather than the other way round.`,
     },
     {
       q: `Is a permit needed to reinstall solar in ${c.name}?`,
       a: k.hvhz
-        ? `Yes. ${c.name} sits inside Florida's High-Velocity Hurricane Zone, so the reinstall is permitted and inspected and every attachment has to carry the right product approval. We pull the permit and meet the inspector.`
-        : `In almost every case, yes. We pull the solar permit in ${k.name} County and schedule the inspection so you do not have to.`,
+        ? `Yes. ${c.name} sits inside Florida's High-Velocity Hurricane Zone, so every attachment needs documented product approval and the reinstall is genuinely inspected. We pull the permit and meet the inspector.`
+        : `Almost always. We pull the solar permit through ${k.name} County or your city, whichever holds it for your address, and we meet the inspector so you do not have to take a day off for it.`,
+    },
+    {
+      q: c.coastal
+        ? `Does being near the water change the job in ${c.name}?`
+        : `What usually fails on ${c.name} roofs?`,
+      a: c.coastal
+        ? `It changes what fails first. Salt eats rails, clamps and grounding lugs long before it touches a panel, so nothing corroded goes back onto a new ${c.name} roof no matter how it looks from the ground.`
+        : `Away from salt air it is rail condition, flashing at the mounts, and whether the array was ever torqued to spec. A stain on a ceiling under an array in ${c.name} is almost always a mount that was never flashed properly.`,
     },
   ];
 }

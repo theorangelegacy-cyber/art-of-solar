@@ -135,11 +135,6 @@ function CityPage() {
           <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
             What we check on a {c.name} roof
           </h2>
-          <p className="mt-4 text-base text-muted-foreground">
-            New roof coming, installer out of business, or a stain on the ceiling under the array?
-            We detach, re-rack, reinstall and repair solar for {c.name} homeowners, roofers and
-            installers. Any brand, any original installer, in business or not.
-          </p>
           <ul className="mt-6 grid gap-3">
             <li className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy">
               <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
@@ -156,13 +151,6 @@ function CityPage() {
               {c.coastal
                 ? `${c.name} sits in salt air, so we check every rail, clamp and grounding lug for corrosion before agreeing to put an array back on a new roof.`
                 : `Inland roofs like ${c.name} let us focus on the things that actually fail here: rail condition, flashing at the mounts and how the array was torqued.`}
-            </li>
-            <li className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy">
-              <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
-                ✓
-              </span>
-              Homes in {c.name} are generally served by {k.utility}. We handle the reconnection and
-              net-metering paperwork so the system actually comes back online.
             </li>
           </ul>
         </div>
