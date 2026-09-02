@@ -216,6 +216,17 @@ function CountyPage() {
 
       <section className="container-x pb-10 sm:pb-14">
         <div className="rounded-3xl border border-line bg-white p-6 sm:p-8">
+          <p className="eyebrow">On the ground in {c.name} County</p>
+          <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
+            Permits, power and what the roofs are actually like
+          </h2>
+          <p className="mt-4 max-w-3xl text-base text-muted-foreground">{c.detail}</p>
+          <p className="mt-4 max-w-3xl text-base text-muted-foreground">{c.seen}</p>
+        </div>
+      </section>
+
+      <section className="container-x pb-10 sm:pb-14">
+        <div className="rounded-3xl border border-line bg-white p-6 sm:p-8">
           <p className="eyebrow">{c.region}</p>
           <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
             What solar looks like in this part of Florida
@@ -230,7 +241,6 @@ function CountyPage() {
           <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
             {c.name} County roofs, specifically
           </h2>
-          <p className="mt-4 text-base text-muted-foreground">{c.seen}</p>
           {home && (
           <ul className="mt-6 grid gap-3">
             {[

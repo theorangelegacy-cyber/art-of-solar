@@ -50,6 +50,8 @@ export type FlCounty = {
   hvhz?: boolean;
   /** The towns worth naming on the page. */
   towns: string[];
+  /** The long one: roof stock, permitting, utility and the local hazard. ~100 original words. */
+  detail: string;
   /** What we actually get called for here. Second hand-written field, unique per county. */
   seen: string;
   /** Two or three true sentences about the roofs and solar here. Unique, always. */
@@ -61,6 +63,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Orange",
     slug: "orange-county",
+    detail: "Orange County permitting runs through either the City of Orlando or the county building department depending on which side of a line the house sits, and the two do not want the same paperwork. The roof stock is genuinely split: pre-1970 bungalows around Colonialtown and Audubon Park with small roof planes and original decking, against Lake Nona and Horizon West where everything is engineered truss and concrete tile from the last fifteen years. On the old houses the question is always what the deck looks like once the array is off, because nobody has seen it since the panels went up. On the new ones it is tile breakage and getting the reinstall approved.",
     seen: "Most Orange County calls are re-roofs where the homeowner found out about the panels a week before tear-off. Second most: an OUC customer whose system came back on but never got reconnected properly on paper.",
     seat: "Orlando",
     region: "Central Florida",
@@ -73,6 +76,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Seminole",
     slug: "seminole-county",
+    detail: "Seminole permits are county-run for most addresses, with Sanford, Oviedo and Winter Springs handling their own. The housing is dominated by two building waves, mid-1990s and early 2000s, so an enormous number of roofs across the county are hitting replacement age within a few years of each other. Where those houses got solar during the boom, the array is a decade younger than the roof under it. That mismatch is the single most common reason we are on a Seminole roof: perfectly good panels sitting on shingles that have run out.",
     seen: "Seminole calls skew toward roofs that hit twenty years at the same moment the inverter did. If both are due, doing them together saves paying for the array to come down twice.",
     seat: "Sanford",
     region: "Central Florida",
@@ -85,6 +89,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Osceola",
     slug: "osceola-county",
+    detail: "Osceola runs its permits through the county for most of the unincorporated area, with Kissimmee and St. Cloud operating their own departments. Kissimmee Utility Authority covers a big share of the population and its interconnection process is separate from Duke Energy's, which catches out contractors who assume one form fits the county. The other thing that shapes work here is vacation rental: whole subdivisions around Highway 192 and Celebration are managed properties where a week of downtime costs real money, so the schedule gets built backwards from the booking calendar rather than the roofer's convenience.",
     seen: "Osceola is short-term rentals and new subdivisions. The rental owners want days offline pinned down before they book anything; the subdivision owners usually cannot name who installed the system.",
     seat: "Kissimmee",
     region: "Central Florida",
@@ -97,6 +102,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Brevard",
     slug: "brevard-county",
+    detail: "Brevard permits through the county or through Melbourne, Palm Bay, Titusville and Cocoa depending on the address, and the coastal building requirements tighten as you move east toward the barrier island. The county has one of the oldest residential solar populations in Florida, which means we see first-generation string inverters and racking systems that are no longer manufactured. When a rail system is discontinued, a reinstall cannot simply reuse what came off, and that is a line item people are not expecting. Salt intrusion this far up the coast is under-appreciated: we routinely find grounding lugs corroded through on systems only eight or nine years old.",
     seen: "Brevard is our heaviest county for orphaned systems. Half the calls are a dead inverter with no one to file the claim, and the other half are corroded clamps found during a re-roof.",
     seat: "Titusville",
     region: "Space Coast",
@@ -110,6 +116,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Indian River",
     slug: "indian-river-county",
+    detail: "Indian River permits through the county, with Vero Beach and Sebastian running their own departments. Vero's municipal electric system was sold to FPL some years ago, so older paperwork on a house here can reference a utility that no longer exists, which slows a reconnection down if nobody catches it. The mainland is heavily barrel tile over older decking; the barrier island adds full salt exposure on top. Tile plus salt plus an array that was mounted without proper flashing is the combination that produces the ceiling stains we get called about.",
     seen: "Indian River calls are tile, tile and more tile, plus barrier-island hardware that has quietly rusted through. Broken tile during a rushed reset is the complaint we most often get called in to fix.",
     seat: "Vero Beach",
     region: "Treasure Coast",
@@ -123,6 +130,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "St. Lucie",
     slug: "st-lucie-county",
+    detail: "St. Lucie permits through Port St. Lucie's own building department for most of the population, and through the county or Fort Pierce elsewhere. Port St. Lucie's growth has been so fast and so uniform that whole districts share a roof age and a builder, which makes quoting unusually predictable once we have done one street. Fort Pierce Utilities Authority handles its own interconnection and it is not the same process as FPL's. Because the housing is young, the honest finding on most service calls here is that the array is fine and one component has failed, which is a much cheaper conversation than people expect.",
     seen: "Port St. Lucie generates more underproduction calls than damage calls. The systems are young enough that it is nearly always one failed part rather than a worn-out array.",
     seat: "Fort Pierce",
     region: "Treasure Coast",
@@ -136,6 +144,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Martin",
     slug: "martin-county",
+    detail: "Martin County permits through the county or Stuart, and the coastal construction control line adds requirements on properties near the water. The housing runs from modest inland Palm City subdivisions to substantial waterfront homes with four or five separate roof planes and arrays split across them. More planes means more rails, more penetrations and more places for a previous crew to have cut a corner. A large share of Martin work arrives as a dispute rather than a job: the roofer says the solar company caused the leak, the solar company is gone, and somebody has to open it up and find out.",
     seen: "Martin County calls tend to arrive with a folder: two contractors, three dates and nobody sure who touched the roof last. Documenting what is actually up there is usually the first billable hour.",
     seat: "Stuart",
     region: "Treasure Coast",
@@ -149,6 +158,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Palm Beach",
     slug: "palm-beach-county",
+    detail: "Palm Beach County permitting is county-run outside the municipalities and separately handled inside them, and there are a lot of municipalities. Add community association approval on top in most of the western communities and a reinstall layout can need sign-off twice before a panel moves. The county is dominated by barrel and flat concrete tile over trusses, much of it now twenty to thirty years old and brittle in the sun. Insurance-driven roof replacement runs constantly here, so a large share of our detach and reset work is on arrays that are barely used and simply in the way.",
     seen: "Palm Beach is insurance-driven re-roofs on tile, with an association wanting the reinstall layout in writing before anything comes down. Also a steady run of leaks under arrays that were never flashed.",
     seat: "West Palm Beach",
     region: "South Florida",
@@ -172,6 +182,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Broward",
     slug: "broward-county",
+    detail: "Broward sits inside the High-Velocity Hurricane Zone, which changes the job at every level. Attachments need documented Florida Product Approval or a Miami-Dade Notice of Acceptance, the engineering is checked rather than glanced at, and the reinstall is genuinely inspected. Most municipalities run their own building departments, so the process varies street to street across thirty-odd cities. Being registered in Plantation means we know which counters want what. The roof stock is mixed shingle and tile with a lot of 1970s and 1980s single-storey housing, and salt reaches inland much further than the beach cities.",
     seen: "Broward is home ground, so we get everything: same-week detach and reset, emergency leak calls, and takeovers of systems from installers who left the state. Hurricane-zone paperwork is routine here.",
     seat: "Fort Lauderdale",
     region: "South Florida",
@@ -198,6 +209,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Miami-Dade",
     slug: "miami-dade-county",
+    detail: "Miami-Dade is the strictest permitting jurisdiction in Florida and the one the rest of the country copies. Product approval is checked against the county's own Notice of Acceptance list, the engineering has to match, and inspectors here have seen every shortcut. Barrel tile over sloped concrete is the dominant roof, much of it original to 1950s and 1960s construction, and it does not survive an impatient crew. We spend a meaningful share of our Miami time fixing failed reinstalls: arrays that went back on without approved attachments and got red-tagged, or tile that was walked on rather than lifted.",
     seen: "Miami-Dade calls are heavy on inspection failures and tile damage from crews who did not know the product-approval rules. Fixing somebody else's failed reinstall is a large share of the work here.",
     seat: "Miami",
     region: "South Florida",
@@ -224,6 +236,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Alachua",
     slug: "alachua-county",
+    detail: "Alachua permits through the county or the City of Gainesville, and Gainesville Regional Utilities runs its own interconnection with its own forms and its own queue. Gainesville adopted residential solar earlier than almost anywhere else in Florida thanks to a feed-in tariff programme in the late 2000s, so the county holds an unusually old installed base: original inverters well past their design life, racking from manufacturers that no longer exist, and installers who left the trade a decade ago. Those are rewarding systems to take over, because the panels themselves are usually still producing close to spec.",
     seen: "Alachua calls are old systems: early racking, first-generation inverters, and Gainesville's own utility paperwork that nobody outside the city knows how to file.",
     seat: "Gainesville",
     region: "North Central Florida",
@@ -236,6 +249,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Baker",
     slug: "baker-county",
+    detail: "Baker County permits through the county from Macclenny, and most homes buy power from an electric cooperative rather than an investor-owned utility. Co-op interconnection agreements are their own document and the review queue moves at its own pace, so on a reinstall here the paperwork, not the roof, sets the schedule. The housing is overwhelmingly single-storey on large lots, which is straightforward work once a crew is on site. The honest constraint is distance: this is a two-hour-plus drive from anywhere we normally work, so it is batched with anything else we have going on around Jacksonville.",
     seen: "Baker calls are rare and usually cooperative-interconnected. When they come, they come with a permit question rather than a hardware question.",
     seat: "Macclenny",
     region: "Northeast Florida",
@@ -248,6 +262,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Bay",
     slug: "bay-county",
+    detail: "Bay County permits through the county or Panama City, Panama City Beach, Lynn Haven and Callaway. Hurricane Michael flattened a great deal of the county in 2018 and the rebuild that followed was built to current code rather than the code of the original neighbourhood, so a house here is frequently far stronger than its street suggests. Those decks take attachments well. Beach-side addresses still get the full corrosion inspection, because Gulf salt is no gentler than Atlantic salt and the hardware ages identically. This is a long drive from our base and it is booked in blocks.",
     seen: "Bay County is post-Michael rebuilds. The roofs are good; the arrays that went back on them during the rush are the part we get asked to check.",
     seat: "Panama City",
     region: "Panhandle",
@@ -261,6 +276,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Bradford",
     slug: "bradford-county",
+    detail: "Bradford permits through the county at Starke and most homes are on an electric cooperative. It is one of the smallest counties in Florida by population and the solar reflects that: what we see is ground-mounted arrays on acreage and panels on metal-roofed outbuildings rather than suburban rooftop systems. Ground mounts are a genuinely different quote, usually simpler than a two-storey tile roof, and metal roofing needs its own attachment hardware rather than the standoffs that work on shingle. Realistically this is a scheduled trip stacked with work in Alachua or Clay.",
     seen: "Bradford calls are ground mounts and metal outbuildings rather than houses. Different hardware, usually easier work than a two-storey tile roof.",
     seat: "Starke",
     region: "North Central Florida",
@@ -273,6 +289,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Calhoun",
     slug: "calhoun-county",
+    detail: "Calhoun permits through the county at Blountstown and power comes mostly from a rural cooperative. This is deep Panhandle with a few thousand households, and the solar that exists is largely off-grid or agricultural: pump systems, barn roofs, battery banks on property well away from a service drop. That is real work and we do it, but it is nothing like a suburban detach and reset and it gets quoted differently. It is also among the longest drives in the state from South Florida, so we will tell you honestly on the first call whether the job justifies it.",
     seen: "Calhoun is off-grid and agricultural. When we get a call here it is normally a battery or pump system rather than a grid-tied roof array.",
     seat: "Blountstown",
     region: "Panhandle",
@@ -285,6 +302,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Charlotte",
     slug: "charlotte-county",
+    detail: "Charlotte County permits through the county or Punta Gorda. Hurricane Ian came ashore essentially on top of this county in 2022 and the volume of roof replacement since has been extraordinary, which matters for a specific reason: a great many arrays came off in the rebuild and went back on by whoever was available that week. We are now finding the results. Clamps that were never re-torqued, rails reused past their service life, and old mounts refitted to new roofs without flashing. The panels are usually fine. What is under them frequently is not.",
     seen: "Charlotte County is Ian aftermath. Arrays that came off fast and went back on faster, and are now showing loose clamps and unflashed mounts.",
     seat: "Punta Gorda",
     region: "Southwest Florida",
@@ -298,6 +316,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Citrus",
     slug: "citrus-county",
+    detail: "Citrus permits through the county at Inverness, with Crystal River handling its own. The housing skews heavily toward retirement communities: single-storey, shallow walkable pitch, modest system sizes, and short carries from roof to truck. That is the least expensive detach and reset there is, and quotes here regularly land below what people expect after reading national cost guides. The Gulf side around Crystal River and Homosassa still gets a corrosion inspection, and much of the coastal property is low-lying, which affects where panels can safely be stored during a roof job.",
     seen: "Citrus calls are retirement housing: small systems, walkable roofs, and owners who want a fixed number before anyone climbs a ladder.",
     seat: "Inverness",
     region: "Nature Coast",
@@ -311,6 +330,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Clay",
     slug: "clay-county",
+    detail: "Clay County permits through the county at Green Cove Springs, with Orange Park and Keystone Heights running their own. The utility split is the thing to get right here: a large share of the county is on Clay Electric Cooperative while addresses closer to Jacksonville fall under JEA, and the two handle reconnection and net metering completely differently. The housing is mostly late-1990s onward commuter suburbs with clean shingle roof planes, which detaches predictably. Fleming Island and the newer Oakleaf developments are the most consistent work.",
     seen: "Clay County calls usually start with confusion over which utility holds the interconnection, because the co-op and the Jacksonville municipal system handle it completely differently.",
     seat: "Green Cove Springs",
     region: "Northeast Florida",
@@ -323,6 +343,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Collier",
     slug: "collier-county",
+    detail: "Collier permits through the county or Naples and Marco Island, and community association approval is effectively a second permit across most of the county. Roofs are predominantly concrete and clay tile on large footprints, often with arrays split across several planes at different pitches. Nothing about a Collier quote is quick, and any contractor who gives you a number over the phone here has not looked at the roof. Naples and Marco sit directly on the Gulf, so corrosion inspection and wind-rated attachment are both in play, and the drive across Alligator Alley is genuinely manageable from Broward.",
     seen: "Collier calls are large tile roofs, multiple arrays on different faces, and an association that wants drawings. Never a quick quote, often a good job.",
     seat: "Naples",
     region: "Southwest Florida",
@@ -336,6 +357,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Columbia",
     slug: "columbia-county",
+    detail: "Columbia permits through the county at Lake City. Two interstates cross here, which gives the county more commercial and light-industrial roof stock than its population would suggest, alongside a lot of rural acreage. Three separate providers cover different parts of the county, so the first question on any reinstall is who actually holds the interconnection agreement, and the answer is not always what the homeowner thinks. Metal roofing is common on the agricultural buildings and it needs entirely different attachment hardware from the shingle work we do further south.",
     seen: "Columbia calls split between commercial roofs near the interstate junction and rural acreage. Three providers cover the county, so the interconnection question comes first.",
     seat: "Lake City",
     region: "North Central Florida",
@@ -348,6 +370,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "DeSoto",
     slug: "desoto-county",
+    detail: "DeSoto permits through the county at Arcadia. This is inland agricultural Southwest Florida and it has taken repeated storm damage, most recently from Ian passing directly over it, which put a great many roofs back to bare deck. Where solar was involved the array came off in a hurry and went back on faster still. Ranch buildings, packing houses and ground-mounted systems on acreage feature as heavily as houses. What we mostly get asked to do here is find out what a rushed reinstall did to the attachments before the next storm finds out for us.",
     seen: "DeSoto is storm-damaged agricultural country. Roofs went back to bare deck and the arrays went back on in a hurry, which is what we are called to inspect.",
     seat: "Arcadia",
     region: "Southwest Florida",
@@ -360,6 +383,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Dixie",
     slug: "dixie-county",
+    detail: "Dixie permits through the county at Cross City and most homes are on a rural cooperative. The Gulf side at Horseshoe Beach and Suwannee is largely raised stilt construction, which changes everything about how a crew stages a detach: there is no simple ladder set, storage has to be planned, and the working height is higher than the roof pitch suggests. Inland is acreage with ground mounts and metal roofs. Small population, long drive, and honest scheduling rather than a promise we cannot keep.",
     seen: "Dixie calls are coastal stilt houses and inland acreage. Raised construction changes staging completely and it goes in the quote up front.",
     seat: "Cross City",
     region: "Nature Coast",
@@ -373,6 +397,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Duval",
     slug: "duval-county",
+    detail: "Duval permits through the City of Jacksonville, which is consolidated with the county, so there is mercifully one building department for almost the whole area. JEA is the municipal utility and its interconnection process is its own thing. Jacksonville has a large residential solar population and a genuine shortage of companies willing to take over another firm's array, which is most of why we get called this far north. The Beaches communities add salt exposure and their own building requirements; the inland west side is ordinary suburban shingle work at scale.",
     seen: "Duval is one of our busiest northern counties: a large installed base, JEA's own interconnection process, and very few companies willing to take over another firm's array.",
     seat: "Jacksonville",
     region: "Northeast Florida",
@@ -386,6 +411,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Escambia",
     slug: "escambia-county",
+    detail: "Escambia permits through the county or the City of Pensacola. The utility here was Gulf Power until it merged into FPL, and older paperwork on a house still references the old company, which will stall a reconnection if nobody catches it. Pensacola Beach is barrier island with the highest wind exposure in the Panhandle and hardware that ages accordingly. This is the single longest drive we make inside Florida, and we would rather book it properly as part of a Panhandle run than pretend we can be there on Thursday.",
     seen: "Escambia calls are beach-side corrosion and old Gulf Power paperwork. The longest drive we make in Florida, so it is always batched.",
     seat: "Pensacola",
     region: "Panhandle",
@@ -399,6 +425,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Flagler",
     slug: "flagler-county",
+    detail: "Flagler permits through the county at Bunnell or through Palm Coast, which is most of the population. Palm Coast is unusual in Florida: a planned community built in waves on a consistent street grid with a narrow range of house types, mostly shingle. That consistency cuts both ways. Quoting is fast once we have done one, and when a roof generation reaches end of life the whole neighbourhood follows within two or three years, so we often end up doing several houses on the same street in the same season.",
     seen: "Palm Coast is uniform enough that when one roof generation starts failing, the whole street follows within a couple of years. We tend to get several calls from the same neighbourhood.",
     seat: "Bunnell",
     region: "Northeast Florida",
@@ -412,6 +439,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Franklin",
     slug: "franklin-county",
+    detail: "Franklin permits through the county at Apalachicola, with Carrabelle running its own. This is oyster coast and barrier island, and metal roofing is far more common here than anywhere in peninsular Florida. Metal changes the attachment specification completely: standing-seam clamps rather than penetrating standoffs, and no flashing question at all if it is done right. St. George Island is raised coastal construction with the wind exposure to match. Small county, long haul, planned work only, and we say so rather than dress it up.",
     seen: "Franklin calls are metal roofs on raised coastal houses. Metal attachment hardware rules out most of what works on shingle, and that surprises people.",
     seat: "Apalachicola",
     region: "Panhandle",
@@ -425,6 +453,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Gadsden",
     slug: "gadsden-county",
+    detail: "Gadsden permits through the county at Quincy and power is mostly cooperative. This is rolling North Florida just west of Tallahassee with older housing stock and, crucially, very heavy tree canopy. Shade is the first thing worth checking on any underproducing system here, because a good proportion of the calls we get in this part of the state turn out to be twenty years of growth rather than a hardware fault. Telling somebody their system is fine and they need a tree surgeon is a cheaper answer than a repair quote, and it is often the right one.",
     seen: "Gadsden calls are usually underproduction that turns out to be tree shade rather than a fault. We check that before quoting, because it saves the homeowner money.",
     seat: "Quincy",
     region: "Panhandle",
@@ -437,6 +466,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Gilchrist",
     slug: "gilchrist-county",
+    detail: "Gilchrist permits through the county at Trenton and most homes are on a cooperative. It is small, rural and agricultural, and the solar reflects that: ground-mounted arrays on acreage, panels on barn and shop roofs, and very little suburban rooftop work. Ground mounts are honestly easier than a two-storey tile roof, with no fall protection setup and no tile to break, and they are quoted accordingly. Realistically we come here as part of a run through Alachua and Levy rather than on its own.",
     seen: "Gilchrist is ground mounts on acreage. Honestly easier work than a two-storey tile roof, and quoted differently.",
     seat: "Trenton",
     region: "North Central Florida",
@@ -449,6 +479,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Glades",
     slug: "glades-county",
+    detail: "Glades permits through the county at Moore Haven. This is the west rim of Lake Okeechobee and one of the least populated counties in Florida, served largely by a rural cooperative. Solar here is overwhelmingly agricultural: irrigation pumps, ranch buildings, remote battery systems well away from a service drop. It is genuinely different work from a suburban roof and it gets a different quote. It is also reachable from our South Florida base more easily than the mileage suggests, which is worth knowing.",
     seen: "Glades calls are agricultural and often off-grid. Real work, genuinely different from suburban rooftop, and always scheduled ahead.",
     seat: "Moore Haven",
     region: "Southwest Florida",
@@ -461,6 +492,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Gulf",
     slug: "gulf-county",
+    detail: "Gulf permits through the county at Port St. Joe. Hurricane Michael came ashore here in 2018 and the county took the worst of it, so much of what stands now was built or substantially rebuilt afterwards to current code. Those roofs are strong and take attachments well. Cape San Blas and the beach communities are raised coastal construction with salt exposure as harsh as anywhere in Florida, and hardware there ages fast enough that we check every fastener rather than sampling. Long drive, batched with other Panhandle work.",
     seen: "Gulf County is Michael rebuild plus Cape San Blas salt. Newer roofs, harsh exposure, and hardware that ages fast.",
     seat: "Port St. Joe",
     region: "Panhandle",
@@ -474,6 +506,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hamilton",
     slug: "hamilton-county",
+    detail: "Hamilton permits through the county at Jasper and sits directly on the Georgia line. It is among the most rural counties in Florida, served by cooperatives, and what solar exists tends to be on farm buildings and remote property rather than subdivisions. Co-op interconnection paperwork sets the schedule rather than the roof. This is the far northern edge of anything we realistically do, and any job here is planned well ahead with a minimum that makes the drive make sense for both of us.",
     seen: "Hamilton calls are farm buildings on cooperative interconnection. The far north end of anything we do.",
     seat: "Jasper",
     region: "North Central Florida",
@@ -486,6 +519,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hardee",
     slug: "hardee-county",
+    detail: "Hardee permits through the county at Wauchula. Citrus and cattle country inland from the Gulf, and it has taken repeated hurricane damage in recent years with roof replacement running more or less continuously since. Where arrays were involved they came off and went back on with whatever crew was free, which is exactly the work we are called to inspect afterwards. Packing houses and agricultural buildings feature alongside houses, and those are metal roofs needing their own hardware rather than shingle standoffs.",
     seen: "Hardee has had repeated storm damage and constant roof replacement. Arrays came off and went back on with whoever was available, and that is what we inspect.",
     seat: "Wauchula",
     region: "Southwest Florida",
@@ -498,6 +532,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hendry",
     slug: "hendry-county",
+    detail: "Hendry permits through the county at LaBelle, with Clewiston running its own. Sugar and agriculture on the southern rim of Lake Okeechobee, and three separate providers cover different parts of the county, so establishing who holds the interconnection is genuinely the first step rather than a formality. The mix of work here leans agricultural and commercial more than residential. The useful thing about Hendry is proximity: it is close enough to our South Florida base that scheduling is easier than the rural setting suggests.",
     seen: "Hendry calls come in from three different providers depending on the address, so establishing who holds the interconnection is step one. Reachable from our South Florida base without much trouble.",
     seat: "LaBelle",
     region: "Southwest Florida",
@@ -510,6 +545,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hernando",
     slug: "hernando-county",
+    detail: "Hernando permits through the county at Brooksville. Spring Hill accounts for most of the housing and it is remarkably consistent: single-storey, shallow-pitch shingle built through the 1980s and 1990s on a grid, much of it now well past one roof replacement. Short carries, walkable pitches and modest system sizes make this some of the least expensive detach and reset work we do. The Gulf edge is thinly built but the coastal building requirements still apply there, and the low-lying ground affects where panels can safely sit while a roof is done.",
     seen: "Spring Hill is most of what we see in Hernando: single-storey shingle at the age where the roof needs replacing and the array has to come off.",
     seat: "Brooksville",
     region: "Nature Coast",
@@ -523,6 +559,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Highlands",
     slug: "highlands-county",
+    detail: "Highlands permits through the county at Sebring, with Avon Park and Lake Placid handling their own. This is inland central Florida with a heavy retirement population, which means single-storey housing, modest arrays and owners who want a fixed written number before anyone climbs a ladder. Being inland, salt corrosion drops off the list entirely and the failures we find are rail condition, flashing at the mounts, and arrays that were never torqued to specification. Highlands also sits on the edge of ground we already travel, so scheduling here is better than the map suggests.",
     seen: "Highlands calls are retirement housing on the edge of our existing travel, so scheduling is easier here than the drive time suggests.",
     seat: "Sebring",
     region: "Central Florida",
@@ -535,6 +572,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hillsborough",
     slug: "hillsborough-county",
+    detail: "Hillsborough permits through the county or the City of Tampa, Temple Terrace and Plant City. Tampa Electric is the utility for most of the county and its interconnection process is separate from both Duke and FPL, which trips up contractors coming from elsewhere. Hillsborough has one of the largest residential solar populations in Florida, a great deal of it sold through dealer networks that have since collapsed, so orphaned system work is a bigger share of what we do here than roof work. The volume is enough to justify batching several jobs into one trip.",
     seen: "Hillsborough gives us enough volume to batch a proper run rather than a single call-out. Heavy on orphaned systems from dealer networks that closed.",
     seat: "Tampa",
     region: "Tampa Bay",
@@ -548,6 +586,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Holmes",
     slug: "holmes-county",
+    detail: "Holmes permits through the county at Bonifay and sits against the Alabama line. Power is largely cooperative. Metal roofing is genuinely common here in a way it is not in peninsular Florida, and metal needs standing-seam clamps or an entirely different mounting approach rather than the standoffs and flashing that work on shingle. The housing is rural and single-storey, which makes the work itself simple once a crew arrives. Distance is the honest constraint and it is booked as part of a Panhandle run.",
     seen: "Holmes calls are metal roofs in rural country. Different hardware, long drive, planned work.",
     seat: "Bonifay",
     region: "Panhandle",
@@ -560,6 +599,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Jackson",
     slug: "jackson-county",
+    detail: "Jackson permits through the county at Marianna. Hurricane Michael stayed a major hurricane well inland and did serious damage here, which still surprises people who assume the Panhandle interior was spared, and roof replacement has been running ever since. Where solar was on those roofs it came off fast. We are usually called in afterwards to establish what that did to the attachments and the flashing. Power is mostly cooperative, so interconnection follows co-op rules and its own timetable rather than an investor utility's.",
     seen: "Jackson County was hit hard by Michael well inland, which still surprises people. Roof replacement has run ever since, and the arrays on those roofs are what we check.",
     seat: "Marianna",
     region: "Panhandle",
@@ -572,6 +612,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Jefferson",
     slug: "jefferson-county",
+    detail: "Jefferson permits through the county at Monticello and is one of very few Florida counties running from the Georgia line all the way to the Gulf, with fewer than fifteen thousand people in it. Monticello has a genuinely historic core: steep pitches, small cut-up roof planes, and in places local review of anything visible from the street. Steep and cut up means a detach takes materially longer than the panel count implies, and we price it that way rather than discovering it on the day.",
     seen: "Jefferson calls are historic housing around Monticello: steep pitches and small roof planes that slow a detach right down.",
     seat: "Monticello",
     region: "Panhandle",
@@ -585,6 +626,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Lafayette",
     slug: "lafayette-county",
+    detail: "Lafayette permits through the county at Mayo and is the second least populated county in Florida. Power is cooperative. The solar here is farm infrastructure rather than rooftop: irrigation pumps, remote battery banks, panels on shop and barn roofs. That is real work and we quote it properly, but it has almost nothing in common with a suburban detach and reset. It is genuinely a special trip and we will say so on the phone rather than take a booking we cannot serve well.",
     seen: "Lafayette calls are farm and pump systems, not rooftop arrays. Genuinely a special trip and we say so rather than pretend.",
     seat: "Mayo",
     region: "North Central Florida",
@@ -597,6 +639,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Lake",
     slug: "lake-county",
+    detail: "Lake permits through the county at Tavares or through Clermont, Leesburg, Eustis and Mount Dora. The county has two completely different halves. The Clermont and Four Corners side has exploded with newer construction, much of it with solar included from the builder, on clean shingle planes that detach easily. The older lakeside towns to the north are 1920s to 1960s housing with steeper pitches and original decking underneath. Lake borders our home route, so response here is closer to Tier 1 than most of the state.",
     seen: "Lake County borders our home route, so response here is closer to Tier 1 than most of the state. Clermont is newer shingle; the lakeside towns are slower, more careful work.",
     seat: "Tavares",
     region: "Central Florida",
@@ -609,6 +652,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Lee",
     slug: "lee-county",
+    detail: "Lee permits through the county at Fort Myers or through Cape Coral, Bonita Springs, Sanibel and Fort Myers Beach, and the coastal municipalities added requirements after Ian. Cape Coral alone is one of the largest residential solar markets on the Gulf coast. The rebuild after Ian generated an enormous number of hurried reinstalls, and those are what we are called to now: reused mounts, missing flashing, clamps that were never re-torqued, and arrays sitting on new roofs with old penetrations. Most Lee calls start with a ceiling stain rather than a production drop.",
     seen: "Lee County is the largest concentration of rushed post-Ian reinstalls in the state. Cape Coral alone keeps us busy, and most calls start with a stain on a ceiling.",
     seat: "Fort Myers",
     region: "Southwest Florida",
@@ -622,6 +666,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Leon",
     slug: "leon-county",
+    detail: "Leon permits through the county or the City of Tallahassee. Tallahassee runs its own municipal electric utility and its interconnection process looks nothing like FPL's, which regularly catches out contractors from further south. The other defining feature is canopy: Leon has some of the heaviest tree cover in Florida and shade is very often the actual explanation for an underproducing system rather than any hardware fault. We check that first, because telling someone to call an arborist is cheaper than selling them an inverter.",
     seen: "Leon calls involve Tallahassee's city utility, which looks nothing like FPL's process, and heavy tree canopy that is often the real reason a system underproduces.",
     seat: "Tallahassee",
     region: "Panhandle",
@@ -634,6 +679,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Levy",
     slug: "levy-county",
+    detail: "Levy permits through the county at Bronson, with Chiefland, Williston and Cedar Key handling their own. Most homes are on a rural cooperative. Cedar Key is its own problem: a raised island community with narrow lots where staging a detach, getting a truck close and finding safe storage for panels is genuinely most of the planning. Inland Levy is acreage with ground mounts and metal-roofed buildings. Cooperative interconnection sets the timetable and we schedule around it rather than around the roof.",
     seen: "Levy calls are rural acreage and Cedar Key, where staging any roof work on a raised island lot is its own puzzle.",
     seat: "Bronson",
     region: "Nature Coast",
@@ -647,6 +693,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Liberty",
     slug: "liberty-county",
+    detail: "Liberty permits through the county at Bristol and is the least populated county in Florida, most of it national forest. Power comes from a rural cooperative. What solar exists is off-grid or agricultural rather than grid-tied rooftop: hunt camps, remote buildings, battery systems well away from any service drop. This is the far edge of anything we realistically cover from South Florida and we treat it as such. Any job here is scheduled well ahead with a minimum that makes the drive honest for both sides.",
     seen: "Liberty calls are off-grid and agricultural, in the least populated county in the state. Scheduled trips with a real minimum.",
     seat: "Bristol",
     region: "Panhandle",
@@ -659,6 +706,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Madison",
     slug: "madison-county",
+    detail: "Madison permits through the county at Madison and sits on the Georgia line. Power is cooperative. Older rural housing here uses a great deal of metal roofing, and metal is a different specification from top to bottom: different clamps, different load path, no flashing question if it is done properly and a serious leak if it is not. Getting that right first time matters more than speed. Realistically this county is covered as part of a run through Jefferson or Hamilton rather than on its own.",
     seen: "Madison calls are metal roofs on older rural housing. Metal attachment hardware is a different specification and worth getting right first time.",
     seat: "Madison",
     region: "North Central Florida",
@@ -671,6 +719,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Manatee",
     slug: "manatee-county",
+    detail: "Manatee permits through the county at Bradenton or through Bradenton, Palmetto and Anna Maria. The county splits cleanly in two. Lakewood Ranch and the east side are newer concrete tile on large modern footprints with recent solar, quoted as tile work. The barrier islands at Anna Maria and Holmes Beach are older, lower and fully exposed, where hardware ages fast and access is tight. We quote them as two different markets because that is what they are, and pretending otherwise produces a number that changes on the day.",
     seen: "Manatee splits cleanly: newer tile around Lakewood Ranch, and exposed older housing on the Anna Maria islands. We quote them as two different jobs.",
     seat: "Bradenton",
     region: "Tampa Bay",
@@ -684,6 +733,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Marion",
     slug: "marion-county",
+    detail: "Marion permits through the county at Ocala or through the City of Ocala. Three providers cover the county and Ocala runs its own municipal electric utility, so the reconnection route can change from one street to the next. The dominant housing is retirement: single-storey, walkable, modest systems, and a large share of it in planned communities with their own approval process for anything on a roof. That combination makes for cheap, predictable labour and slow, fiddly paperwork, and the paperwork is usually what sets the timeline.",
     seen: "Marion calls are modest single-storey systems on walkable roofs, and a reconnection route that changes street by street between the Ocala city utility and the county.",
     seat: "Ocala",
     region: "North Central Florida",
@@ -696,6 +746,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Monroe",
     slug: "monroe-county",
+    detail: "Monroe permits through the county or through Key West, Marathon, Islamorada and Key Colony Beach, and the building requirements are among the most demanding in the United States. Wind design loads here are the highest in Florida and everything on a roof has to be documented to match. Nothing recovered off an old roof goes back onto a new one in the Keys. Beyond the engineering, access is the real cost: narrow lots, no staging room, ferry-and-bridge logistics for materials, and nowhere obvious to store an array for a fortnight. An honest Keys quote says all of that up front.",
     seen: "Keys calls are corrosion and access. Nothing recovered off an old roof goes back onto a new one, and staging on a narrow island lot is half the quote.",
     seat: "Key West",
     region: "Florida Keys",
@@ -709,6 +760,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Nassau",
     slug: "nassau-county",
+    detail: "Nassau permits through the county at Fernandina Beach or through the City of Fernandina Beach. Three providers cover different parts of the county, so the interconnection question comes before anything else. Amelia Island is full salt exposure with historic districts that review what is visible from the street; the western half toward Callahan and Hilliard is rural pine country on cooperative power. Two genuinely different jobs inside one small county, and worth being clear about which one your address is.",
     seen: "Nassau calls are Amelia Island salt on one side and ordinary suburban shingle on the other, with three different providers depending on the address.",
     seat: "Fernandina Beach",
     region: "Northeast Florida",
@@ -722,6 +774,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Okaloosa",
     slug: "okaloosa-county",
+    detail: "Okaloosa permits through the county at Crestview or through Destin, Fort Walton Beach and Niceville. The county splits between a dense beach resort economy along the coast and a large military and commuter community inland around Eglin and Crestview. Coastal condos and beach houses take a hammering from salt and the hardware shows it within a few years. The inland half is ordinary suburban shingle work. Far west of our base, so this gets planned in blocks with Santa Rosa and Escambia rather than as a single call-out.",
     seen: "Okaloosa splits between beach resort property taking a hammering from salt and a large inland military community with straightforward roofs.",
     seat: "Crestview",
     region: "Panhandle",
@@ -735,6 +788,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Okeechobee",
     slug: "okeechobee-county",
+    detail: "Okeechobee permits through the county or the City of Okeechobee. It sits on the north rim of the lake, inland and agricultural, and the useful thing about it is proximity: it is genuinely close to the Treasure Coast end of our home route, so response here is better than most travel counties. The work leans toward ranch buildings, agricultural structures and ground-mounted systems rather than suburban rooftop arrays, with cooperative and FPL territory both in play depending on the address.",
     seen: "Okeechobee sits close enough to our Treasure Coast route that response is better than most travel counties. Ranch buildings feature more than suburban roofs.",
     seat: "Okeechobee",
     region: "Treasure Coast",
@@ -747,6 +801,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Pasco",
     slug: "pasco-county",
+    detail: "Pasco permits through the county at Dade City and New Port Richey, with Zephyrhills and Dade City running their own. Two different housing stories again: Wesley Chapel and Land O' Lakes are among the fastest-growing places in Florida with newer roofs and recent solar, while the older Gulf side around New Port Richey and Hudson is modest 1970s single-storey housing where a great many roofs are overdue. Both are straightforward to work on for opposite reasons, and the coastal side adds a salt inspection.",
     seen: "Pasco calls are newer roofs around Wesley Chapel and overdue ones around New Port Richey. Both are easy to work on, for opposite reasons.",
     seat: "Dade City",
     region: "Tampa Bay",
@@ -760,6 +815,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Pinellas",
     slug: "pinellas-county",
+    detail: "Pinellas permits through the county or through St. Petersburg, Clearwater, Largo and a dozen more. It is the most densely populated county in Florida and it is a peninsula, so almost every address carries coastal exposure. The defining practical problem here is space: lots are small, driveways are short, and finding somewhere safe to store an array for the duration of a roof job is a real planning question rather than an afterthought. We settle that before the day rather than on it.",
     seen: "Pinellas calls always come with a staging question: tight lots, nowhere obvious to store panels, and coastal exposure on nearly every address.",
     seat: "Clearwater",
     region: "Tampa Bay",
@@ -773,6 +829,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Polk",
     slug: "polk-county",
+    detail: "Polk permits through the county at Bartow or through Lakeland, Winter Haven and Haines City. Lakeland Electric is a municipal utility serving a large slice of the county while the rest is on Duke or Tampa Electric, so the interconnection route depends entirely on the address. The growth corridor around Davenport, Haines City and Four Corners has gone up fast with solar included from the builder, producing whole subdivisions of near-identical roofs and arrays. Once we have quoted one of those, the next twenty are quick.",
     seen: "Polk calls cluster around Davenport and Haines City where whole subdivisions went up with solar included. Lakeland's own utility changes the paperwork on some addresses.",
     seat: "Bartow",
     region: "Central Florida",
@@ -785,6 +842,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Putnam",
     slug: "putnam-county",
+    detail: "Putnam permits through the county at Palatka. Three providers cover different parts of it. This is St. Johns River country: older housing, a lot of it on wooded lots, and heavy canopy means shade is worth ruling out before anyone quotes a repair on an underproducing system. The housing stock is older than most of Florida, so what is under an array once it comes off is a genuine question rather than a formality. Covered as part of a run through Clay or Alachua.",
     seen: "Putnam calls are older river housing with heavy tree cover, so shade gets ruled out before anyone quotes a repair.",
     seat: "Palatka",
     region: "Northeast Florida",
@@ -797,6 +855,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "St. Johns",
     slug: "st-johns-county",
+    detail: "St. Johns permits through the county at St. Augustine or through the City of St. Augustine and St. Augustine Beach, and the historic districts review anything visible from the street. This is one of the wealthiest and fastest-growing counties in Florida: Nocatee and Ponte Vedra are full of newer homes with solar, on clean modern roof planes. Historic St. Augustine is the opposite in every respect, slow going on any roof for good reason. Coastal salt applies across most of the county and three utilities split the map.",
     seen: "St. Johns calls are newer homes at Nocatee and Ponte Vedra, plus the opposite extreme in historic St. Augustine where every roof is slow going.",
     seat: "St. Augustine",
     region: "Northeast Florida",
@@ -810,6 +869,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Santa Rosa",
     slug: "santa-rosa-county",
+    detail: "Santa Rosa permits through the county at Milton, with Gulf Breeze and Jay handling their own. The county runs from a busy Gulf shoreline at Navarre and Gulf Breeze up into rural pine country around Milton and Jay. The beach half sees serious salt and wind exposure with hardware ageing to match; the north half is ordinary suburban and rural work on cooperative power. Like the rest of the western Panhandle, this is a planned trip batched with Escambia and Okaloosa rather than a same-week call-out.",
     seen: "Santa Rosa splits between Gulf Breeze and Navarre salt exposure and rural work up around Milton. Far west, planned in blocks.",
     seat: "Milton",
     region: "Panhandle",
@@ -823,6 +883,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Sarasota",
     slug: "sarasota-county",
+    detail: "Sarasota permits through the county or through Sarasota, Venice and North Port. There is a strong design culture here, and in much of the county how an array looks going back matters nearly as much as how it performs, so we agree the reinstall layout in writing before anything comes down. North Port grew explosively and then took heavy damage from Ian, which left a crop of rushed reinstalls behind it. Siesta Key and the barrier islands are the full corrosion and wind specification.",
     seen: "Sarasota calls care as much about how the array looks going back as how it performs. North Port adds rushed storm reinstalls to the mix.",
     seat: "Sarasota",
     region: "Southwest Florida",
@@ -836,6 +897,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Sumter",
     slug: "sumter-county",
+    detail: "Sumter permits through the county at Bushnell and through Wildwood, and a very large share of the population lives in The Villages, which adds its own architectural approval on top. The practical effect is unusual and genuinely useful: thousands of near-identical single-storey homes on similar roofs with similar arrays. Once we have quoted and completed one, the next is fast, and batching several jobs into a single day here is normal rather than exceptional. That efficiency shows up in the price.",
     seen: "The Villages means near-identical single-storey homes, so once we have quoted one the next is fast and batching several in a day is normal.",
     seat: "Bushnell",
     region: "Central Florida",
@@ -848,6 +910,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Suwannee",
     slug: "suwannee-county",
+    detail: "Suwannee permits through the county at Live Oak. Power is largely cooperative and interconnection follows co-op rules. This is river country: agricultural acreage, farm buildings, and a good deal of metal roofing alongside conventional housing. Ground-mounted arrays are as common as rooftop ones and they are quoted differently, usually more simply. Distance means this is scheduled work batched with anything else we have running through North Central Florida rather than a standalone trip.",
     seen: "Suwannee calls are ground mounts and metal roofs on river-country acreage, both quoted differently from a shingle house.",
     seat: "Live Oak",
     region: "North Central Florida",
@@ -860,6 +923,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Taylor",
     slug: "taylor-county",
+    detail: "Taylor permits through the county at Perry. This is Big Bend coastline and timber country, and it has taken repeated direct hurricane landfalls in recent years, which has shaped both the roof stock and the appetite for anything that penetrates a roof. Coastal property at Steinhatchee and Keaton Beach is largely raised stilt construction, which changes staging, working height and fall protection entirely. Long haul from our base, cooperative interconnection, and planned trips only.",
     seen: "Taylor County has taken repeated direct hurricane hits and much of the coast is raised stilt construction, which changes how a crew works a roof entirely.",
     seat: "Perry",
     region: "Nature Coast",
@@ -873,6 +937,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Union",
     slug: "union-county",
+    detail: "Union permits through the county at Lake Butler and is the smallest county in Florida by land area. Power is cooperative. Solar here is sparse and mostly on farm property and outbuildings rather than suburban roofs, so ground mounts and metal roofing feature more than shingle. Co-op interconnection paperwork sets the schedule. It is genuinely a scheduled trip, normally batched with Bradford or Alachua, and we would rather say that than imply a crew nearby.",
     seen: "Union calls are sparse and cooperative-interconnected on farm property. Batched with Bradford or Alachua runs.",
     seat: "Lake Butler",
     region: "North Central Florida",
@@ -885,6 +950,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Volusia",
     slug: "volusia-county",
+    detail: "Volusia permits through the county at DeLand or through Daytona Beach, Ormond Beach, New Smyrna Beach, Port Orange and Deltona. It borders the north end of our home route, so response here is meaningfully quicker than most travel counties. Deltona is a huge stock of similar single-storey homes built in waves, which quotes fast. The beach side from Ormond down through New Smyrna is older, fully exposed housing where hardware corrodes early and mounts get looked at hard before anything goes back on.",
     seen: "Volusia borders our home route so response is quicker than most travel counties. Deltona is uniform housing; the beach side is older and harder on hardware.",
     seat: "DeLand",
     region: "Space Coast",
@@ -898,6 +964,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Wakulla",
     slug: "wakulla-county",
+    detail: "Wakulla permits through the county at Crawfordville and power is largely cooperative. It is coastal Big Bend immediately south of Tallahassee and increasingly a commuter county, so newer subdivision housing sits alongside low-lying coastal property at St. Marks and Panacea. The coastal side is raised construction on flood-prone ground, which affects staging and where an array can safely be stored during a roof job. Batched with a Leon trip when we make the run.",
     seen: "Wakulla calls are low-lying coastal property with raised construction and careful staging, usually batched with a Tallahassee trip.",
     seat: "Crawfordville",
     region: "Panhandle",
@@ -911,6 +978,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Walton",
     slug: "walton-county",
+    detail: "Walton permits through the county at DeFuniak Springs and Santa Rosa Beach, and the 30A corridor adds architectural review that is stricter than most of Florida. That stretch of coast holds some of the most valuable property in the state, much of it with standing-seam metal roofs and design rules about anything visible. Metal attachment hardware and design approval are both in play on the coast. Inland Walton around DeFuniak Springs and Freeport is a completely different, rural job on cooperative power.",
     seen: "Walton calls along 30A are metal roofs, high specification and design review. Inland Walton is a completely different, rural job.",
     seat: "DeFuniak Springs",
     region: "Panhandle",
@@ -924,6 +992,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Washington",
     slug: "washington-county",
+    detail: "Washington permits through the county at Chipley. Power is largely cooperative. Hurricane Michael did serious damage here well away from the coast, and the rebuild means a good share of the roof stock is newer and stronger than the age of the neighbourhoods suggests. Those decks take attachments well. Metal roofing is common on agricultural buildings and needs its own hardware. Long drive, planned work, and honest scheduling rather than a promise we would have to break.",
     seen: "Washington calls are inland Michael rebuilds. Newer roofs than the neighbourhood age suggests, long drive, honest scheduling.",
     seat: "Chipley",
     region: "Panhandle",
