@@ -8,6 +8,7 @@ import { FacebookIcon, links } from "@/components/ContactDock";
 import { BRAND, CITIES, COUNTIES, SERVICES, TRUST, citiesInCounty } from "@/data/seo";
 import { trackEvent } from "@/lib/leads";
 import { srcSet } from "@/data/images";
+import { RESCUES } from "@/data/rescues";
 import {
   Sheet,
   SheetClose,
@@ -410,6 +411,25 @@ export function SiteFooter() {
               })}
             </ul>
           </div>
+        </div>
+
+        <div className="mt-10 border-t border-white/10 pt-6">
+          <p className="text-xs font-bold tracking-[0.14em] text-white/50 uppercase">
+            Installer out of business?
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/60">
+            {RESCUES.map((r) => (
+              <li key={r.slug}>
+                <Link
+                  to="/solar-company-out-of-business/$brand"
+                  params={{ brand: r.slug }}
+                  className="hover:text-white"
+                >
+                  {r.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6">

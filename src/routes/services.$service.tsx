@@ -12,6 +12,7 @@ import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SERVICE_BY_SLUG, SERVICES, SITE_URL, citiesInCounty } from "@/data/seo";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
 import { srcSet } from "@/data/images";
+import { RESCUES } from "@/data/rescues";
 
 export const Route = createFileRoute("/services/$service")({
   loader: ({ params }) => {
@@ -128,6 +129,37 @@ function ServicePage() {
           </ol>
         </div>
       </section>
+
+      {/* The dead-installer pages are the highest-intent pages on the site and
+          the least linked to. This is their natural parent, so name them here. */}
+      {s.slug === "orphaned-solar-system-repair" && (
+        <section className="container-x py-12 sm:py-16">
+          <p className="eyebrow">Whose system is it?</p>
+          <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
+            Installers we take systems over from
+          </h2>
+          <p className="mt-3 max-w-2xl text-base text-muted-foreground">
+            If the company that sold you the system is on this list, there is a page explaining
+            exactly what happened and what it means for the equipment on your roof.
+          </p>
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {RESCUES.map((r) => (
+              <li key={r.slug}>
+                <Link
+                  to="/solar-company-out-of-business/$brand"
+                  params={{ brand: r.slug }}
+                  className="inline-flex rounded-2xl border border-line bg-white px-4 py-2 text-sm font-semibold text-navy transition hover:border-orange hover:text-orange-deep"
+                >
+                  {r.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link to="/solar-company-out-of-business" className="btn-base btn-navy mt-6">
+            All of them, and what to do next
+          </Link>
+        </section>
+      )}
 
       <Faqs items={s.faqs} heading={`${s.name}: common questions`} />
 
