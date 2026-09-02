@@ -17,8 +17,8 @@ export const BUSINESS = {
    * and "(561) 555-0100". Call and Text buttons switch on by themselves the
    * moment it is filled in. Leave blank until it is real.
    */
-  phone: "",
-  phoneDisplay: "",
+  phone: "+1-305-790-7079",
+  phoneDisplay: "(305) 790-7079",
   email: "theorangelegacy@gmail.com",
   facebook: FACEBOOK_URL,
   /** Art of Solar, LLC is registered in Plantation (Broward County). Service-area business, no showroom. */
