@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ContactDock } from "@/components/ContactDock";
+import { ContactDock, links } from "@/components/ContactDock";
 import {
   CtaBlock,
   Faqs,
@@ -109,7 +109,19 @@ function CityPage() {
         image={IMG.hero}
       >
         <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <a href="#quote" className="btn-base btn-primary w-full sm:w-auto">
+          {links.hasPhone && (
+            <a
+              href={links.call}
+              onClick={() => trackEvent("call_click", { channel: "call", label: `city-${c.slug}` })}
+              className="btn-base btn-primary w-full sm:w-auto"
+            >
+              Call {links.phoneDisplay}
+            </a>
+          )}
+          <a
+            href="#quote"
+            className={`btn-base w-full sm:w-auto ${links.hasPhone ? "btn-ghost-light" : "btn-primary"}`}
+          >
             Get My Free Quote in {c.name}
           </a>
           <Link to="/services" className="btn-base btn-ghost-light w-full sm:w-auto">
