@@ -103,7 +103,7 @@ function Home() {
             <p className="eyebrow rise">Solar re-rack, repair &amp; service · Orlando to Miami</p>
             <h1 className="rise-2 mt-5 max-w-2xl text-4xl leading-[1.03] font-extrabold sm:text-6xl">
               Solar panel removal, reinstall &amp; repair.{" "}
-              <span className="text-orange">Any roof. Any installer. No excuses.</span>
+              <span className="text-orange">Any roof. No excuses.</span>
             </h1>
             <p className="rise-3 mt-5 max-w-xl text-base text-white/85 sm:text-lg">
               Your roofer says the panels have to come off. Your installer vanished with the
