@@ -13,6 +13,7 @@ import { CITY_BY_SLUG, SERVICES, SITE_URL } from "@/data/seo";
 import {
   FL_COUNTY_BY_SLUG,
   REGION_NOTES,
+  TRAVEL_NOTES,
   nearbyCounties,
   type FlCounty,
 } from "@/data/florida";
@@ -40,7 +41,7 @@ function countyFaqs(c: FlCounty) {
       a:
         c.tier === 1
           ? `Yes. ${c.name} County is on our home route, so this is normal week-to-week work for us. One crew, no travel surcharge, and we work directly with your roofer's schedule.`
-          : `Yes, and we will be straight with you about how. ${c.name} County is outside our daily route, so work here is booked ahead and batched with other jobs in the area rather than done same-week. There is a minimum job size that makes the drive make sense. Call and we will tell you honestly what is realistic.`,
+          : `Yes. ${TRAVEL_NOTES[c.region] ?? "Work here is booked ahead and batched with other jobs in the area."} There is a minimum job size that makes the drive make sense, and we will tell you honestly on the first call whether yours fits.`,
     },
     {
       q: `Who pulls the permit in ${c.name} County?`,
@@ -187,7 +188,7 @@ function CountyPage() {
           <p className="mt-4 max-w-3xl text-base text-muted-foreground">
             {home
               ? `Our crew works Orlando down to Miami every week, and ${c.name} County is part of that route. That means normal scheduling, no travel surcharge, any size job, and we can line up with your roofer's tear-off date rather than the other way round.`
-              : `Our crew is based in Broward and works Orlando down to Miami week to week. ${c.name} County is outside that daily run, so we do not pretend to have a van around the corner. What we do instead is batch work here: jobs get booked ahead, grouped with others in the area, and there is a minimum size that makes the drive worth making for both of us. Call and we will tell you straight whether your job fits and when we could realistically be there.`}
+              : `${c.name} County is outside our daily Orlando to Miami run, so we are not going to pretend there is a van around the corner. ${TRAVEL_NOTES[c.region] ?? ""}`}
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             {links.hasPhone && (

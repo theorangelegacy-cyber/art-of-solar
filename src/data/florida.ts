@@ -1065,3 +1065,36 @@ export const REGION_NOTES: Record<Region, string> = {
   "Florida Keys":
     "The Keys are the harshest environment for solar hardware anywhere in Florida: salt on every side, the highest wind design loads in the state, and building rules written to match. Nothing recovered off an old roof goes back onto a new one down here. Access and staging on a narrow island lot is genuinely half the job, and any honest quote for the Keys says so up front.",
 };
+
+
+/**
+ * How we actually reach each region, in that region's own words.
+ *
+ * This paragraph used to be one text repeated on all 57 travel counties, which
+ * made it the biggest identical block on the site. Eleven versions, written
+ * once each, and every one of them true.
+ */
+export const TRAVEL_NOTES: Partial<Record<Region, string>> = {
+  "Central Florida":
+    "Central Florida is the top of our weekly run, so counties on this edge are closer to home than the map suggests. We are through Orlando most weeks anyway, which means a job here can usually be slotted onto an existing trip rather than treated as a special journey. Tell us your tear-off date and we will tell you what week works.",
+  "Space Coast":
+    "The Space Coast sits directly on our route, so anything in this region is realistically a normal booking rather than a favour. Where a county here is marked as travel work it is a matter of a slightly longer drive, not a different level of service. We are in this part of the state constantly.",
+  "Treasure Coast":
+    "The Treasure Coast is our own corridor, so travel counties bordering it are close enough that scheduling is rarely the problem. We come through here every week between South Florida and Orlando, and a job in this region can usually be added to a trip we are already making.",
+  "South Florida":
+    "This is home. Our crew is registered in Broward and works this region every single week, so anything south of the lake is normal scheduling with no travel loading on the price.",
+  "Southwest Florida":
+    "Southwest Florida is one drive across Alligator Alley from our base, which makes it the most realistic travel region we cover. We batch work between Naples, Fort Myers and Port Charlotte so several jobs share the trip, and that keeps the pricing sane. Two or three days notice is usually plenty here.",
+  "Tampa Bay":
+    "Tampa Bay is a genuine day trip from South Florida and the market is big enough that we can line up several jobs across Hillsborough, Pinellas and Pasco in one run. That batching is what makes the drive work, so booking a week or two ahead gets you a better date and a better number than calling on the day.",
+  "Nature Coast":
+    "The Nature Coast is thinly populated and the distance between jobs is often larger than the distance to get here. We cover it in planned batches rather than one call at a time, so telling us early is genuinely worth money to you. Small single-storey systems here are cheap to work on once a crew is on site.",
+  "North Central Florida":
+    "North Central Florida is cooperative country and the interconnection paperwork usually sets the schedule anyway, so a booking here is planned around the utility rather than the roof. We batch this region with runs through Alachua and Columbia. Ground-mounted systems on acreage are common and they are quicker work than a house.",
+  "Northeast Florida":
+    "Northeast Florida is a long but straightforward run up the coast, and Jacksonville has enough volume to justify it properly. We group work across Duval, Clay, St. Johns and Nassau into a single trip, so a few days notice gets you a real date rather than a maybe.",
+  Panhandle:
+    "The Panhandle is the longest drive we make inside Florida, and we will not pretend otherwise. We come here in blocks, several jobs across several counties on one trip, booked well ahead. If your job is the right size, or if it can wait for the next run, it is genuinely worth doing. If it is a single small repair, we will say so and point you at what to ask a local contractor.",
+  "Florida Keys":
+    "The Keys are their own logistics problem: one road in, no staging room, and materials that have to come down with the crew. We plan Keys work carefully and price the access into the quote rather than adding it later. Booked well ahead, and worth it, because very few licensed solar crews will take this on properly.",
+};
