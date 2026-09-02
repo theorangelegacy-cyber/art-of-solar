@@ -50,6 +50,8 @@ export type FlCounty = {
   hvhz?: boolean;
   /** The towns worth naming on the page. */
   towns: string[];
+  /** What we actually get called for here. Second hand-written field, unique per county. */
+  seen: string;
   /** Two or three true sentences about the roofs and solar here. Unique, always. */
   blurb: string;
 };
@@ -59,6 +61,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Orange",
     slug: "orange-county",
+    seen: "Most Orange County calls are re-roofs where the homeowner found out about the panels a week before tear-off. Second most: an OUC customer whose system came back on but never got reconnected properly on paper.",
     seat: "Orlando",
     region: "Central Florida",
     tier: 1,
@@ -70,6 +73,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Seminole",
     slug: "seminole-county",
+    seen: "Seminole calls skew toward roofs that hit twenty years at the same moment the inverter did. If both are due, doing them together saves paying for the array to come down twice.",
     seat: "Sanford",
     region: "Central Florida",
     tier: 1,
@@ -81,6 +85,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Osceola",
     slug: "osceola-county",
+    seen: "Osceola is short-term rentals and new subdivisions. The rental owners want days offline pinned down before they book anything; the subdivision owners usually cannot name who installed the system.",
     seat: "Kissimmee",
     region: "Central Florida",
     tier: 1,
@@ -92,6 +97,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Brevard",
     slug: "brevard-county",
+    seen: "Brevard is our heaviest county for orphaned systems. Half the calls are a dead inverter with no one to file the claim, and the other half are corroded clamps found during a re-roof.",
     seat: "Titusville",
     region: "Space Coast",
     tier: 1,
@@ -104,6 +110,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Indian River",
     slug: "indian-river-county",
+    seen: "Indian River calls are tile, tile and more tile, plus barrier-island hardware that has quietly rusted through. Broken tile during a rushed reset is the complaint we most often get called in to fix.",
     seat: "Vero Beach",
     region: "Treasure Coast",
     tier: 1,
@@ -116,6 +123,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "St. Lucie",
     slug: "st-lucie-county",
+    seen: "Port St. Lucie generates more underproduction calls than damage calls. The systems are young enough that it is nearly always one failed part rather than a worn-out array.",
     seat: "Fort Pierce",
     region: "Treasure Coast",
     tier: 1,
@@ -128,6 +136,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Martin",
     slug: "martin-county",
+    seen: "Martin County calls tend to arrive with a folder: two contractors, three dates and nobody sure who touched the roof last. Documenting what is actually up there is usually the first billable hour.",
     seat: "Stuart",
     region: "Treasure Coast",
     tier: 1,
@@ -140,6 +149,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Palm Beach",
     slug: "palm-beach-county",
+    seen: "Palm Beach is insurance-driven re-roofs on tile, with an association wanting the reinstall layout in writing before anything comes down. Also a steady run of leaks under arrays that were never flashed.",
     seat: "West Palm Beach",
     region: "South Florida",
     tier: 1,
@@ -162,6 +172,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Broward",
     slug: "broward-county",
+    seen: "Broward is home ground, so we get everything: same-week detach and reset, emergency leak calls, and takeovers of systems from installers who left the state. Hurricane-zone paperwork is routine here.",
     seat: "Fort Lauderdale",
     region: "South Florida",
     tier: 1,
@@ -187,6 +198,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Miami-Dade",
     slug: "miami-dade-county",
+    seen: "Miami-Dade calls are heavy on inspection failures and tile damage from crews who did not know the product-approval rules. Fixing somebody else's failed reinstall is a large share of the work here.",
     seat: "Miami",
     region: "South Florida",
     tier: 1,
@@ -212,6 +224,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Alachua",
     slug: "alachua-county",
+    seen: "Alachua calls are old systems: early racking, first-generation inverters, and Gainesville's own utility paperwork that nobody outside the city knows how to file.",
     seat: "Gainesville",
     region: "North Central Florida",
     tier: 2,
@@ -223,6 +236,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Baker",
     slug: "baker-county",
+    seen: "Baker calls are rare and usually cooperative-interconnected. When they come, they come with a permit question rather than a hardware question.",
     seat: "Macclenny",
     region: "Northeast Florida",
     tier: 2,
@@ -234,6 +248,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Bay",
     slug: "bay-county",
+    seen: "Bay County is post-Michael rebuilds. The roofs are good; the arrays that went back on them during the rush are the part we get asked to check.",
     seat: "Panama City",
     region: "Panhandle",
     tier: 2,
@@ -246,6 +261,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Bradford",
     slug: "bradford-county",
+    seen: "Bradford calls are ground mounts and metal outbuildings rather than houses. Different hardware, usually easier work than a two-storey tile roof.",
     seat: "Starke",
     region: "North Central Florida",
     tier: 2,
@@ -257,6 +273,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Calhoun",
     slug: "calhoun-county",
+    seen: "Calhoun is off-grid and agricultural. When we get a call here it is normally a battery or pump system rather than a grid-tied roof array.",
     seat: "Blountstown",
     region: "Panhandle",
     tier: 2,
@@ -268,6 +285,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Charlotte",
     slug: "charlotte-county",
+    seen: "Charlotte County is Ian aftermath. Arrays that came off fast and went back on faster, and are now showing loose clamps and unflashed mounts.",
     seat: "Punta Gorda",
     region: "Southwest Florida",
     tier: 2,
@@ -280,6 +298,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Citrus",
     slug: "citrus-county",
+    seen: "Citrus calls are retirement housing: small systems, walkable roofs, and owners who want a fixed number before anyone climbs a ladder.",
     seat: "Inverness",
     region: "Nature Coast",
     tier: 2,
@@ -292,6 +311,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Clay",
     slug: "clay-county",
+    seen: "Clay County calls usually start with confusion over which utility holds the interconnection, because the co-op and the Jacksonville municipal system handle it completely differently.",
     seat: "Green Cove Springs",
     region: "Northeast Florida",
     tier: 2,
@@ -303,6 +323,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Collier",
     slug: "collier-county",
+    seen: "Collier calls are large tile roofs, multiple arrays on different faces, and an association that wants drawings. Never a quick quote, often a good job.",
     seat: "Naples",
     region: "Southwest Florida",
     tier: 2,
@@ -315,6 +336,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Columbia",
     slug: "columbia-county",
+    seen: "Columbia calls split between commercial roofs near the interstate junction and rural acreage. Three providers cover the county, so the interconnection question comes first.",
     seat: "Lake City",
     region: "North Central Florida",
     tier: 2,
@@ -326,6 +348,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "DeSoto",
     slug: "desoto-county",
+    seen: "DeSoto is storm-damaged agricultural country. Roofs went back to bare deck and the arrays went back on in a hurry, which is what we are called to inspect.",
     seat: "Arcadia",
     region: "Southwest Florida",
     tier: 2,
@@ -337,6 +360,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Dixie",
     slug: "dixie-county",
+    seen: "Dixie calls are coastal stilt houses and inland acreage. Raised construction changes staging completely and it goes in the quote up front.",
     seat: "Cross City",
     region: "Nature Coast",
     tier: 2,
@@ -349,6 +373,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Duval",
     slug: "duval-county",
+    seen: "Duval is one of our busiest northern counties: a large installed base, JEA's own interconnection process, and very few companies willing to take over another firm's array.",
     seat: "Jacksonville",
     region: "Northeast Florida",
     tier: 2,
@@ -361,6 +386,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Escambia",
     slug: "escambia-county",
+    seen: "Escambia calls are beach-side corrosion and old Gulf Power paperwork. The longest drive we make in Florida, so it is always batched.",
     seat: "Pensacola",
     region: "Panhandle",
     tier: 2,
@@ -373,6 +399,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Flagler",
     slug: "flagler-county",
+    seen: "Palm Coast is uniform enough that when one roof generation starts failing, the whole street follows within a couple of years. We tend to get several calls from the same neighbourhood.",
     seat: "Bunnell",
     region: "Northeast Florida",
     tier: 2,
@@ -385,6 +412,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Franklin",
     slug: "franklin-county",
+    seen: "Franklin calls are metal roofs on raised coastal houses. Metal attachment hardware rules out most of what works on shingle, and that surprises people.",
     seat: "Apalachicola",
     region: "Panhandle",
     tier: 2,
@@ -397,6 +425,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Gadsden",
     slug: "gadsden-county",
+    seen: "Gadsden calls are usually underproduction that turns out to be tree shade rather than a fault. We check that before quoting, because it saves the homeowner money.",
     seat: "Quincy",
     region: "Panhandle",
     tier: 2,
@@ -408,6 +437,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Gilchrist",
     slug: "gilchrist-county",
+    seen: "Gilchrist is ground mounts on acreage. Honestly easier work than a two-storey tile roof, and quoted differently.",
     seat: "Trenton",
     region: "North Central Florida",
     tier: 2,
@@ -419,6 +449,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Glades",
     slug: "glades-county",
+    seen: "Glades calls are agricultural and often off-grid. Real work, genuinely different from suburban rooftop, and always scheduled ahead.",
     seat: "Moore Haven",
     region: "Southwest Florida",
     tier: 2,
@@ -430,6 +461,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Gulf",
     slug: "gulf-county",
+    seen: "Gulf County is Michael rebuild plus Cape San Blas salt. Newer roofs, harsh exposure, and hardware that ages fast.",
     seat: "Port St. Joe",
     region: "Panhandle",
     tier: 2,
@@ -442,6 +474,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hamilton",
     slug: "hamilton-county",
+    seen: "Hamilton calls are farm buildings on cooperative interconnection. The far north end of anything we do.",
     seat: "Jasper",
     region: "North Central Florida",
     tier: 2,
@@ -453,6 +486,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hardee",
     slug: "hardee-county",
+    seen: "Hardee has had repeated storm damage and constant roof replacement. Arrays came off and went back on with whoever was available, and that is what we inspect.",
     seat: "Wauchula",
     region: "Southwest Florida",
     tier: 2,
@@ -464,6 +498,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hendry",
     slug: "hendry-county",
+    seen: "Hendry calls come in from three different providers depending on the address, so establishing who holds the interconnection is step one. Reachable from our South Florida base without much trouble.",
     seat: "LaBelle",
     region: "Southwest Florida",
     tier: 2,
@@ -475,6 +510,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hernando",
     slug: "hernando-county",
+    seen: "Spring Hill is most of what we see in Hernando: single-storey shingle at the age where the roof needs replacing and the array has to come off.",
     seat: "Brooksville",
     region: "Nature Coast",
     tier: 2,
@@ -487,6 +523,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Highlands",
     slug: "highlands-county",
+    seen: "Highlands calls are retirement housing on the edge of our existing travel, so scheduling is easier here than the drive time suggests.",
     seat: "Sebring",
     region: "Central Florida",
     tier: 2,
@@ -498,6 +535,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Hillsborough",
     slug: "hillsborough-county",
+    seen: "Hillsborough gives us enough volume to batch a proper run rather than a single call-out. Heavy on orphaned systems from dealer networks that closed.",
     seat: "Tampa",
     region: "Tampa Bay",
     tier: 2,
@@ -510,6 +548,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Holmes",
     slug: "holmes-county",
+    seen: "Holmes calls are metal roofs in rural country. Different hardware, long drive, planned work.",
     seat: "Bonifay",
     region: "Panhandle",
     tier: 2,
@@ -521,6 +560,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Jackson",
     slug: "jackson-county",
+    seen: "Jackson County was hit hard by Michael well inland, which still surprises people. Roof replacement has run ever since, and the arrays on those roofs are what we check.",
     seat: "Marianna",
     region: "Panhandle",
     tier: 2,
@@ -532,6 +572,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Jefferson",
     slug: "jefferson-county",
+    seen: "Jefferson calls are historic housing around Monticello: steep pitches and small roof planes that slow a detach right down.",
     seat: "Monticello",
     region: "Panhandle",
     tier: 2,
@@ -544,6 +585,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Lafayette",
     slug: "lafayette-county",
+    seen: "Lafayette calls are farm and pump systems, not rooftop arrays. Genuinely a special trip and we say so rather than pretend.",
     seat: "Mayo",
     region: "North Central Florida",
     tier: 2,
@@ -555,6 +597,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Lake",
     slug: "lake-county",
+    seen: "Lake County borders our home route, so response here is closer to Tier 1 than most of the state. Clermont is newer shingle; the lakeside towns are slower, more careful work.",
     seat: "Tavares",
     region: "Central Florida",
     tier: 2,
@@ -566,6 +609,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Lee",
     slug: "lee-county",
+    seen: "Lee County is the largest concentration of rushed post-Ian reinstalls in the state. Cape Coral alone keeps us busy, and most calls start with a stain on a ceiling.",
     seat: "Fort Myers",
     region: "Southwest Florida",
     tier: 2,
@@ -578,6 +622,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Leon",
     slug: "leon-county",
+    seen: "Leon calls involve Tallahassee's city utility, which looks nothing like FPL's process, and heavy tree canopy that is often the real reason a system underproduces.",
     seat: "Tallahassee",
     region: "Panhandle",
     tier: 2,
@@ -589,6 +634,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Levy",
     slug: "levy-county",
+    seen: "Levy calls are rural acreage and Cedar Key, where staging any roof work on a raised island lot is its own puzzle.",
     seat: "Bronson",
     region: "Nature Coast",
     tier: 2,
@@ -601,6 +647,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Liberty",
     slug: "liberty-county",
+    seen: "Liberty calls are off-grid and agricultural, in the least populated county in the state. Scheduled trips with a real minimum.",
     seat: "Bristol",
     region: "Panhandle",
     tier: 2,
@@ -612,6 +659,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Madison",
     slug: "madison-county",
+    seen: "Madison calls are metal roofs on older rural housing. Metal attachment hardware is a different specification and worth getting right first time.",
     seat: "Madison",
     region: "North Central Florida",
     tier: 2,
@@ -623,6 +671,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Manatee",
     slug: "manatee-county",
+    seen: "Manatee splits cleanly: newer tile around Lakewood Ranch, and exposed older housing on the Anna Maria islands. We quote them as two different jobs.",
     seat: "Bradenton",
     region: "Tampa Bay",
     tier: 2,
@@ -635,6 +684,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Marion",
     slug: "marion-county",
+    seen: "Marion calls are modest single-storey systems on walkable roofs, and a reconnection route that changes street by street between the Ocala city utility and the county.",
     seat: "Ocala",
     region: "North Central Florida",
     tier: 2,
@@ -646,6 +696,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Monroe",
     slug: "monroe-county",
+    seen: "Keys calls are corrosion and access. Nothing recovered off an old roof goes back onto a new one, and staging on a narrow island lot is half the quote.",
     seat: "Key West",
     region: "Florida Keys",
     tier: 2,
@@ -658,6 +709,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Nassau",
     slug: "nassau-county",
+    seen: "Nassau calls are Amelia Island salt on one side and ordinary suburban shingle on the other, with three different providers depending on the address.",
     seat: "Fernandina Beach",
     region: "Northeast Florida",
     tier: 2,
@@ -670,6 +722,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Okaloosa",
     slug: "okaloosa-county",
+    seen: "Okaloosa splits between beach resort property taking a hammering from salt and a large inland military community with straightforward roofs.",
     seat: "Crestview",
     region: "Panhandle",
     tier: 2,
@@ -682,6 +735,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Okeechobee",
     slug: "okeechobee-county",
+    seen: "Okeechobee sits close enough to our Treasure Coast route that response is better than most travel counties. Ranch buildings feature more than suburban roofs.",
     seat: "Okeechobee",
     region: "Treasure Coast",
     tier: 2,
@@ -693,6 +747,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Pasco",
     slug: "pasco-county",
+    seen: "Pasco calls are newer roofs around Wesley Chapel and overdue ones around New Port Richey. Both are easy to work on, for opposite reasons.",
     seat: "Dade City",
     region: "Tampa Bay",
     tier: 2,
@@ -705,6 +760,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Pinellas",
     slug: "pinellas-county",
+    seen: "Pinellas calls always come with a staging question: tight lots, nowhere obvious to store panels, and coastal exposure on nearly every address.",
     seat: "Clearwater",
     region: "Tampa Bay",
     tier: 2,
@@ -717,6 +773,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Polk",
     slug: "polk-county",
+    seen: "Polk calls cluster around Davenport and Haines City where whole subdivisions went up with solar included. Lakeland's own utility changes the paperwork on some addresses.",
     seat: "Bartow",
     region: "Central Florida",
     tier: 2,
@@ -728,6 +785,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Putnam",
     slug: "putnam-county",
+    seen: "Putnam calls are older river housing with heavy tree cover, so shade gets ruled out before anyone quotes a repair.",
     seat: "Palatka",
     region: "Northeast Florida",
     tier: 2,
@@ -739,6 +797,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "St. Johns",
     slug: "st-johns-county",
+    seen: "St. Johns calls are newer homes at Nocatee and Ponte Vedra, plus the opposite extreme in historic St. Augustine where every roof is slow going.",
     seat: "St. Augustine",
     region: "Northeast Florida",
     tier: 2,
@@ -751,6 +810,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Santa Rosa",
     slug: "santa-rosa-county",
+    seen: "Santa Rosa splits between Gulf Breeze and Navarre salt exposure and rural work up around Milton. Far west, planned in blocks.",
     seat: "Milton",
     region: "Panhandle",
     tier: 2,
@@ -763,6 +823,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Sarasota",
     slug: "sarasota-county",
+    seen: "Sarasota calls care as much about how the array looks going back as how it performs. North Port adds rushed storm reinstalls to the mix.",
     seat: "Sarasota",
     region: "Southwest Florida",
     tier: 2,
@@ -775,6 +836,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Sumter",
     slug: "sumter-county",
+    seen: "The Villages means near-identical single-storey homes, so once we have quoted one the next is fast and batching several in a day is normal.",
     seat: "Bushnell",
     region: "Central Florida",
     tier: 2,
@@ -786,6 +848,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Suwannee",
     slug: "suwannee-county",
+    seen: "Suwannee calls are ground mounts and metal roofs on river-country acreage, both quoted differently from a shingle house.",
     seat: "Live Oak",
     region: "North Central Florida",
     tier: 2,
@@ -797,6 +860,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Taylor",
     slug: "taylor-county",
+    seen: "Taylor County has taken repeated direct hurricane hits and much of the coast is raised stilt construction, which changes how a crew works a roof entirely.",
     seat: "Perry",
     region: "Nature Coast",
     tier: 2,
@@ -809,6 +873,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Union",
     slug: "union-county",
+    seen: "Union calls are sparse and cooperative-interconnected on farm property. Batched with Bradford or Alachua runs.",
     seat: "Lake Butler",
     region: "North Central Florida",
     tier: 2,
@@ -820,6 +885,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Volusia",
     slug: "volusia-county",
+    seen: "Volusia borders our home route so response is quicker than most travel counties. Deltona is uniform housing; the beach side is older and harder on hardware.",
     seat: "DeLand",
     region: "Space Coast",
     tier: 2,
@@ -832,6 +898,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Wakulla",
     slug: "wakulla-county",
+    seen: "Wakulla calls are low-lying coastal property with raised construction and careful staging, usually batched with a Tallahassee trip.",
     seat: "Crawfordville",
     region: "Panhandle",
     tier: 2,
@@ -844,6 +911,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Walton",
     slug: "walton-county",
+    seen: "Walton calls along 30A are metal roofs, high specification and design review. Inland Walton is a completely different, rural job.",
     seat: "DeFuniak Springs",
     region: "Panhandle",
     tier: 2,
@@ -856,6 +924,7 @@ export const FL_COUNTIES: FlCounty[] = [
   {
     name: "Washington",
     slug: "washington-county",
+    seen: "Washington calls are inland Michael rebuilds. Newer roofs than the neighbourhood age suggests, long drive, honest scheduling.",
     seat: "Chipley",
     region: "Panhandle",
     tier: 2,

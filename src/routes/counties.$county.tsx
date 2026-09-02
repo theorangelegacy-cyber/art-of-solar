@@ -70,7 +70,9 @@ function countyFaqs(c: FlCounty) {
     });
   }
 
-  return faqs;
+  // A travel county does not need five answers, and padding them out with the
+  // same wording on 57 pages is exactly what gets a set of pages filtered.
+  return c.tier === 1 ? faqs : [faqs[0]!, faqs[1]!, faqs[4]!];
 }
 
 export const Route = createFileRoute("/counties/$county")({
@@ -224,10 +226,12 @@ function CountyPage() {
 
       <section className="container-x grid gap-8 pb-12 sm:pb-16 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
-          <p className="eyebrow">What we check here</p>
+          <p className="eyebrow">What we get called for</p>
           <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
             {c.name} County roofs, specifically
           </h2>
+          <p className="mt-4 text-base text-muted-foreground">{c.seen}</p>
+          {home && (
           <ul className="mt-6 grid gap-3">
             {[
               c.hvhz
@@ -251,6 +255,7 @@ function CountyPage() {
               </li>
             ))}
           </ul>
+          )}
         </div>
 
         <div className="self-start rounded-3xl border border-line bg-white p-6">
