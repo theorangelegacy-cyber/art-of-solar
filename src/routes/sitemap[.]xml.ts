@@ -26,6 +26,9 @@ export const Route = createFileRoute("/sitemap.xml")({
             changefreq: "monthly" as const,
             priority: "0.9",
           })),
+          { path: "/solar-panel-removal-cost", changefreq: "monthly" as const, priority: "0.95" },
+          { path: "/solar-detach-and-reset", changefreq: "monthly" as const, priority: "0.95" },
+          { path: "/florida-solar-permit-law", changefreq: "monthly" as const, priority: "0.9" },
           { path: "/solar-company-out-of-business", changefreq: "monthly" as const, priority: "0.9" },
           ...RESCUES.map((r) => ({
             path: `/solar-company-out-of-business/${r.slug}`,

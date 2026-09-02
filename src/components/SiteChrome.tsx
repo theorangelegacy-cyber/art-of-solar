@@ -18,6 +18,7 @@ import {
 const navLinks = [
   { to: "/services", label: "Services" },
   { to: "/service-areas", label: "Service Areas" },
+  { to: "/solar-detach-and-reset", label: "For Roofers" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
@@ -343,6 +344,15 @@ export function SiteFooter() {
               </Link>
               <Link to="/service-areas" className="text-white/80 hover:text-white">
                 Service areas
+              </Link>
+              <Link to="/solar-panel-removal-cost" className="text-white/80 hover:text-white">
+                What removal costs
+              </Link>
+              <Link to="/solar-detach-and-reset" className="text-white/80 hover:text-white">
+                Detach and reset for roofers
+              </Link>
+              <Link to="/florida-solar-permit-law" className="text-white/80 hover:text-white">
+                Florida permit and licence rules
               </Link>
               <Link to="/solar-company-out-of-business" className="text-white/80 hover:text-white">
                 Installer out of business?

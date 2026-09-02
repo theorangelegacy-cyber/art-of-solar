@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FloridaSolarPermitLawRouteImport } from './routes/florida-solar-permit-law'
 import { Route as LeadsRouteImport } from './routes/leads'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SolarDetachAndResetRouteImport } from './routes/solar-detach-and-reset'
+import { Route as SolarPanelRemovalCostRouteImport } from './routes/solar-panel-removal-cost'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
 import { Route as ServiceAreasCityRouteImport } from './routes/service-areas.$city'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -37,6 +40,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FloridaSolarPermitLawRoute = FloridaSolarPermitLawRouteImport.update({
+  id: '/florida-solar-permit-law',
+  path: '/florida-solar-permit-law',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LeadsRoute = LeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
@@ -50,6 +58,16 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolarDetachAndResetRoute = SolarDetachAndResetRouteImport.update({
+  id: '/solar-detach-and-reset',
+  path: '/solar-detach-and-reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolarPanelRemovalCostRoute = SolarPanelRemovalCostRouteImport.update({
+  id: '/solar-panel-removal-cost',
+  path: '/solar-panel-removal-cost',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServiceAreasIndexRoute = ServiceAreasIndexRouteImport.update({
@@ -89,9 +107,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/florida-solar-permit-law': typeof FloridaSolarPermitLawRoute
   '/leads': typeof LeadsRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
+  '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
   '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
@@ -103,9 +124,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/florida-solar-permit-law': typeof FloridaSolarPermitLawRoute
   '/leads': typeof LeadsRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
+  '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
   '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
@@ -118,9 +142,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/florida-solar-permit-law': typeof FloridaSolarPermitLawRoute
   '/leads': typeof LeadsRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
+  '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
   '/solar-company-out-of-business/$brand': typeof SolarCompanyOutOfBusinessBrandRoute
@@ -134,9 +161,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/florida-solar-permit-law'
     | '/leads'
     | '/privacy-policy'
     | '/sitemap.xml'
+    | '/solar-detach-and-reset'
+    | '/solar-panel-removal-cost'
     | '/service-areas/$city'
     | '/services/$service'
     | '/solar-company-out-of-business/$brand'
@@ -148,9 +178,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/florida-solar-permit-law'
     | '/leads'
     | '/privacy-policy'
     | '/sitemap.xml'
+    | '/solar-detach-and-reset'
+    | '/solar-panel-removal-cost'
     | '/service-areas/$city'
     | '/services/$service'
     | '/solar-company-out-of-business/$brand'
@@ -162,9 +195,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/florida-solar-permit-law'
     | '/leads'
     | '/privacy-policy'
     | '/sitemap.xml'
+    | '/solar-detach-and-reset'
+    | '/solar-panel-removal-cost'
     | '/service-areas/$city'
     | '/services/$service'
     | '/solar-company-out-of-business/$brand'
@@ -177,9 +213,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  FloridaSolarPermitLawRoute: typeof FloridaSolarPermitLawRoute
   LeadsRoute: typeof LeadsRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SolarDetachAndResetRoute: typeof SolarDetachAndResetRoute
+  SolarPanelRemovalCostRoute: typeof SolarPanelRemovalCostRoute
   ServiceAreasCityRoute: typeof ServiceAreasCityRoute
   ServicesServiceRoute: typeof ServicesServiceRoute
   SolarCompanyOutOfBusinessBrandRoute: typeof SolarCompanyOutOfBusinessBrandRoute
@@ -211,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/florida-solar-permit-law': {
+      id: '/florida-solar-permit-law'
+      path: '/florida-solar-permit-law'
+      fullPath: '/florida-solar-permit-law'
+      preLoaderRoute: typeof FloridaSolarPermitLawRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/leads': {
       id: '/leads'
       path: '/leads'
@@ -230,6 +276,20 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solar-detach-and-reset': {
+      id: '/solar-detach-and-reset'
+      path: '/solar-detach-and-reset'
+      fullPath: '/solar-detach-and-reset'
+      preLoaderRoute: typeof SolarDetachAndResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solar-panel-removal-cost': {
+      id: '/solar-panel-removal-cost'
+      path: '/solar-panel-removal-cost'
+      fullPath: '/solar-panel-removal-cost'
+      preLoaderRoute: typeof SolarPanelRemovalCostRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/service-areas/': {
@@ -281,9 +341,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  FloridaSolarPermitLawRoute: FloridaSolarPermitLawRoute,
   LeadsRoute: LeadsRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SolarDetachAndResetRoute: SolarDetachAndResetRoute,
+  SolarPanelRemovalCostRoute: SolarPanelRemovalCostRoute,
   ServiceAreasCityRoute: ServiceAreasCityRoute,
   ServicesServiceRoute: ServicesServiceRoute,
   SolarCompanyOutOfBusinessBrandRoute: SolarCompanyOutOfBusinessBrandRoute,
