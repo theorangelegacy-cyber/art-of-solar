@@ -24,14 +24,14 @@ const navLinks = [
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
-    <span className="flex items-center gap-2.5">
-      <img src="/logo-art-of-solar.svg" alt="" aria-hidden className="h-9 w-9 shrink-0" />
+    <span className="flex items-center gap-2 sm:gap-2.5">
+      <img src="/logo-art-of-solar.svg" alt="" aria-hidden className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
       <span
-        className={`text-base leading-none font-extrabold tracking-tight ${light ? "text-white" : "text-navy"}`}
+        className={`text-sm leading-none font-extrabold tracking-tight sm:text-base ${light ? "text-white" : "text-navy"}`}
       >
         Art of <span className="text-orange">Solar</span>
         <span
-          className={`mt-1 block text-[10px] font-bold tracking-[0.16em] uppercase ${light ? "text-white/60" : "text-muted-foreground"}`}
+          className={`mt-1 hidden text-[10px] font-bold tracking-[0.16em] uppercase sm:block ${light ? "text-white/60" : "text-muted-foreground"}`}
         >
           Re-rack &amp; repair
         </span>
@@ -88,7 +88,7 @@ export function SiteHeader() {
             <a
               href={links.call}
               onClick={() => trackEvent("call_click", { channel: "call", label: "header" })}
-              className="btn-base btn-primary px-3.5 py-2 text-sm"
+              className="btn-base btn-primary px-3 py-1.5 text-xs sm:px-3.5 sm:py-2 sm:text-sm"
             >
               Call now
             </a>
@@ -96,7 +96,7 @@ export function SiteHeader() {
             <Link
               to="/contact"
               onClick={() => trackEvent("quote_click", { channel: "form", label: "header" })}
-              className="btn-base btn-primary px-3.5 py-2 text-sm"
+              className="btn-base btn-primary px-3 py-1.5 text-xs sm:px-3.5 sm:py-2 sm:text-sm"
             >
               Free Quote
             </Link>
@@ -106,7 +106,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 aria-label="Open menu"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white text-navy transition-colors hover:bg-steel"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-white text-navy transition-colors hover:bg-steel sm:h-10 sm:w-10"
               >
                 <Menu className="h-5 w-5" />
               </button>
@@ -136,14 +136,6 @@ export function SiteHeader() {
                       </Link>
                     </SheetClose>
                   ))}
-                  <a
-                    href={links.facebook}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-2 rounded-xl px-3 py-3 text-base font-semibold text-navy transition-colors hover:bg-steel"
-                  >
-                    <FacebookIcon /> Facebook
-                  </a>
                 </nav>
                 <div className="mt-auto space-y-3 pt-6">
                   <SheetClose asChild>
@@ -156,9 +148,6 @@ export function SiteHeader() {
                       Call {links.phoneDisplay}
                     </a>
                   )}
-                  <a href={links.email} className="btn-base btn-ghost w-full">
-                    Email us
-                  </a>
                 </div>
               </div>
             </SheetContent>
