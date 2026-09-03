@@ -279,74 +279,68 @@ function Home() {
         </div>
       </section>
 
-      {/* Recent work */}
+      {/* What re-rack, detach and reset actually means */}
       <section className="container-x py-12 sm:py-20">
-        <p className="eyebrow">Real work, not stock photos</p>
+        <p className="eyebrow">Solar re-rack, detach and reset</p>
         <h2 className="mt-3 max-w-3xl text-2xl font-extrabold text-navy sm:text-4xl">
-          13 modules relocated. Whole system rebuilt for a re-roof.
+          Solar panel removal and reinstallation for a new roof, done by a licensed solar crew.
         </h2>
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">
-          <div className="grid grid-cols-2 gap-3">
-            <figure className="overflow-hidden rounded-2xl border border-line">
-              <img
-                src={IMG.before}
-                alt="Aerial view of the original solar layout split across two roof faces"
-                loading="lazy"
-                width={1200}
-                height={900}
-                className="aspect-square w-full object-cover"
-              />
-              <figcaption className="bg-navy px-3 py-2 text-xs font-bold tracking-wider text-white uppercase">
-                Before: split across two faces
-              </figcaption>
-            </figure>
-            <figure className="overflow-hidden rounded-2xl border border-line">
-              <img
-                src={IMG.after}
-                alt="Aerial view of the rebuilt solar system fitted on the southwest roof face"
-                loading="lazy"
-                width={1200}
-                height={900}
-                className="aspect-square w-full object-cover"
-              />
-              <figcaption className="bg-orange px-3 py-2 text-xs font-bold tracking-wider text-navy-deep uppercase">
-                After: one face, more sun
-              </figcaption>
-            </figure>
-          </div>
-          <div className="flex flex-col justify-center">
-            <p className="text-base text-muted-foreground sm:text-lg">
-              Tile roof, full re-roof. We pulled the entire system, then rebuilt it on the
-              southwest face where it should have been from day one: 13 modules moved off the
-              northeast side that was never earning its keep. Two modules on the back of the house
-              were set offset on purpose so one stopped shading the other. Hidden from the street,
-              producing more than before, and the roofer never had to touch a panel.
+        <div className="mt-6 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid gap-4 text-base text-muted-foreground sm:text-lg">
+            <p>
+              Re-rack, detach and reset, D&amp;R, solar removal and reinstall: four names for the
+              same job. The array comes off before tear-off, the roofer gets a clean deck, and the
+              system goes back on new flashed mounts after the roof passes final inspection. In
+              Florida, moving an array is solar contracting and reconnecting it is electrical work,
+              so a roofing licence does not cover it and a warranty claim will find that out.
             </p>
-            <ul className="mt-5 grid gap-2 text-sm font-semibold text-navy sm:grid-cols-2">
-              {[
-                "Detached before tear-off",
-                "New flashed mounts on the new tile",
-                "Layout redesigned for the sun, not the sales quota",
-                "Restarted, verified, photographed",
-              ].map((t) => (
-                <li key={t} className="flex gap-2">
-                  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
-                    ✓
-                  </span>
-                  {t}
-                </li>
-              ))}
-            </ul>
-            <a
-              href={links.facebook}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 flex w-fit items-center gap-2 text-sm font-bold text-sky hover:underline"
-            >
-              <FacebookIcon /> More jobs on our Facebook page →
-            </a>
+            <p>
+              We do solar panel removal for re-roofing, orphaned system repair when the original
+              installer went out of business, roof leak repair at the mounts, panel relocation and
+              layout redesign, storm and hurricane damage repair, inspections and production
+              checks. Homeowners, roofing contractors and insurance jobs, Orlando to Miami.
+            </p>
+            <p>
+              Typical Florida detach and reset pricing runs per panel, quoted in writing before
+              anyone touches the roof, with the solar permit pulled by us and the inspection met by
+              us. No mystery line items, no subbing your array out to a handyman.
+            </p>
           </div>
+          <ul className="grid gap-2 self-start text-sm font-semibold text-navy">
+            {[
+              "Solar panel removal and reinstall for re-roofs",
+              "Detach and reset for roofing contractors",
+              "Orphaned system repair after an installer folds",
+              "Leak repair at the panel mounts",
+              "Panel relocation and layout redesign",
+              "Storm and hurricane damage repair",
+              "Permits pulled, inspections met, production verified",
+            ].map((t) => (
+              <li
+                key={t}
+                className="flex gap-3 rounded-2xl border border-line bg-white p-4 text-sm text-navy"
+              >
+                <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-orange text-xs font-black text-navy-deep">
+                  ✓
+                </span>
+                {t}
+              </li>
+            ))}
+          </ul>
         </div>
+        <a
+          href={links.facebook}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-6 flex w-fit items-center gap-2 text-sm font-bold text-sky hover:underline"
+        >
+          <FacebookIcon /> More jobs on our Facebook page →
+        </a>
+      </section>
+
+      {/* Gallery */}
+      <section className="container-x pb-12 sm:pb-20">
+
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {GALLERY.map((g) => (
             <img

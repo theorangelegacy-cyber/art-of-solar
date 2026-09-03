@@ -18,6 +18,7 @@ import {
   nearbyCities,
 } from "@/data/seo";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
+import { trackEvent } from "@/lib/leads";
 import { IMG } from "@/data/images";
 
 export const Route = createFileRoute("/service-areas/$city")({
