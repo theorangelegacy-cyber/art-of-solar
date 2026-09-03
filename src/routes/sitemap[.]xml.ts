@@ -33,6 +33,7 @@ export const Route = createFileRoute("/sitemap.xml")({
             changefreq: "monthly" as const,
             priority: c.tier === 1 ? "0.85" : "0.7",
           })),
+          { path: "/solar-panel-repair", changefreq: "monthly" as const, priority: "0.95" },
           { path: "/solar-panel-removal-cost", changefreq: "monthly" as const, priority: "0.95" },
           { path: "/solar-detach-and-reset", changefreq: "monthly" as const, priority: "0.95" },
           { path: "/florida-solar-permit-law", changefreq: "monthly" as const, priority: "0.9" },

@@ -23,7 +23,7 @@ import { trackEvent } from "@/lib/leads";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Solar Panel Removal, Reinstall & Repair | Art of Solar FL" },
+      { title: "Solar Panel Removal, Reinstall and Repair | Art of Solar FL" },
       {
         name: "description",
         content:

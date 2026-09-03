@@ -67,7 +67,7 @@ export const Route = createFileRoute("/florida-solar-permit-law")({
     scripts: [
       ...ld(
         serviceSchema({
-          name: "Permitted Solar Panel Removal & Reinstall",
+          name: "Permitted Solar Panel Removal and Reinstall",
           description: DESC,
           url: URL,
           image: HERO_IMG,

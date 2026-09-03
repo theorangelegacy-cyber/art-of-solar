@@ -68,9 +68,9 @@ export type Service = {
 export const SERVICES: Service[] = [
   {
     slug: "solar-panel-removal-and-reinstall",
-    metaTitle: "Solar Panel Removal & Reinstall for a New Roof | Florida",
+    metaTitle: "Solar Panel Removal and Reinstall for a New Roof | Florida",
     metaDesc: "Panels off before tear-off, back on after your roof passes, on new flashed mounts. Licensed Florida solar crew, Orlando to Miami. Written quote first.",
-    name: "Solar Panel Removal & Reinstall",
+    name: "Solar Panel Removal and Reinstall",
     phrase: "solar panel removal and reinstall",
     eyebrow: "Detach & reset for a new roof",
     short:
@@ -956,6 +956,16 @@ export function cityFaqs(c: City): { q: string; a: string }[] {
       a: c.coastal
         ? `It changes what fails first. Salt eats rails, clamps and grounding lugs long before it touches a panel, so nothing corroded goes back onto a new ${c.name} roof no matter how it looks from the ground.`
         : `Away from salt air it is rail condition, flashing at the mounts, and whether the array was ever torqued to spec. A stain on a ceiling under an array in ${c.name} is almost always a mount that was never flashed properly.`,
+    },
+    /**
+     * "Solar panel removal near me" is searched town by town, and it was the
+     * one phrase no page on the site actually answered. Asking and answering it
+     * in the city's own name puts it on all fifty-five pages and into the FAQ
+     * schema with it, without touching a word that was already there.
+     */
+    {
+      q: `Is there solar panel removal near me in ${c.name}?`,
+      a: `If you are in ${c.name}, or anywhere else in ${k.name} County, yes. A search for solar panel removal near me here reaches a Florida crew that runs one route from Orlando to Miami, not a call centre that sells the job on to whoever picks up. The people who quote it are the people on your roof.`,
     },
   ];
 }

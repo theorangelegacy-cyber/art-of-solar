@@ -15,7 +15,7 @@ import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/solar-panel-removal-cost`;
-const TITLE = "Solar Panel Removal & Reinstall Cost in Florida (2026)";
+const TITLE = "Solar Panel Removal and Reinstall Cost in Florida (2026)";
 const DESC =
   "What it really costs to take solar panels off for a new roof in Florida and put them back: per-panel prices and what a fair quote includes.";
 
@@ -98,7 +98,7 @@ export const Route = createFileRoute("/solar-panel-removal-cost")({
     scripts: [
       ...ld(
         serviceSchema({
-          name: "Solar Panel Removal & Reinstall",
+          name: "Solar Panel Removal and Reinstall",
           description: DESC,
           url: URL,
           image: HERO_IMG,

@@ -16,7 +16,7 @@ import { IMG } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 const URL = `${SITE_URL}/counties`;
-const TITLE = "Solar Panel Removal & Reinstall: All 67 Florida Counties";
+const TITLE = "Solar Panel Removal and Reinstall: All 67 Florida Counties";
 const DESC =
   "Where Art of Solar works, county by county across Florida. Orlando to Miami is our weekly route; the rest of the state is travel work, booked ahead.";
 
@@ -60,7 +60,7 @@ export const Route = createFileRoute("/counties/")({
     scripts: [
       ...ld(
         serviceSchema({
-          name: "Solar Panel Removal, Reinstall & Repair",
+          name: "Solar Panel Removal, Reinstall and Repair",
           description: DESC,
           url: URL,
           image: IMG.og,

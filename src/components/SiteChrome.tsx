@@ -353,6 +353,9 @@ export function SiteFooter() {
               <Link to="/counties" className="text-white/80 hover:text-white">
                 All 67 Florida counties
               </Link>
+              <Link to="/solar-panel-repair" className="text-white/80 hover:text-white">
+                Solar panel repair
+              </Link>
               <Link to="/solar-panel-removal-cost" className="text-white/80 hover:text-white">
                 What removal costs
               </Link>

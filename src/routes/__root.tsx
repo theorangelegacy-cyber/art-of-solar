@@ -73,7 +73,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Art of Solar | Solar Panel Removal, Reinstall & Repair, Orlando to Miami" },
+      { title: "Art of Solar | Solar Panel Removal, Reinstall and Repair, Orlando to Miami" },
       {
         name: "description",
         content:

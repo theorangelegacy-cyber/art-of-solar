@@ -33,7 +33,7 @@ export const Route = createFileRoute("/service-areas/$city")({
     const c = loaderData.city;
     const k = countyOf(c);
     const url = `${SITE_URL}/service-areas/${params.city}`;
-    const title = `Solar Panel Removal & Reinstall in ${c.name}, FL`;
+    const title = `Solar Panel Removal and Reinstall in ${c.name}, FL`;
     // A short hook off the city's own blurb keeps all 55 descriptions different
     // without pushing past the ~155 characters Google actually shows. Cut only at
     // a real clause or sentence end, never mid-thought, and fall back to the
@@ -67,7 +67,7 @@ export const Route = createFileRoute("/service-areas/$city")({
       scripts: [
         ...ld(
           serviceSchema({
-            name: "Solar Panel Removal, Reinstall & Repair",
+            name: "Solar Panel Removal, Reinstall and Repair",
             description: desc,
             url,
             image: IMG.og,

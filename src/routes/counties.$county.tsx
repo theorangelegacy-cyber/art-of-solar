@@ -87,7 +87,7 @@ export const Route = createFileRoute("/counties/$county")({
       return { meta: [{ title: "Page not found" }, { name: "robots", content: "noindex" }] };
     const c = loaderData.county;
     const url = `${SITE_URL}/counties/${params.county}`;
-    const title = `Solar Panel Removal & Reinstall in ${c.name} County, FL`;
+    const title = `Solar Panel Removal and Reinstall in ${c.name} County, FL`;
     const clause = c.blurb.split(",")[0]!.trim();
     const hook =
       clause.length >= 25 && clause.length <= 70
@@ -111,7 +111,7 @@ export const Route = createFileRoute("/counties/$county")({
       scripts: [
         ...ld(
           serviceSchema({
-            name: "Solar Panel Removal, Reinstall & Repair",
+            name: "Solar Panel Removal, Reinstall and Repair",
             description: desc,
             url,
             image: IMG.og,

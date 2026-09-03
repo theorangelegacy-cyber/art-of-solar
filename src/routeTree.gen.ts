@@ -18,6 +18,7 @@ import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SolarDetachAndResetRouteImport } from './routes/solar-detach-and-reset'
 import { Route as SolarPanelRemovalCostRouteImport } from './routes/solar-panel-removal-cost'
+import { Route as SolarPanelRepairRouteImport } from './routes/solar-panel-repair'
 import { Route as CountiesIndexRouteImport } from './routes/counties.index'
 import { Route as CountiesCountyRouteImport } from './routes/counties.$county'
 import { Route as ServiceAreasIndexRouteImport } from './routes/service-areas.index'
@@ -70,6 +71,11 @@ const SolarDetachAndResetRoute = SolarDetachAndResetRouteImport.update({
 const SolarPanelRemovalCostRoute = SolarPanelRemovalCostRouteImport.update({
   id: '/solar-panel-removal-cost',
   path: '/solar-panel-removal-cost',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolarPanelRepairRoute = SolarPanelRepairRouteImport.update({
+  id: '/solar-panel-repair',
+  path: '/solar-panel-repair',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CountiesIndexRoute = CountiesIndexRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
   '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
+  '/solar-panel-repair': typeof SolarPanelRepairRoute
   '/counties/$county': typeof CountiesCountyRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
   '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
+  '/solar-panel-repair': typeof SolarPanelRepairRoute
   '/counties/$county': typeof CountiesCountyRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/solar-detach-and-reset': typeof SolarDetachAndResetRoute
   '/solar-panel-removal-cost': typeof SolarPanelRemovalCostRoute
+  '/solar-panel-repair': typeof SolarPanelRepairRoute
   '/counties/$county': typeof CountiesCountyRoute
   '/service-areas/$city': typeof ServiceAreasCityRoute
   '/services/$service': typeof ServicesServiceRoute
@@ -185,6 +194,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solar-detach-and-reset'
     | '/solar-panel-removal-cost'
+    | '/solar-panel-repair'
     | '/counties/$county'
     | '/service-areas/$city'
     | '/services/$service'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solar-detach-and-reset'
     | '/solar-panel-removal-cost'
+    | '/solar-panel-repair'
     | '/counties/$county'
     | '/service-areas/$city'
     | '/services/$service'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/solar-detach-and-reset'
     | '/solar-panel-removal-cost'
+    | '/solar-panel-repair'
     | '/counties/$county'
     | '/service-areas/$city'
     | '/services/$service'
@@ -243,6 +255,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SolarDetachAndResetRoute: typeof SolarDetachAndResetRoute
   SolarPanelRemovalCostRoute: typeof SolarPanelRemovalCostRoute
+  SolarPanelRepairRoute: typeof SolarPanelRepairRoute
   CountiesCountyRoute: typeof CountiesCountyRoute
   ServiceAreasCityRoute: typeof ServiceAreasCityRoute
   ServicesServiceRoute: typeof ServicesServiceRoute
@@ -318,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SolarPanelRemovalCostRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/solar-panel-repair': {
+      id: '/solar-panel-repair'
+      path: '/solar-panel-repair'
+      fullPath: '/solar-panel-repair'
+      preLoaderRoute: typeof SolarPanelRepairRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/counties/': {
       id: '/counties/'
       path: '/counties'
@@ -387,6 +407,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SolarDetachAndResetRoute: SolarDetachAndResetRoute,
   SolarPanelRemovalCostRoute: SolarPanelRemovalCostRoute,
+  SolarPanelRepairRoute: SolarPanelRepairRoute,
   CountiesCountyRoute: CountiesCountyRoute,
   ServiceAreasCityRoute: ServiceAreasCityRoute,
   ServicesServiceRoute: ServicesServiceRoute,

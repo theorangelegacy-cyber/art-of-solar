@@ -15,7 +15,7 @@ import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/solar-detach-and-reset`;
-const TITLE = "Solar Detach & Reset for Roofers | Florida";
+const TITLE = "Solar Detach and Reset for Roofers | Florida";
 const DESC =
   "Detach and reset subcontractor for Florida roofers. We pull the array and the solar permit, you tear off, we reset on new flashed mounts.";
 
@@ -71,7 +71,7 @@ export const Route = createFileRoute("/solar-detach-and-reset")({
     scripts: [
       ...ld(
         serviceSchema({
-          name: "Solar Detach & Reset",
+          name: "Solar Detach and Reset",
           description: DESC,
           url: URL,
           image: HERO_IMG,
