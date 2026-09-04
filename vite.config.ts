@@ -11,6 +11,10 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    // The day this build was made. The sitemap prints it as lastmod. Do not
+    // read the clock at run time for this: the Cloudflare worker freezes the
+    // clock outside a request and hands back 1970.
+    define: { __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)) },
     server: {
       // Lets the preview be reached through a tunnel or sandbox address.
       // Dev server only. The built site is a worker and ignores this.
