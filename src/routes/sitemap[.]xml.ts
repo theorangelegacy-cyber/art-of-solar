@@ -10,11 +10,18 @@ interface SitemapEntry {
   priority?: string;
 }
 
+/**
+ * Stamped once when the server starts, which is the moment a push goes live.
+ * It used to be "today" on every request, which told Google every page changed
+ * every single day. Google says it ignores lastmod once it catches that.
+ */
+const DEPLOYED = new Date().toISOString().slice(0, 10);
+
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const lastmod = new Date().toISOString().slice(0, 10);
+        const lastmod = DEPLOYED;
 
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
